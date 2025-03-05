@@ -1,14 +1,31 @@
 import express from "express";
+import apiRouter from "./api/apiRouter";
+import https from "https";
+import fs from "fs";
+import pool from "./database/pool";
 
 const PORT = 3000;
 const app = express();
 
-//router
+//creating secure server
+https
+  .createServer(
+    {
+      key: fs.readFileSync("key.pem"),
+      cert: fs.readFileSync("cert.pem"),
+    },
+    app
+  )
+  .listen(PORT, () => {
+    console.log(`Server started on ${PORT}`);
+  });
+
+pool.query(`SELECT * FROM "Test"`);
+
+//home route
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
-//starting server
-app.listen(PORT, () => {
-  console.log(`Server started on ${PORT}`);
-});
+//API router
+app.use("/api", apiRouter);

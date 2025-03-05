@@ -1,2 +1,8 @@
 # Ignore all node modules
 node_modules/
+
+# Ignore compiled ts code
+dist/
+
+# Ignore private keys, certificate service requests and certificates
+*.pem
