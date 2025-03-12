@@ -121,11 +121,11 @@ CREATE TABLE ListDefinedBy
 
 CREATE TABLE ToDo
 (
-  Due_Date DATE,
+  DueDate DATE,
   Content VARCHAR(500) NOT NULL,
-  Start_Date DATE,
+  StartDate DATE,
   Priority INT NOT NULL,
-  TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+  CreateDate TIMESTAMP(0) NOT NULL,
   Hyperlink VARCHAR(2000) NOT NULL,
   Depth INT NOT NULL,
   ToDoId INT NOT NULL,

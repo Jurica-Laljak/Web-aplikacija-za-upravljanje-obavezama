@@ -2,25 +2,30 @@ import express from "express";
 import apiRouter from "./api/apiRouter";
 import https from "https";
 import fs from "fs";
-import pool from "./database/pool";
 
 const PORT = 3000;
 const app = express();
 
-//creating secure server
-https
-  .createServer(
-    {
-      key: fs.readFileSync("key.pem"),
-      cert: fs.readFileSync("cert.pem"),
-    },
-    app
-  )
-  .listen(PORT, () => {
-    console.log(`Server started on ${PORT}`);
-  });
+//body parser
+app.use(express.json());
+var bodyParser = require("body-parser");
+app.use(bodyParser);
 
-pool.query(`SELECT * FROM "Test"`);
+app.listen(PORT, () => {
+  console.log(`Server started on ${PORT}`);
+});
+//creating secure server
+// https
+//   .createServer(
+//     {
+//       key: fs.readFileSync("key.pem"),
+//       cert: fs.readFileSync("cert.pem"),
+//     },
+//     app
+//   )
+//   .listen(PORT, () => {
+//     console.log(`Server started on ${PORT}`);
+//   });
 
 //home route
 app.get("/", (req, res) => {
@@ -29,3 +34,6 @@ app.get("/", (req, res) => {
 
 //API router
 app.use("/api", apiRouter);
+
+//error handler
+app.use((err, req, res) => {});
