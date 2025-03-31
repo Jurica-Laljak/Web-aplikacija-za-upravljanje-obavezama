@@ -1,8 +1,8 @@
 --type definition
 
 CREATE TYPE SORT AS ENUM (
-  'CreateDate:Asc',
-  'CreateDate:Desc',
+  'TimeCreated:Asc',
+  'TimeCreated:Desc',
   'Alphabetical:Asc',
   'Alphabetical:Desc',
   'DueDate:Asc',
@@ -13,27 +13,27 @@ CREATE TYPE SORT AS ENUM (
   'Priority:Desc'
 );
 
+CREATE TYPE DATETYPE AS ENUM (
+  'DueDate',
+  'StartDate'
+);
+
 --create tables
 
 CREATE TABLE ToDoList
 (
-  Name VARCHAR(50) NOT NULL,
-  Size INT DEFAULT 0,
   ListId SERIAL,
-  HighLevelSort SORT DEFAULT 'CreateDate:Asc',
+  Name VARCHAR(50) NOT NULL,
+  SerialNumber INT NOT NULL,
+  HighLevelSort SORT DEFAULT 'TimeCreated:Asc',
   MidLevelSort SORT,
   LowLevelSort SORT,
+  DefaultGroupId INT,
+  HighlightDefault BOOLEAN DEFAULT 'True',
+  TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (ListId),
   UNIQUE (Name),
   CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
-);
-
-CREATE TABLE Filter
-(
-  FilterId SERIAL,
-  Name VARCHAR(50) NOT NULL,
-  PRIMARY KEY (FilterId),
-  UNIQUE (Name)
 );
 
 CREATE TABLE ToDoListItem
@@ -44,28 +44,38 @@ CREATE TABLE ToDoListItem
   FOREIGN KEY (ListId) REFERENCES ToDoList(ListId)
 );
 
+CREATE TABLE Filter
+(
+  FilterId SERIAL,
+  Name VARCHAR(50) NOT NULL,
+  Depth INT DEFAULT 1,
+  ParentFilterId INT,
+  PRIMARY KEY (FilterId),
+  UNIQUE (Name),
+  CONSTRAINT depthLimit CHECK (Depth <= 3)
+);
+
 CREATE TABLE ToDoGroup
 (
+  GroupId INT NOT NULL,
   Name VARCHAR(50) NOT NULL,
-  Size INT DEFAULT 0,
-  Hyperlink VARCHAR(2000) NOT NULL,
-  HighLevelSort SORT DEFAULT 'CreateDate:Asc',
+  HighLevelSort SORT DEFAULT 'TimeCreated:Asc',
   MidLevelSort SORT,
   LowLevelSort SORT,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-  isOrdered BOOLEAN NOT NULL,
-  GroupId INT NOT NULL,
+  IsOrdered BOOLEAN DEFAULT 'True',
+  FilterId INT,
   PRIMARY KEY (GroupId),
   FOREIGN KEY (GroupId) REFERENCES ToDoListItem(ListItemId) ON DELETE SET NULL,
+  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId),
   UNIQUE (Name),
-  UNIQUE (Hyperlink),
   CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
 );
 
 CREATE TABLE PrefixFilter
 (
-  Prefix VARCHAR(50) NOT NULL,
   FilterId INT NOT NULL,
+  Prefix VARCHAR(50) NOT NULL,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
   UNIQUE (Prefix)
@@ -73,8 +83,8 @@ CREATE TABLE PrefixFilter
 
 CREATE TABLE SizeFilter
 (
-  Size INT NOT NULL,
   FilterId INT NOT NULL,
+  Size INT NOT NULL,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
   UNIQUE (Size)
@@ -82,41 +92,23 @@ CREATE TABLE SizeFilter
 
 CREATE TABLE TimePeriodFilter
 (
-  StartDate DATE,
-  EndDate DATE,
   FilterId INT NOT NULL,
+  DateType DATETYPE DEFAULT 'DueDate',
+  LowerBoundDate DATE,
+  HigherBoundDate DATE,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
-  CHECK ((StartDate IS NOT NULl) OR (EndDate IS NOT NULl))
+  CHECK ((LowerBoundDate IS NOT NULl) OR (HigherBoundDate IS NOT NULl))
 );
 
 CREATE TABLE PriorityFilter
 (
+  FilterId INT NOT NULL,
   HigherBoundPriority INT,
   LowerBoundPriority INT,
-  FilterId INT NOT NULL,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
-  CHECK ((HigherBoundPriority IS NOT NULl) OR (LowerBoundPriority IS NOT NULl))
-);
-
-CREATE TABLE GroupDefinedBy
-(
-  GroupId INT NOT NULL,
-  FilterId INT NOT NULL,
-  PRIMARY KEY (GroupId, FilterId),
-  FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId),
-  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId)
-);
-
-CREATE TABLE ListDefinedBy
-(
-  Priority INT NOT NULL,
-  ListId INT NOT NULL,
-  FilterId INT NOT NULL,
-  PRIMARY KEY (ListId, FilterId),
-  FOREIGN KEY (ListId) REFERENCES ToDoList(ListId),
-  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId)
+  CHECK ((LowerBoundPriority IS NOT NULl) OR (HigherBoundPriority IS NOT NULl))
 );
 
 CREATE TABLE ToDo
@@ -125,18 +117,19 @@ CREATE TABLE ToDo
   Content VARCHAR(500) NOT NULL,
   StartDate DATE,
   Priority INT NOT NULL,
-  CreateDate TIMESTAMP(0) NOT NULL,
-  Hyperlink VARCHAR(2000) NOT NULL,
-  Depth INT NOT NULL,
+  TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+  Depth INT DEFAULT 1,
   ToDoId INT NOT NULL,
   GroupId INT,
-  NestingToDoId INT,
+  ParentToDoId INT,
+  IsForced BOOLEAN DEFAULT 'False',
+  IsArchived BOOLEAN DEFAULT 'False',
   PRIMARY KEY (ToDoId),
   FOREIGN KEY (ToDoId) REFERENCES ToDoListItem(ListItemId) ON DELETE SET DEFAULT,
   FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId) ON DELETE SET NULL,
-  FOREIGN KEY (NestingToDoId) REFERENCES ToDo(ToDoId) ON DELETE SET NULL,
+  FOREIGN KEY (ParentToDoId) REFERENCES ToDo(ToDoId) ON DELETE SET NULL,
   UNIQUE (Content),
-  UNIQUE (Hyperlink)
+  CONSTRAINT depthLimit CHECK (Depth <= 3)
 );
 
 CREATE TABLE ToDoAssociatedPrefixes
@@ -148,16 +141,13 @@ CREATE TABLE ToDoAssociatedPrefixes
   FOREIGN KEY (FilterId) REFERENCES PrefixFilter(FilterId)
 );
 
--- initial state
+--initialize 3 lists
 
-INSERT INTO todolist (name, highlevelsort)
-  VALUES ('Archive', 'CreateDate:Desc');
+INSERT INTO ToDoList (Name, SerialNumber)
+VALUES ('Lista 1', 1);
 
-INSERT INTO todolist (name)
-  VALUES ('1');
+INSERT INTO ToDoList (Name, SerialNumber)
+VALUES ('Lista 2', 2);
 
-INSERT INTO todolist (name)
-  VALUES ('2');
-
-INSERT INTO todolist (name)
-  VALUES ('3');
+INSERT INTO ToDoList (Name, SerialNumber)
+VALUES ('Lista 3', 3);

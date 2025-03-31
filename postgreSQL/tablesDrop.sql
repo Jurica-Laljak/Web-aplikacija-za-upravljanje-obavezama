@@ -2,10 +2,6 @@ DROP TABLE ToDoAssociatedPrefixes;
 
 DROP TABLE ToDo;
 
-DROP TABLE ListDefinedBy;
-
-DROP TABLE GroupDefinedBy;
-
 DROP TABLE PriorityFilter;
 
 DROP TABLE TimePeriodFilter;
@@ -23,3 +19,5 @@ DROP TABLE Filter;
 DROP TABLE ToDoList;
 
 DROP TYPE SORT;
+
+DROP TYPE DATETYPE;
