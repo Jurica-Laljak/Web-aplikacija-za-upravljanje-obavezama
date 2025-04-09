@@ -1,15 +1,17 @@
 import ListItem from "./ListItem";
-import Prefix from "../filter/Prefix";
+import Prefix from "../filter/PrefixFilter";
 
 interface ToDo extends ListItem {
   content: string;
   dueDate?: Date;
   startDate?: Date;
-  createDate: Date;
+  timeCreated: Date;
   depth: number;
   priority: number;
-  hyperlink: URL;
   groupId?: number;
+  isOpened: boolean;
+  isForced: boolean;
+  isArchived: boolean;
   toDos: ToDo[];
   prefixes: Prefix[];
 }

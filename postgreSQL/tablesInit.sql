@@ -64,6 +64,7 @@ CREATE TABLE ToDoGroup
   LowLevelSort SORT,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   IsOrdered BOOLEAN DEFAULT 'True',
+  isOpened BOOLEAN DEFAULT 'False',
   FilterId INT,
   PRIMARY KEY (GroupId),
   FOREIGN KEY (GroupId) REFERENCES ToDoListItem(ListItemId) ON DELETE SET NULL,
@@ -124,11 +125,11 @@ CREATE TABLE ToDo
   ParentToDoId INT,
   IsForced BOOLEAN DEFAULT 'False',
   IsArchived BOOLEAN DEFAULT 'False',
+  isOpened BOOLEAN DEFAULT 'False',
   PRIMARY KEY (ToDoId),
   FOREIGN KEY (ToDoId) REFERENCES ToDoListItem(ListItemId) ON DELETE SET DEFAULT,
   FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId) ON DELETE SET NULL,
   FOREIGN KEY (ParentToDoId) REFERENCES ToDo(ToDoId) ON DELETE SET NULL,
-  UNIQUE (Content),
   CONSTRAINT depthLimit CHECK (Depth <= 3)
 );
 
