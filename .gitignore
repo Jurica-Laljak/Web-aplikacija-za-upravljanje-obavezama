@@ -6,3 +6,4 @@ dist/
 
 # Ignore private keys, certificate service requests and certificates
 *.pem
+*.env

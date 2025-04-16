@@ -1,7 +1,10 @@
 import express from "express";
-import apiRouter from "./api/apiRouter";
+import apiRouter from "./api/routes/apiRouter";
+import jwt from "jsonwebtoken";
 import https from "https";
+import { verifyJWT } from "./api/middleware/authMiddleware";
 import fs from "fs";
+import { header } from "express-validator";
 
 const PORT = 3000;
 const app = express();
@@ -9,12 +12,13 @@ const app = express();
 //body parser
 app.use(express.json());
 var bodyParser = require("body-parser");
-app.use(bodyParser);
+app.use(bodyParser.json());
 
 app.listen(PORT, () => {
   console.log(`Server started on ${PORT}`);
 });
-//creating secure server
+
+// creating secure server
 // https
 //   .createServer(
 //     {
@@ -27,13 +31,18 @@ app.listen(PORT, () => {
 //     console.log(`Server started on ${PORT}`);
 //   });
 
-//home route
+//Home route
 app.get("/", (req, res) => {
-  res.send("Hello world");
+  res.send("Hello world.");
 });
 
 //API router
-app.use("/api", apiRouter);
+app.use(
+  "/api",
+  header("Authorization").notEmpty().withMessage("No JWT provided."),
+  verifyJWT,
+  apiRouter
+);
 
 //error handler
 app.use((err, req, res) => {});

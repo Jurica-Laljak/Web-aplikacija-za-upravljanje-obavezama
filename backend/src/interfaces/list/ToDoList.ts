@@ -5,9 +5,10 @@ interface ToDoList {
   name: string;
   serialNumber: number;
   highLevelSort: string;
-  midLevelSort?: string;
-  lowLevelSort?: string;
+  midLevelSort: string;
+  lowLevelSort: string;
   timeCreated: Date;
+  defaultGroupId: number;
   items: ListItem[];
 }
 
