@@ -5,6 +5,7 @@ import https from "https";
 import { verifyJWT } from "./api/middleware/authMiddleware";
 import fs from "fs";
 import { header } from "express-validator";
+import query from "./database/query";
 
 const PORT = 3000;
 const app = express();
@@ -15,7 +16,7 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 app.listen(PORT, () => {
-  console.log(`Server started on ${PORT}`);
+  console.log(`HTTP server started on ${PORT}`);
 });
 
 // creating secure server
@@ -28,12 +29,12 @@ app.listen(PORT, () => {
 //     app
 //   )
 //   .listen(PORT, () => {
-//     console.log(`Server started on ${PORT}`);
+//     console.log(`HTTPS server started on ${PORT}`);
 //   });
 
 //Home route
-app.get("/", (req, res) => {
-  res.send("Hello world.");
+app.get("/", async (req, res) => {
+  res.send("Hello world");
 });
 
 //API router
