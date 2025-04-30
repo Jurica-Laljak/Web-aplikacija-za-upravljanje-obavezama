@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import query from "../../../database/query";
 import {
-  getAll,
-  getAllConditionally,
-} from "../../../database/queries/genericQueries";
-import ErrorEnvelope from "../../../interfaces/other/ErrorEnvelope";
+  selectAll,
+  selectAllConditionaly,
+} from "../../../database/queries/selectAll";
+import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 
 /**
  * Get the user list with id, along with its contents
@@ -13,7 +13,7 @@ import ErrorEnvelope from "../../../interfaces/other/ErrorEnvelope";
  * @returns
  */
 export async function getLists(req: Request, res: Response) {
-  var result = await query(getAll("todolist"));
+  var result = await query(selectAll("todolist"));
   res.send(result);
   return;
 }

@@ -1,7 +1,11 @@
-import pool from "./pool";
+import { Result, ResultIterator } from "ts-postgres";
+import { client } from "./connectToDb";
 
-export = async function query(text: string, values?: any[]): Promise<Object[]> {
-  let queryJson = (await pool.query(text, values)).rows;
-  console.log(queryJson);
-  return queryJson;
+export = async function query<T>(
+  text: string,
+  values?: any[]
+): Promise<ResultIterator<T>> {
+  console.log("query()|", text);
+  let result = client().query<T>(text, values);
+  return result;
 };

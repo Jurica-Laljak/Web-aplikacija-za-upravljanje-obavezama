@@ -1,49 +1,62 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import apiRouter from "./api/routes/apiRouter";
-import jwt from "jsonwebtoken";
-import https from "https";
-import { verifyJWT } from "./api/middleware/authMiddleware";
-import fs from "fs";
-import { header } from "express-validator";
-import query from "./database/query";
+import cookieParser from "cookie-parser";
+import { ErrorEnvelope } from "./interfaces/other/ErrorEnvelope";
+import config from "./config";
+import { connectToDb } from "./database/connectToDb";
+import { test } from "./test";
 
-const PORT = 3000;
-const app = express();
+async function run() {
+  const PORT = 3000;
+  const app = express();
 
-//body parser
-app.use(express.json());
-var bodyParser = require("body-parser");
-app.use(bodyParser.json());
+  //include middleware
+  app.use(express.json()); //json handling
+  var bodyParser = require("body-parser");
+  app.use(bodyParser.json()); //parser for json bodies
+  app.use(cookieParser(config.COOKIE_KEY)); //cookie parser
 
-app.listen(PORT, () => {
-  console.log(`HTTP server started on ${PORT}`);
-});
+  //API router
+  app.use("/api", apiRouter);
 
-// creating secure server
-// https
-//   .createServer(
-//     {
-//       key: fs.readFileSync("key.pem"),
-//       cert: fs.readFileSync("cert.pem"),
-//     },
-//     app
-//   )
-//   .listen(PORT, () => {
-//     console.log(`HTTPS server started on ${PORT}`);
-//   });
+  //error handler
+  app.use(
+    (err: ErrorEnvelope, req: Request, res: Response, next: NextFunction) => {
+      err.errorCode ? res.status(err.errorCode) : res.status(500); //set status
 
-//Home route
-app.get("/", async (req, res) => {
-  res.send("Hello world");
-});
+      if (err.headers) {
+        // setting additional headers
+        res.setHeaders(err.headers);
+      }
+      //sending response
+      if (err.redirect) {
+        res.send({ message: err.message, redirect: err.redirect });
+        return;
+      } else {
+        res.send({ message: err.message });
+      }
+    }
+  );
 
-//API router
-app.use(
-  "/api",
-  header("Authorization").notEmpty().withMessage("No JWT provided."),
-  verifyJWT,
-  apiRouter
-);
+  await connectToDb(); //database connection
 
-//error handler
-app.use((err, req, res) => {});
+  app.listen(PORT, () => {
+    console.log(`HTTP server started on ${PORT}`);
+  });
+
+  // starting secure server
+  // https
+  //   .createServer(
+  //     {
+  //       key: fs.readFileSync("key.pem"),
+  //       cert: fs.readFileSync("cert.pem"),
+  //     },
+  //     app
+  //   )
+  //   .listen(PORT, () => {
+  //     console.log(`HTTPS server started on ${PORT}`);
+  //   });
+}
+
+run(); // run server
+test(); // TO-DO remove

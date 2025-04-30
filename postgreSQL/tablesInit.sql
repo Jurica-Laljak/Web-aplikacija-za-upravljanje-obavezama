@@ -18,10 +18,46 @@ CREATE TYPE DATETYPE AS ENUM (
   'StartDate'
 );
 
+CREATE TYPE SETTINGKEY AS ENUM (
+  '0',
+  '1'
+);
+
 --create tables
+
+CREATE TABLE UserData
+(
+  UserId SERIAL,
+  Username VARCHAR(25) NOT NULL,
+  Password VARCHAR(40) NOT NULL,
+  RefreshTokenId BYTEA NOT NULL,
+  PRIMARY KEY (UserId),
+  UNIQUE (Username),
+  UNIQUE (RefreshTokenId),
+  CONSTRAINT usernameLength CHECK (CHAR_LENGTH(Username) >= 5),
+  CONSTRAINT passwordLength CHECK (CHAR_LENGTH(Password) >= 10)
+);
+
+CREATE TABLE Setting
+(
+  SettingId SERIAL,
+  Key SETTINGKEY,
+  Value VARCHAR(100),
+  PRIMARY KEY (SettingId)
+);
+
+CREATE TABLE UserSettings
+(
+  UserId INT NOT NULL,
+  SettingId INT NOT NULL,
+  PRIMARY KEY (UserId, SettingId),
+  FOREIGN KEY (UserId) REFERENCES UserData(UserId),
+  FOREIGN KEY (SettingId) REFERENCES Setting(SettingId)
+);
 
 CREATE TABLE ToDoList
 (
+  UserId INT NOT NULL,
   ListId SERIAL,
   Name VARCHAR(50) NOT NULL,
   SerialNumber INT NOT NULL,
@@ -33,6 +69,7 @@ CREATE TABLE ToDoList
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (ListId),
   UNIQUE (Name),
+  FOREIGN KEY (UserId) REFERENCES UserData(UserId),
   CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
 );
 
@@ -142,13 +179,16 @@ CREATE TABLE ToDoAssociatedPrefixes
   FOREIGN KEY (FilterId) REFERENCES PrefixFilter(FilterId)
 );
 
---initialize 3 lists
+--initialize admin, and 3 lists
 
-INSERT INTO ToDoList (Name, SerialNumber)
-VALUES ('Lista 1', 1);
+INSERT INTO UserData (Username, Password, RefreshTokenId)
+VALUES ('admin', 'gfOeKsixgkD0u3Xt7OuLgJ9fwEXFufEw97t8zG9o', 'D9u"�l[�:↓r♣�*p�');
 
-INSERT INTO ToDoList (Name, SerialNumber)
-VALUES ('Lista 2', 2);
+INSERT INTO ToDoList (UserId, Name, SerialNumber)
+VALUES (1, 'Lista 1', 1);
 
-INSERT INTO ToDoList (Name, SerialNumber)
-VALUES ('Lista 3', 3);
+INSERT INTO ToDoList (UserId, Name, SerialNumber)
+VALUES (1, 'Lista 2', 2);
+
+INSERT INTO ToDoList (UserId, Name, SerialNumber)
+VALUES (1, 'Lista 3', 3);
