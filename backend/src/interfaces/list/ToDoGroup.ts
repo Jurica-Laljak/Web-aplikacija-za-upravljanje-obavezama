@@ -1,5 +1,5 @@
 import ListItem from "./ListItem";
-import ToDo from "./ToDo";
+import ToDo from "../todo/ToDo";
 
 interface ToDoGroup extends ListItem {
   name: string;

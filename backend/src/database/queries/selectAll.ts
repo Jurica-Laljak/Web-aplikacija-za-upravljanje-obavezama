@@ -10,15 +10,20 @@ export function selectAll(tableName: string): string {
 /**
  * Select all records of table that match provided value in given column
  * @param tableName name of the relation
- * @param column name of the column in which the value is matched
- * @param value value with which records are compared
+ * @param conditions array of key value pairs that create the condition of the query
  * @returns {string}
  */
 export function selectAllConditionally(
   tableName: string,
-  column: string,
-  value: string
+  ...conditions: [string, string | number | boolean][]
 ): string {
-  var retString = `SELECT * FROM ${tableName} WHERE ${tableName}.${column} `;
-  return `SELECT * FROM ${tableName} WHERE ${tableName}.${column} = '${value}'`;
+  var i = 0,
+    conditionsToString: string[] = [];
+  for (let el in conditions) {
+    conditionsToString[
+      i
+    ] = `${tableName}.${conditions[el][0]} = '${conditions[el][1]}'`;
+    i += 1;
+  }
+  return `SELECT * FROM ${tableName} WHERE ${conditionsToString.join(" AND ")}`;
 }

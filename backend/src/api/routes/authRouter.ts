@@ -2,7 +2,7 @@ import express from "express";
 import { registrationHandler } from "../handlers/auth/registrationHandler";
 import { refreshHandler } from "../handlers/auth/refreshHandler";
 import { accessHandler } from "../handlers/auth/accessHandler";
-import { body, cookie } from "express-validator";
+import { body, cookie, header } from "express-validator";
 import { throwIfError } from "../middleware/other/throwIfError";
 import { verifyToken } from "../middleware/auth/verifyToken";
 
@@ -14,7 +14,7 @@ authRouter.post(
     .notEmpty()
     .withMessage("Username not provided")
     .isString()
-    .isLength({ min: 5, max: 25 })
+    .isLength({ min: 5, max: 18 })
     .withMessage("Username length incorrect"),
   body("password")
     .notEmpty()
@@ -32,7 +32,7 @@ authRouter.post(
     .notEmpty()
     .withMessage("Username not provided")
     .isString()
-    .isLength({ min: 5, max: 25 })
+    .isLength({ min: 5, max: 18 })
     .withMessage("Username length incorrect"),
   body("password")
     .notEmpty()
@@ -46,7 +46,7 @@ authRouter.post(
 
 authRouter.post(
   "/access",
-  cookie("refresh").notEmpty().withMessage("Refresh token not provided"),
+  header("Authorization").exists().withMessage("No authorization provided"),
   throwIfError,
   verifyToken("refresh"),
   accessHandler

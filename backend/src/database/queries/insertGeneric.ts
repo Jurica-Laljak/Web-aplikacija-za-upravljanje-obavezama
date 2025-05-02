@@ -9,8 +9,19 @@ import { returning } from "./commonElements";
  */
 export function insert<T extends Object>(
   tableName: string,
-  records: T[]
+  records: T[],
+  returningString: string = ""
 ): string {
+  if (returningString != "") {
+    if (records.length > 1) {
+      throw new Error("insert()|Records must not be an array");
+    }
+    return `INSERT INTO ${tableName} (${Object.keys(records[0]).join(
+      ", "
+    )}) VALUES ('${Object.values(records[0]).join(
+      "', '"
+    )}') RETURNING ${returningString};\n`;
+  }
   var retString = "";
   var header = `INSERT INTO ${tableName}`;
   records.forEach((el) => {

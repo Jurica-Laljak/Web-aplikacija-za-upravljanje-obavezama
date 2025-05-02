@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import jwt from "jsonwebtoken";
-import { randomBytes } from "crypto";
 import { UserDataDto } from "../../../dtos/auth/UserData.dto";
 import { UserData } from "../../../interfaces/auth/UserData";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import { signToken } from "./signToken";
+import { randomBytes } from "crypto";
+import { insert } from "../../../database/queries/insertGeneric";
+import { UserDataInsert } from "../../../interfaces/auth/UserDataInsert";
+import { ToDoListInsert } from "../../../interfaces/list/ToDoListInsert";
 
 /**
  * Registers client with given username and password
@@ -24,7 +26,7 @@ export async function registrationHandler(
   // check if username already exists in database
   try {
     var result = await query<UserData>(
-      selectAllConditionally("UserData", "username", username)
+      selectAllConditionally("UserData", ["username", username])
     );
   } catch (err) {
     console.log(err);
@@ -40,14 +42,15 @@ export async function registrationHandler(
 
   var password = req.body.password;
 
-  // generate refresh token
-  const [refreshToken, refreshTokenId] = signToken("refresh", username);
-
-  // add record to table
+  // generate token id and add to database
+  const tokenId = randomBytes(16).toString(); //unique token id
   try {
-    await query<UserDataDto>(
-      `INSERT INTO UserData(username, password, refreshtokenid) 
-    VALUES ('${[username, password, refreshTokenId].join("', '")}');`
+    var sqlRes = await query<{ userid: number }>(
+      insert<UserDataInsert>(
+        "userdata",
+        [{ username: username, password: password, refreshtokenid: tokenId }],
+        "UserData.userid"
+      )
     );
   } catch (err) {
     console.log(err);
@@ -55,21 +58,46 @@ export async function registrationHandler(
     return;
   }
 
+  // insert three lists in the database for the newly
+  // created user
+  var rows = [...sqlRes];
+  var userId = rows[0].userid;
+  var toDoListIds: number[] = [];
+
+  for (let num = 1; num <= 3; num++) {
+    try {
+      var sqlRes2 = await query<{ listid: number }>(
+        insert<ToDoListInsert>(
+          "todolist",
+          [{ userid: userId, name: `Lista ${num}`, serialNumber: num }],
+          "todolist.listid"
+        )
+      );
+      var rows2 = [...sqlRes2];
+      toDoListIds.push(rows2[0].listid);
+    } catch (err) {
+      console.log(err);
+      next(ErrorEnvelope.databaseError());
+      return;
+    }
+  }
+
+  // generate refresh token
+  const refreshToken = signToken("refresh", username, userId, tokenId);
+
   // generate access token
-  const [accessToken, accessTokenId] = signToken("access", username);
+  const accessToken = signToken(
+    "access",
+    username,
+    userId,
+    randomBytes(16).toString()
+  );
 
   //append cookies to resonse
-  res
-    .cookie("refresh", refreshToken, {
-      signed: true,
-      httpOnly: true,
-      sameSite: "strict",
-    })
-    .cookie("access", accessToken, {
-      signed: true,
-      httpOnly: true,
-      sameSite: "strict",
-    })
-    .send();
+  res.send({
+    refresh: refreshToken,
+    access: accessToken,
+    todolist: toDoListIds,
+  }); //send tokens to client
   return;
 }

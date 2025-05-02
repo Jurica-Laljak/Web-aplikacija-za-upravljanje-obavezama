@@ -6,8 +6,8 @@ export function throwIfError(req: Request, res: Response, next: NextFunction) {
   const result = validationResult(req);
   const lastMessage = result.array().shift(); //fetch earliest message
   if (lastMessage) {
-    throw new ErrorEnvelope(lastMessage.msg, 401);
+    next(new ErrorEnvelope(lastMessage.msg, 401));
+  } else {
+    next(); //otherwise, continue
   }
-
-  next(); //otherwise, continue
 }

@@ -1,7 +1,6 @@
-import ListItem from "./ListItem";
-import Prefix from "../filter/PrefixFilter";
+import { PrefixDto } from "../filter/Prefix.dto";
 
-interface ToDo extends ListItem {
+export interface ToDoDto {
   content: string;
   dueDate?: Date;
   startDate?: Date;
@@ -12,8 +11,7 @@ interface ToDo extends ListItem {
   isOpened: boolean;
   isForced: boolean;
   isArchived: boolean;
-  toDos: ToDo[];
-  prefixes: Prefix[];
+  serialNumber: number;
+  toDos: ToDoDto[];
+  prefixes: PrefixDto[];
 }
-
-export = ToDo;

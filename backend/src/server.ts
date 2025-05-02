@@ -28,6 +28,7 @@ async function run() {
         // setting additional headers
         res.setHeaders(err.headers);
       }
+
       //sending response
       if (err.redirect) {
         res.send({ message: err.message, redirect: err.redirect });
