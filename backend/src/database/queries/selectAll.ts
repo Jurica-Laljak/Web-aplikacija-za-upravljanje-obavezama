@@ -1,3 +1,5 @@
+import { Condition } from "../../interfaces/enum/Condition";
+
 /**
  * Select all records of table
  * @param tableName name of the relation
@@ -15,7 +17,7 @@ export function selectAll(tableName: string): string {
  */
 export function selectAllConditionally(
   tableName: string,
-  ...conditions: [string, string | number | boolean][]
+  ...conditions: Condition[]
 ): string {
   var i = 0,
     conditionsToString: string[] = [];

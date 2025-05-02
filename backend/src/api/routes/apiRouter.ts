@@ -1,12 +1,13 @@
 import express from "express";
 import { verifyToken } from "../middleware/auth/verifyToken";
-import { header } from "express-validator";
+import { header, param } from "express-validator";
 import toDoListRouter from "./toDoListRouter";
 import authRouter from "./authRouter";
 import toDoRouter from "./toDoRouter";
 import groupRouter from "./groupRouter";
 import filterRouter from "./filterRouter";
 import { throwIfError } from "../middleware/other/throwIfError";
+import { authorizeList } from "../middleware/auth/authorizeList";
 
 const apiRouter = express.Router();
 
@@ -22,21 +23,29 @@ apiRouter.use(
   toDoListRouter
 );
 apiRouter.use(
-  "/list",
-  header("Authorization").exists().withMessage("No authorization provided"),
+  "/list/",
+  header("Authorization")
+    .exists()
+    .withMessage("No authorization header provided"),
   throwIfError,
   verifyToken("access"),
   toDoListRouter
 );
 apiRouter.use(
-  "/todo",
+  "/todo/:listid",
   header("Authorization").exists().withMessage("No authorization provided"),
+  param("listid")
+    .exists()
+    .withMessage("No list id provided")
+    .isInt()
+    .withMessage("Provided list id is not an integer"),
   throwIfError,
   verifyToken("access"),
+  authorizeList("listid"),
   toDoRouter
 );
 apiRouter.use(
-  "/group",
+  "/group/:listid",
   header("Authorization").exists().withMessage("No authorization provided"),
   throwIfError,
   verifyToken("access"),

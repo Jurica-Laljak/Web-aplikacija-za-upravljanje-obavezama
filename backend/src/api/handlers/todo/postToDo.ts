@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
+import { insert } from "../../../database/queries/insertGeneric";
 import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
-import { update } from "../../../database/queries/updateGeneric";
+import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
 import { AuthorizedAttributes } from "../../../interfaces/auth/AuthorizedAttributes";
-import anonymousQuery from "../../../database/anonymousQuery";
 
 /**
  *
@@ -11,22 +12,17 @@ import anonymousQuery from "../../../database/anonymousQuery";
  * @param res
  * @returns
  */
-export async function patchTodo(
+export async function postTodo(
   req: Request,
-  res: Response<{}, AuthorizedAttributes>,
+  res: Response<ToDoDto, AuthorizedAttributes>,
   next: NextFunction
 ) {
-  var toDoId = req.params.todoid;
-
-  // validate request body
+  // validate request body and create SQL query
   try {
-    var updateObj = { ...req.body };
-    console.log(Object.keys(updateObj));
-    console.log(Object.values(updateObj));
-    var queryStr = update<Partial<ToDoInsert>>(
+    var insertObj = { ...req.body, listid: res.locals.listid };
+    var queryStr = insert<ToDoInsert & { listid: number }>(
       "todo",
-      updateObj,
-      ["todoid", toDoId],
+      insertObj,
       "*"
     );
   } catch (err) {
@@ -35,15 +31,16 @@ export async function patchTodo(
     return;
   }
 
-  console.log(queryStr);
   // insert into todo
   try {
-    await anonymousQuery(queryStr);
+    var result2 = await query<ToDoDto>(queryStr);
   } catch (err) {
     console.log(err);
-    next(ErrorEnvelope.databaseError());
+    next(ErrorEnvelope.validationError());
     return;
   }
 
-  res.send();
+  // return todo id
+  var rows2 = [...result2];
+  res.send(rows2[0]);
 }

@@ -1,19 +1,19 @@
 import express from "express";
 import { getAllLists } from "../handlers/list/getAllLists";
-import { postTodo } from "../handlers/list/postTodo";
 import { getListContents } from "../handlers/list/getListContents";
 import { patchList } from "../handlers/list/patchList";
 import { deleteList } from "../handlers/list/deleteList";
 import { body, param } from "express-validator";
 import { throwIfError } from "../middleware/other/throwIfError";
+import { postList } from "../handlers/list/postList";
 
 const toDoListRouter = express.Router();
 
 toDoListRouter.get("/", getAllLists);
 
 toDoListRouter.get(
-  "/:id",
-  param("id")
+  "/:listid",
+  param("listid")
     .exists()
     .withMessage("No id given.")
     .isNumeric()
@@ -23,19 +23,14 @@ toDoListRouter.get(
 );
 
 toDoListRouter.post(
-  "/:listid",
-  param("listid")
-    .exists()
-    .withMessage("No list id given.")
-    .isNumeric()
-    .withMessage("List id is not a number"),
+  "/",
   body().exists().withMessage("Request body is empty"),
   throwIfError,
-  postTodo
+  postList
 );
 
-toDoListRouter.patch("/:id", patchList);
+toDoListRouter.patch("/:listid", patchList);
 
-toDoListRouter.delete("/:id", deleteList);
+toDoListRouter.delete("/:listid", deleteList);
 
 export = toDoListRouter;

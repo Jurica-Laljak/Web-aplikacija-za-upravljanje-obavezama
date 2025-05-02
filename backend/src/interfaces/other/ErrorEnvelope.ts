@@ -64,4 +64,13 @@ export class ErrorEnvelope extends Error {
         );
     }
   }
+
+  static recordMissingError(recordName: string): ErrorEnvelope {
+    return new ErrorEnvelope(
+      `${
+        recordName.charAt(0).toUpperCase() + recordName.slice(1)
+      } with given id doesn't exist.`,
+      404
+    );
+  }
 }
