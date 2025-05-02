@@ -1,17 +1,7 @@
+import { ToDoInsert } from "../../interfaces/todo/ToDoInsert";
 import { PrefixDto } from "../filter/Prefix.dto";
 
-export interface ToDoDto {
-  content: string;
-  dueDate?: Date;
-  startDate?: Date;
-  timeCreated: Date;
-  depth: number;
-  priority: number;
-  groupId?: number;
-  isOpened: boolean;
-  isForced: boolean;
-  isArchived: boolean;
-  serialNumber: number;
+export interface ToDoDto extends ToDoInsert {
   toDos: ToDoDto[];
   prefixes: PrefixDto[];
 }

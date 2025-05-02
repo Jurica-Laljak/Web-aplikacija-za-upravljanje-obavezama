@@ -1,5 +1,4 @@
 export interface ToDoInsert {
-  listid: number;
   content: string;
   dueDate?: Date;
   startDate?: Date;

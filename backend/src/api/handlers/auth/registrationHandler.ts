@@ -48,7 +48,7 @@ export async function registrationHandler(
     var sqlRes = await query<{ userid: number }>(
       insert<UserDataInsert>(
         "userdata",
-        [{ username: username, password: password, refreshtokenid: tokenId }],
+        { username: username, password: password, refreshtokenid: tokenId },
         "UserData.userid"
       )
     );
@@ -69,7 +69,7 @@ export async function registrationHandler(
       var sqlRes2 = await query<{ listid: number }>(
         insert<ToDoListInsert>(
           "todolist",
-          [{ userid: userId, name: `Lista ${num}`, serialNumber: num }],
+          { userid: userId, name: `Lista ${num}`, serialNumber: num },
           "todolist.listid"
         )
       );

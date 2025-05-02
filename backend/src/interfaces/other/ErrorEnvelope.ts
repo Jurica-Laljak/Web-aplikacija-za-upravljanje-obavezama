@@ -40,6 +40,14 @@ export class ErrorEnvelope extends Error {
     return new ErrorEnvelope("Username or password error", 400);
   }
 
+  static authorizationError(): ErrorEnvelope {
+    return new ErrorEnvelope("Unauthorized access", 401);
+  }
+
+  static validationError(): ErrorEnvelope {
+    return new ErrorEnvelope("Request body failed validation", 400);
+  }
+
   static tokenVerificationError(type: "refresh" | "access"): ErrorEnvelope {
     switch (type) {
       case "refresh":
