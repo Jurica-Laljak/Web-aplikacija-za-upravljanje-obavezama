@@ -49,6 +49,7 @@ apiRouter.use(
   header("Authorization").exists().withMessage("No authorization provided"),
   throwIfError,
   verifyToken("access"),
+  authorizeList("listid"),
   groupRouter
 );
 apiRouter.use(

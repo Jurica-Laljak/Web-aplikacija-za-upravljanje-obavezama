@@ -1,4 +1,4 @@
-DROP TABLE ToDoAssociatedPrefixes;
+DROP TABLE ToDoAssociates;
 
 DROP TABLE ToDo;
 
@@ -9,6 +9,8 @@ DROP TABLE TimePeriodFilter;
 DROP TABLE SizeFilter;
 
 DROP TABLE PrefixFilter;
+
+DROP TABLE GroupDefined;
 
 DROP TABLE ToDoGroup;
 

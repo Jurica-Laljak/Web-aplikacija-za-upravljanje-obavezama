@@ -2,7 +2,7 @@ import express from "express";
 import { body, param } from "express-validator";
 import { throwIfError } from "../middleware/other/throwIfError";
 import { postTodo } from "../handlers/todo/postToDo";
-import { patchTodo } from "../handlers/todo/patchTodo";
+import { patchTodo } from "../handlers/todo/patchToDo";
 import { deleteTodo } from "../handlers/todo/deleteToDo";
 
 const toDoRouter = express.Router();
@@ -20,7 +20,7 @@ toDoRouter.patch(
     .exists()
     .withMessage("No todo id given.")
     .isInt()
-    .withMessage(""),
+    .withMessage("Id is not integer."),
   throwIfError,
   patchTodo
 );
@@ -31,7 +31,7 @@ toDoRouter.delete(
     .exists()
     .withMessage("No todo id given.")
     .isInt()
-    .withMessage(""),
+    .withMessage("Id is not integer."),
   throwIfError,
   deleteTodo
 );

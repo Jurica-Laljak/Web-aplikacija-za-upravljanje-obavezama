@@ -7,3 +7,6 @@ dist/
 # Ignore private keys, certificate service requests and certificates
 *.pem
 *.env
+
+# Ignore temp file "text.txt"
+text.txt

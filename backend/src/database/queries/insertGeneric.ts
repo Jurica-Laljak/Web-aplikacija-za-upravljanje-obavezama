@@ -14,9 +14,19 @@ export function insert<I extends Object>(
   var keys = Object.keys(record).map((k) => k.toLowerCase());
   var values = Object.values(record);
 
+  for (let i in values) {
+    if (values[i].toString() == "") {
+      // null
+      values[i] = "NULL";
+    } else {
+      // not null
+      values[i] = `'${values[i]}'`;
+    }
+  }
+
   var sqlQuery = `INSERT INTO ${tableName} (${keys.join(
     ", "
-  )}) VALUES ('${values.join("', '")}')`;
+  )}) VALUES (${values.join(", ")})`;
   if (returningAttribute != "") {
     sqlQuery += ` RETURNING ${returningAttribute}`;
   }

@@ -1,24 +1,24 @@
 import { NextFunction, Request, Response } from "express";
-import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import ToDoList from "../../../interfaces/list/ToDoList";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
+import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
 
-export function authorizeList<R = any>(paramName: string) {
+export function authorizeGroup<R = any>(paramName: string) {
   return async function (
     req: Request,
-    res: Response<R, AuthorizedAttributes>,
+    res: Response<R, GroupAuthorizedAttributes>,
     next: NextFunction
   ) {
-    var listId = req.params[paramName];
+    var groupId = req.params[paramName];
     // querying the database
     try {
       var sqlRes = await query<ToDoList>(
         selectAllConditionally(
-          "todolist",
-          ["userid", res.locals.userId],
-          ["listid", listId]
+          "todogroup",
+          ["listid", res.locals.listid],
+          ["groupid", groupId]
         )
       );
     } catch (err) {
@@ -26,13 +26,13 @@ export function authorizeList<R = any>(paramName: string) {
       next(ErrorEnvelope.databaseError());
       return;
     }
-    // if result is empty, user isn't authorized to access the list
+    // if result is empty, user isn't authorized to access the group
     if (sqlRes.rows.length == 0) {
-      next(ErrorEnvelope.authorizationError());
+      next(ErrorEnvelope.authorizationError("group"));
       return;
     } else {
       // otherwise, continue processing the request
-      res.locals.listid = listId;
+      res.locals.groupid = groupId;
       next();
     }
   };

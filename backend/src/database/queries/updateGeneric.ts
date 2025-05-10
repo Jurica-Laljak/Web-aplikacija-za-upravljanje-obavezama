@@ -18,14 +18,23 @@ export function update<U extends Object>(
   var keys = Object.keys(object).map((k) => k.toLowerCase());
   var values = Object.values(object);
 
-  if (keys.length > 1) {
-    // if object has more than one attribute, parentheses are added
+  for (let i in values) {
+    if (values[i].toString() == "") {
+      // null
+      values[i] = "NULL";
+    } else {
+      // not null
+      values[i] = `'${values[i]}'`;
+    }
+  }
+
+  if (keys.length == 1) {
     var sqlQuery = `UPDATE ${tableName} 
-    SET (${keys.join(", ")}) = ('${values.join("', '")}')`;
+    SET ${keys.pop()} = ${values.pop()}`;
   } else {
-    // ..length == 1
+    // more than 1 entry
     var sqlQuery = `UPDATE ${tableName} 
-  SET ${keys[0]} = '${values[0]}'`;
+    SET (${keys.join(", ")}) = (${values.join(", ")})`;
   }
 
   // specify primary key value
@@ -37,5 +46,7 @@ export function update<U extends Object>(
     sqlQuery += `
     RETURNING ${returningAttribute}`;
   }
+
+  console.log(sqlQuery);
   return sqlQuery + ";\n";
 }

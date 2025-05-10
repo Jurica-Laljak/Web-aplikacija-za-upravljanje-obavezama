@@ -40,7 +40,10 @@ export class ErrorEnvelope extends Error {
     return new ErrorEnvelope("Username or password error", 400);
   }
 
-  static authorizationError(): ErrorEnvelope {
+  static authorizationError(object?: string): ErrorEnvelope {
+    if (object) {
+      return new ErrorEnvelope(`Unauthorized access to ${object}`, 401);
+    }
     return new ErrorEnvelope("Unauthorized access", 401);
   }
 

@@ -70,7 +70,7 @@ export async function registrationHandler(
         insert<ToDoListInsert>(
           "todolist",
           { userid: userId, name: `Lista ${num}`, serialNumber: num },
-          "todolist.listid"
+          "listid"
         )
       );
       var rows2 = [...sqlRes2];

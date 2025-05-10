@@ -5,6 +5,7 @@ import { insert } from "../../../database/queries/insertGeneric";
 import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
 import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
 import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+import { ToDoGroupInsert } from "../../../interfaces/group/ToDoGroupInsert";
 
 /**
  *
@@ -12,7 +13,7 @@ import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attrib
  * @param res
  * @returns
  */
-export async function postTodo(
+export async function createGroup(
   req: Request,
   res: Response<ToDoDto, AuthorizedAttributes>,
   next: NextFunction
@@ -20,8 +21,8 @@ export async function postTodo(
   // validate request body and create SQL query
   try {
     var insertObj = { ...req.body, listid: res.locals.listid };
-    var queryStr = insert<ToDoInsert & { listid: number }>(
-      "todo",
+    var queryStr = insert<ToDoGroupInsert & { listid: number }>(
+      "todogroup",
       insertObj,
       "*"
     );
@@ -40,7 +41,7 @@ export async function postTodo(
     return;
   }
 
-  // return todo id
+  // return group id
   var rows2 = [...result2];
   res.send(rows2[0]);
 }

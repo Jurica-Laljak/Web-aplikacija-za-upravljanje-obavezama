@@ -15,7 +15,7 @@ CREATE TYPE SORT AS ENUM (
 
 CREATE TYPE DATETYPE AS ENUM (
   'DueDate',
-  'StartDate'
+  'IssueDate'
 );
 
 --create tables
@@ -35,7 +35,6 @@ CREATE TABLE UserData
 
 CREATE TABLE ToDoList
 (
-  UserId INT NOT NULL,
   ListId SERIAL,
   Name VARCHAR(50) NOT NULL,
   SerialNumber INT NOT NULL,
@@ -43,10 +42,25 @@ CREATE TABLE ToDoList
   MidLevelSort SORT,
   LowLevelSort SORT,
   DefaultGroupId INT,
-  HighlightDefault BOOLEAN DEFAULT 'True',
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+  UserId INT NOT NULL,
   PRIMARY KEY (ListId),
   FOREIGN KEY (UserId) REFERENCES UserData(UserId) ON DELETE CASCADE,
+  CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
+);
+
+CREATE TABLE ToDoGroup
+(
+  GroupId SERIAL,
+  Name VARCHAR(50) NOT NULL,
+  HighLevelSort SORT DEFAULT 'TimeCreated:Asc',
+  MidLevelSort SORT,
+  LowLevelSort SORT,
+  TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
+  SerialNumber INT NOT NULL,
+  ListId INT NOT NULL,
+  PRIMARY KEY (GroupId),
+  FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
   CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
 );
 
@@ -54,35 +68,15 @@ CREATE TABLE Filter
 (
   FilterId SERIAL,
   Name VARCHAR(50) NOT NULL,
-  Depth INT DEFAULT 1,
+  UserId INT NOT NULL,
   PRIMARY KEY (FilterId),
-  UNIQUE (Name),
-  CONSTRAINT depthLimit CHECK (Depth <= 3)
-);
-
-CREATE TABLE ToDoGroup
-(
-  ListId INT NOT NULL,
-  GroupId SERIAL,
-  Name VARCHAR(50) NOT NULL,
-  HighLevelSort SORT DEFAULT 'TimeCreated:Asc',
-  MidLevelSort SORT,
-  LowLevelSort SORT,
-  TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-  IsOrdered BOOLEAN DEFAULT 'True',
-  isOpened BOOLEAN DEFAULT 'False',
-  FilterId INT,
-  SerialNumber INT NOT NULL,
-  PRIMARY KEY (GroupId),
-  FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
-  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId),
-  CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
+  FOREIGN KEY (UserId) REFERENCES UserData(UserId) ON DELETE CASCADE
 );
 
 CREATE TABLE PrefixFilter
 (
-  FilterId INT NOT NULL,
   Prefix VARCHAR(50) NOT NULL,
+  FilterId INT NOT NULL,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
   UNIQUE (Prefix)
@@ -90,8 +84,8 @@ CREATE TABLE PrefixFilter
 
 CREATE TABLE SizeFilter
 (
-  FilterId INT NOT NULL,
   Size INT NOT NULL,
+  FilterId INT NOT NULL,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
   UNIQUE (Size)
@@ -99,41 +93,48 @@ CREATE TABLE SizeFilter
 
 CREATE TABLE TimePeriodFilter
 (
-  FilterId INT NOT NULL,
   DateType DATETYPE DEFAULT 'DueDate',
-  LowerBoundDate DATE,
-  HigherBoundDate DATE,
+  LowerBound DATE,
+  HigherBound DATE,
+  FilterId INT NOT NULL,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
-  CHECK ((LowerBoundDate IS NOT NULl) OR (HigherBoundDate IS NOT NULl))
+  CONSTRAINT boundDefined CHECK ((LowerBound IS NOT NULl) OR (HigherBound IS NOT NULl))
 );
 
 CREATE TABLE PriorityFilter
 (
+  HigherBound INT,
+  LowerBound INT,
   FilterId INT NOT NULL,
-  HigherBoundPriority INT,
-  LowerBoundPriority INT,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
-  CHECK ((LowerBoundPriority IS NOT NULl) OR (HigherBoundPriority IS NOT NULl))
+  CONSTRAINT boundDefined CHECK ((LowerBound IS NOT NULl) OR (HigherBound IS NOT NULl))
+);
+
+CREATE TABLE GroupDefined
+(
+  GroupId INT NOT NULL,
+  FilterId INT NOT NULL,
+  PRIMARY KEY (GroupId, FilterId),
+  FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId),
+  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId)
 );
 
 CREATE TABLE ToDo
 (
-  ListId INT NOT NULL,
   ToDoId SERIAL,
   Content VARCHAR(500) NOT NULL,
   DueDate DATE,
-  StartDate DATE,
+  IssueDate DATE,
   Priority INT DEFAULT 3,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   Depth INT DEFAULT 1,
   GroupId INT,
   ParentToDoId INT,
-  IsForced BOOLEAN DEFAULT 'False',
   IsArchived BOOLEAN DEFAULT 'False',
-  isOpened BOOLEAN DEFAULT 'False',
-  SerialNumber INT NOT NULL,
+  SerialNumber INT,
+  ListId INT NOT NULL,
   PRIMARY KEY (ToDoId),
   FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
   FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId) ON DELETE SET NULL,
@@ -142,7 +143,7 @@ CREATE TABLE ToDo
   CONSTRAINT priorityIntegrity CHECK (Priority BETWEEN 1 AND 5)
 );
 
-CREATE TABLE ToDoAssociatedPrefixes
+CREATE TABLE ToDoAssociates
 (
   ToDoId INT NOT NULL,
   FilterId INT NOT NULL,
