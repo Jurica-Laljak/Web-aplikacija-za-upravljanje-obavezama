@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import ToDoList from "../../../interfaces/list/ToDoList";
-import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
-import { selectAllConditionally } from "../../../database/queries/selectAll";
 import { ToDoListDto } from "../../../dtos/list/ToDoList.dto";
+import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+
+import query from "../../../database/query";
 
 /**
  *
@@ -12,28 +11,56 @@ import { ToDoListDto } from "../../../dtos/list/ToDoList.dto";
  * @param res
  * @returns
  */
-export async function getListContents(
+export async function getListAndContents(
   req: Request,
-  res: Response<ToDoListDto[], TokenAttributes>,
+  res: Response<ToDoListDto, AuthorizedAttributes>,
   next: NextFunction
 ) {
-  var id = Number(req.params.id);
+  var queryStr = `SELECT todolist.userid,
+        todolist.listid,
+		todolist.name,
+		todolist.serialnumber,
+		todolist.highlevelsort,
+		todolist.midlevelsort,
+		todolist.lowlevelsort,
+		todolist.defaultgroupid,
+		todolist.timecreated,
+		json_agg(DISTINCT jsonb_build_object(
+            'listid', todogroup.listid,
+			'groupid', todogroup.groupid,
+			'name', todogroup.name,
+			'highlevelsort', todogroup.highlevelsort,
+			'midlevelsort', todogroup.midlevelsort,
+			'lowlevelsort', todogroup.lowlevelsort,
+			'timecreated', todogroup.timecreated,
+			'serialnumber', todogroup.serialnumber
+		)) AS groups,
+        json_agg(DISTINCT jsonb_build_object(
+            'listid', todo.listid,
+            'todoid', todo.todoid,
+            'contents', todo.content,
+            'duedate', todo.duedate,
+            'issuedate', todo.issuedate,
+            'depth', todo.depth,
+            'priority', todo.priority,
+            'groupid', todo.groupid,
+            'parenttodoid', todo.parenttodoid,
+            'serialnumber', todo.serialnumber
+        )) AS todos
+	FROM todolist LEFT OUTER JOIN todogroup
+		ON todolist.listid = todogroup.listid
+            LEFT OUTER JOIN todo
+                ON todolist.listid = todo.listid
+	WHERE todolist.listid = '${res.locals.listid}'
+	GROUP BY todolist.listid;`;
+
   try {
-    var result = await query<ToDoList>(
-      selectAllConditionally("todolist", ["userid", 1], ["listid", id])
-    );
+    var lists = await query<ToDoListDto>(queryStr);
   } catch (err) {
     console.log(err);
     next(ErrorEnvelope.databaseError());
     return;
   }
-  var rows = [...result];
-  for (let i of result) {
-    for (let j of Object.keys(i)) {
-      console.log(j, typeof j);
-    }
-    break;
-  }
-  console.log(rows);
-  res.send(rows);
+
+  res.send([...lists][0]);
 }

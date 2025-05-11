@@ -5,7 +5,7 @@ import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import query from "../../../database/query";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import { UserData } from "../../../interfaces/auth/UserData";
-import { TokenType } from "../../../interfaces/enum/TokenType";
+import { TokenType } from "../../../interfaces/type/TokenType";
 import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
 
 export function verifyToken<T = any>(tokenType: TokenType) {

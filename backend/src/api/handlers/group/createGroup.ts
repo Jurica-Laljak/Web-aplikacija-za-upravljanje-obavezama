@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { insert } from "../../../database/queries/insertGeneric";
-import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
-import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
 import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
 import { ToDoGroupInsert } from "../../../interfaces/group/ToDoGroupInsert";
 import { GroupDto } from "../../../dtos/group/Group.dto";
@@ -34,12 +32,12 @@ export async function createGroup(
     return;
   }
 
-  // insert into todo
+  // insert into group
   try {
     var result2 = await query<Required<ToDoGroup>>(queryStr);
   } catch (err) {
     console.log(err);
-    next(ErrorEnvelope.validationError());
+    next(ErrorEnvelope.databaseError());
     return;
   }
 

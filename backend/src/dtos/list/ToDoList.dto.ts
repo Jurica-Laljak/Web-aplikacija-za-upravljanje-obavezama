@@ -1,10 +1,8 @@
-export interface ToDoListDto {
-  id: number;
-  name: string;
-  serialNumber: number;
-  highLevelSort: string;
-  midLevelSort?: string;
-  lowLevelSort?: string;
-  highlightdefault?: boolean;
-  defaultGroupId?: number;
+import { ToDoGroup } from "../../interfaces/group/ToDoGroup";
+import { ToDoList } from "../../interfaces/list/ToDoList";
+import { ToDo } from "../../interfaces/todo/ToDo";
+
+export interface ToDoListDto extends ToDoList {
+  groups: ToDoGroup[];
+  todos: ToDo[];
 }

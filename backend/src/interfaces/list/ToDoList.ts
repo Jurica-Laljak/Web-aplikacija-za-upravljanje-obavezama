@@ -1,15 +1,7 @@
 import ListItem from "./ListItem";
+import { ToDoListInsert } from "./ToDoListInsert";
 
-interface ToDoList {
-  id: number;
-  name: string;
-  serialNumber: number;
-  highLevelSort: string;
-  midLevelSort: string;
-  lowLevelSort: string;
+export interface ToDoList extends Required<ToDoListInsert> {
+  listid: number;
   timeCreated: Date;
-  defaultGroupId: number;
-  items: ListItem[];
 }
-
-export = ToDoList;

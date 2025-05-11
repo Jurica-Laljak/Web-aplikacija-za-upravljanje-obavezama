@@ -1,11 +1,12 @@
 import express from "express";
 import { getAllLists } from "../handlers/list/getAllLists";
-import { getListContents } from "../handlers/list/getListContents";
+import { getListAndContents } from "../handlers/list/getListContents";
 import { patchList } from "../handlers/list/patchList";
 import { deleteList } from "../handlers/list/deleteList";
 import { body, param } from "express-validator";
 import { throwIfError } from "../middleware/other/throwIfError";
 import { postList } from "../handlers/list/postList";
+import { authorizeList } from "../middleware/auth/authorizeList";
 
 const toDoListRouter = express.Router();
 
@@ -19,7 +20,8 @@ toDoListRouter.get(
     .isNumeric()
     .withMessage("Invalid id"),
   throwIfError,
-  getListContents
+  authorizeList("listid"),
+  getListAndContents
 );
 
 toDoListRouter.post(

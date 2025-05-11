@@ -5,7 +5,6 @@ import {
   selectAllConditionally,
 } from "../../../database/queries/selectAll";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import ToDoList from "../../../interfaces/list/ToDoList";
 import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
 import { ToDoListDto } from "../../../dtos/list/ToDoList.dto";
 

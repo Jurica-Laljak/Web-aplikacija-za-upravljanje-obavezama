@@ -1,4 +1,4 @@
-import { TokenType } from "../../../interfaces/enum/TokenType";
+import { TokenType } from "../../../interfaces/type/TokenType";
 import config from "../../../config";
 import jwt from "jsonwebtoken";
 import { randomBytes } from "crypto";

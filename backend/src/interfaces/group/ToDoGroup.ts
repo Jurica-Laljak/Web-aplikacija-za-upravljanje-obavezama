@@ -1,10 +1,7 @@
-export interface ToDoGroup {
+import { ToDoGroupInsert } from "./ToDoGroupInsert";
+
+export interface ToDoGroup extends Required<ToDoGroupInsert> {
   groupid: number;
-  name: string;
-  highLevelSort: string;
-  midLevelSort: string;
-  lowLevelSort: string;
-  serialnumber: number;
   timeCreated: Date;
   listid: number;
 }

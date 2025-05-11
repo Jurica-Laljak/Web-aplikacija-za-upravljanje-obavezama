@@ -1,19 +1,6 @@
-import ListItem from "../list/ListItem";
-import Prefix from "../filter/PrefixFilter";
+import { ToDoInsert } from "./ToDoInsert";
 
-interface ToDo extends ListItem {
-  content: string;
-  dueDate?: Date;
-  startDate?: Date;
-  timeCreated: Date;
-  depth: number;
-  priority: number;
-  groupId?: number;
-  isOpened: boolean;
-  isForced: boolean;
-  isArchived: boolean;
-  toDos: ToDo[];
-  prefixes: Prefix[];
+export interface ToDo extends Required<ToDoInsert> {
+  todoid: number;
+  listid: number;
 }
-
-export = ToDo;

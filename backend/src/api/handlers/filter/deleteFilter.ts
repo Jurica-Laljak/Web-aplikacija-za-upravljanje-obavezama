@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
-import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
-import anonymousQuery from "../../../database/anonymousQuery";
+import { FilterAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/FilterAuthorizedAttributes";
 import { delete_ } from "../../../database/queries/deleteGeneric";
+import anonymousQuery from "../../../database/anonymousQuery";
 
 /**
  *
@@ -11,14 +10,15 @@ import { delete_ } from "../../../database/queries/deleteGeneric";
  * @param res
  * @returns
  */
-export async function deleteGroup(
+export async function deleteFilter(
   req: Request,
-  res: Response<ToDoDto, GroupAuthorizedAttributes>,
+  res: Response<{}, FilterAuthorizedAttributes>,
   next: NextFunction
 ) {
-  // delete given group
-  var queryStr = delete_("todogroup", ["groupid", res.locals.groupid]);
+  // create DELETE statement
+  var queryStr = delete_("filter", ["filterid", res.locals.filterid]);
   try {
+    // delete given filter
     var result = await anonymousQuery(queryStr);
   } catch (err) {
     console.log(err);
@@ -28,7 +28,7 @@ export async function deleteGroup(
 
   if (result.status && result.status.split(" ").pop() == "0") {
     // operation failed
-    next(ErrorEnvelope.recordMissingError("group"));
+    next(ErrorEnvelope.recordMissingError("filter"));
     return;
   } else {
     // operation succeded

@@ -1,4 +1,4 @@
-import { Condition } from "../../interfaces/enum/Condition";
+import { Condition } from "../../interfaces/type/Condition";
 
 /**
  * Generate UPDATE statement for given object

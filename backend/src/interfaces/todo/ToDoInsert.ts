@@ -1,12 +1,11 @@
 export interface ToDoInsert {
   content: string;
-  dueDate?: Date;
-  startDate?: Date;
+  duedate?: Date;
+  issuedate?: Date;
   depth?: number;
   priority?: number;
-  groupId?: number;
-  isOpened?: boolean;
-  isForced?: boolean;
-  isArchived?: boolean;
+  groupid?: number;
+  parenttodoid?: number;
+  isarchived?: boolean;
   serialnumber: number;
 }

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
-import ToDoList from "../../../interfaces/list/ToDoList";
+import { ToDoList } from "../../../interfaces/list/ToDoList";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 

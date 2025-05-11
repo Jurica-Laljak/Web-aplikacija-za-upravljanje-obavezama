@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import ToDo from "../../../interfaces/todo/ToDo";
+import ToDo from "../../../interfaces/todo/ToDov1";
 import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/ToDoAuthorizedAttributes";
 
 export function authorizeToDo<R = any>(paramName: string) {

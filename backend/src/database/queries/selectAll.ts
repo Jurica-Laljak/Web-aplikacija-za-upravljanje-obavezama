@@ -1,4 +1,4 @@
-import { Condition } from "../../interfaces/enum/Condition";
+import { Condition } from "../../interfaces/type/Condition";
 
 /**
  * Select all records of table

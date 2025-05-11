@@ -1,7 +1,6 @@
-import { ToDoInsert } from "../../interfaces/todo/ToDoInsert";
-import { PrefixDto } from "../filter/Prefix.dto";
+import { ToDo } from "../../interfaces/todo/ToDo";
 
-export interface ToDoDto extends ToDoInsert {
-  toDos: ToDoDto[];
-  prefixes: PrefixDto[];
+export interface ToDoDto extends ToDo {
+  todos: ToDoDto[];
+  prefixes: number[];
 }

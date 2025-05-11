@@ -1,4 +1,4 @@
-import { Condition } from "../../interfaces/enum/Condition";
+import { Condition } from "../../interfaces/type/Condition";
 
 /**
  * Generate SELECT statement for given relation
@@ -9,39 +9,54 @@ import { Condition } from "../../interfaces/enum/Condition";
  * @returns {string} SQL query
  */
 export function select(
-  tableName: string,
-  attributes: string[],
-  attributeTypeMap: Map<string, string>,
+  tableInfo: {
+    tableName: string;
+    primaryKey: string;
+    attributes: string[];
+    attributeTypeMap: Map<string, string>;
+  }[],
+  unionTables: [string, string][] | undefined,
   ...conditions: Condition[]
 ): string {
   var sqlQuery = "SELECT ";
   var init: boolean = false;
 
   // SELECT statement
-  for (let attr of attributes) {
-    if (init) {
-      sqlQuery += ",\n";
-    } else {
-      init = true;
-    }
+  for (let table of tableInfo) {
+    for (let attr of table.attributes) {
+      if (init) {
+        sqlQuery += ",\n";
+      } else {
+        init = true;
+      }
 
-    let type = attributeTypeMap.get(attr)?.toLowerCase();
-    if (type) {
-      if (type == "date") {
-        sqlQuery += `DATE(${tableName}.${attr})::text AS ${attr}`;
-      } else if (type == "boolean" || type == "bool") {
-        sqlQuery += `CASE
-					WHEN ${tableName}.${attr} = TRUE THEN 'true'
+      let type = table.attributeTypeMap.get(attr)?.toLowerCase();
+      if (type) {
+        if (type == "date") {
+          sqlQuery += `DATE(${table.tableName}.${attr})::text AS ${attr}`;
+        } else if (type == "boolean" || type == "bool") {
+          sqlQuery += `CASE
+					WHEN ${table.tableName}.${attr} = TRUE THEN 'true'
 					ELSE 'false'
 				END AS ${attr}`;
-      } else {
-        sqlQuery += `${tableName}.${attr}`;
+        } else {
+          sqlQuery += `${table.tableName}.${attr}`;
+        }
       }
     }
   }
 
   // FROM statement
-  sqlQuery += `\nFROM ${tableName}\n`;
+  sqlQuery += "\nFROM ";
+  if (unionTables) {
+    var init = false;
+    for (let unionPair of unionTables) {
+    }
+    sqlQuery += `\nFROM ${tableName} JOIN ${unionTableName}
+    ON ${tableName}.${primaryKey} = ${tableName}.${primaryKey}`;
+  } else {
+    sqlQuery += `\nFROM ${tableInfo[0].tableName}\n`;
+  }
 
   // WHERE statement
   var conditionsToString: string[] = [];

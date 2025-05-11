@@ -1,21 +1,21 @@
 --type definition
 
 CREATE TYPE SORT AS ENUM (
-  'TimeCreated:Asc',
-  'TimeCreated:Desc',
-  'Alphabetical:Asc',
-  'Alphabetical:Desc',
-  'DueDate:Asc',
-  'DueDate:Desc',
-  'PrefixAlphabetical:Asc',
-  'PrefixAlphabetical:Desc',
-  'Priority:Asc',
-  'Priority:Desc'
+  'timecreated:asc',
+  'timecreated:desc',
+  'alphabetical:asc',
+  'alphabetical:desc',
+  'duedate:asc',
+  'duedate:desc',
+  'prefixalphabetical:asc',
+  'prefixalphabetical:desc',
+  'priority:asc',
+  'priority:desc'
 );
 
 CREATE TYPE DATETYPE AS ENUM (
-  'DueDate',
-  'IssueDate'
+  'duedate',
+  'issuedate'
 );
 
 --create tables
@@ -35,15 +35,15 @@ CREATE TABLE UserData
 
 CREATE TABLE ToDoList
 (
+  UserId INT NOT NULL,
   ListId SERIAL,
   Name VARCHAR(50) NOT NULL,
   SerialNumber INT NOT NULL,
-  HighLevelSort SORT DEFAULT 'TimeCreated:Asc',
+  HighLevelSort SORT DEFAULT 'timecreated:asc',
   MidLevelSort SORT,
   LowLevelSort SORT,
   DefaultGroupId INT,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-  UserId INT NOT NULL,
   PRIMARY KEY (ListId),
   FOREIGN KEY (UserId) REFERENCES UserData(UserId) ON DELETE CASCADE,
   CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
@@ -51,14 +51,14 @@ CREATE TABLE ToDoList
 
 CREATE TABLE ToDoGroup
 (
+  ListId INT NOT NULL,
   GroupId SERIAL,
   Name VARCHAR(50) NOT NULL,
-  HighLevelSort SORT DEFAULT 'TimeCreated:Asc',
+  HighLevelSort SORT DEFAULT 'timecreated:asc',
   MidLevelSort SORT,
   LowLevelSort SORT,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   SerialNumber INT NOT NULL,
-  ListId INT NOT NULL,
   PRIMARY KEY (GroupId),
   FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
   CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
@@ -66,47 +66,45 @@ CREATE TABLE ToDoGroup
 
 CREATE TABLE Filter
 (
+  UserId INT NOT NULL,
   FilterId SERIAL,
   Name VARCHAR(50) NOT NULL,
-  UserId INT NOT NULL,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (UserId) REFERENCES UserData(UserId) ON DELETE CASCADE
 );
 
 CREATE TABLE PrefixFilter
 (
-  Prefix VARCHAR(50) NOT NULL,
   FilterId INT NOT NULL,
+  Prefix VARCHAR(50) NOT NULL,
   PRIMARY KEY (FilterId),
-  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
-  UNIQUE (Prefix)
+  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE
 );
 
 CREATE TABLE SizeFilter
 (
-  Size INT NOT NULL,
   FilterId INT NOT NULL,
+  Size INT NOT NULL,
   PRIMARY KEY (FilterId),
-  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
-  UNIQUE (Size)
+  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE
 );
 
-CREATE TABLE TimePeriodFilter
+CREATE TABLE PriorityFilter
 (
-  DateType DATETYPE DEFAULT 'DueDate',
-  LowerBound DATE,
-  HigherBound DATE,
   FilterId INT NOT NULL,
+  HigherBound INT,
+  LowerBound INT,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
   CONSTRAINT boundDefined CHECK ((LowerBound IS NOT NULl) OR (HigherBound IS NOT NULl))
 );
 
-CREATE TABLE PriorityFilter
+CREATE TABLE TimePeriodFilter
 (
-  HigherBound INT,
-  LowerBound INT,
   FilterId INT NOT NULL,
+  DateType DATETYPE,
+  LowerBound DATE,
+  HigherBound DATE,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
   CONSTRAINT boundDefined CHECK ((LowerBound IS NOT NULl) OR (HigherBound IS NOT NULl))
@@ -117,12 +115,13 @@ CREATE TABLE GroupDefined
   GroupId INT NOT NULL,
   FilterId INT NOT NULL,
   PRIMARY KEY (GroupId, FilterId),
-  FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId),
-  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId)
+  FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId) ON DELETE CASCADE,
+  FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE
 );
 
 CREATE TABLE ToDo
 (
+  ListId INT NOT NULL,
   ToDoId SERIAL,
   Content VARCHAR(500) NOT NULL,
   DueDate DATE,
@@ -134,7 +133,6 @@ CREATE TABLE ToDo
   ParentToDoId INT,
   IsArchived BOOLEAN DEFAULT 'False',
   SerialNumber INT,
-  ListId INT NOT NULL,
   PRIMARY KEY (ToDoId),
   FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
   FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId) ON DELETE SET NULL,

@@ -1,10 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { insert } from "../../../database/queries/insertGeneric";
-import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
-import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
-import { AuthorizedAttributes } from "../../../interfaces/auth/AuthorizedAttributes";
 
 /**
  *
@@ -12,8 +7,8 @@ import { AuthorizedAttributes } from "../../../interfaces/auth/AuthorizedAttribu
  * @param res
  * @returns
  */
-export async function postTodo(
+export async function _(
   req: Request,
-  res: Response<ToDoDto, AuthorizedAttributes>,
+  res: Response<, >,
   next: NextFunction
 ) {}

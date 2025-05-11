@@ -1,8 +1,8 @@
-interface Filter {
-  id: number;
+export interface FilterCore {
   name: string;
-  depth: number;
-  parentFilterId?: number;
+  userid: number;
 }
 
-export = Filter;
+export interface Filter extends FilterCore {
+  filterid: number;
+}
