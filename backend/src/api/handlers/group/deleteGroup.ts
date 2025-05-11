@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { insert } from "../../../database/queries/insertGeneric";
-import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
 import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
-import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
+import anonymousQuery from "../../../database/anonymousQuery";
+import { delete_ } from "../../../database/queries/deleteGeneric";
 
 /**
  *
@@ -14,6 +13,25 @@ import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attrib
  */
 export async function deleteGroup(
   req: Request,
-  res: Response<ToDoDto, AuthorizedAttributes>,
+  res: Response<ToDoDto, GroupAuthorizedAttributes>,
   next: NextFunction
-) {}
+) {
+  // delete given group
+  var queryStr = delete_("todogroup", ["groupid", res.locals.groupid]);
+  try {
+    var result = await anonymousQuery(queryStr);
+  } catch (err) {
+    console.log(err);
+    next(ErrorEnvelope.databaseError());
+    return;
+  }
+
+  if (result.status && result.status.split(" ").pop() == "0") {
+    // operation failed => todo doesn't exist
+    next(ErrorEnvelope.recordMissingError("todo"));
+    return;
+  } else {
+    // operation succeded
+    res.send();
+  }
+}

@@ -1,5 +1,5 @@
-import Filter from "../../interfaces/filter/Filter";
+import { FilterDto } from "./Filter.dto";
 
-export interface PrefixDto extends Filter {
+export interface PrefixDto extends FilterDto {
   prefix: string;
 }

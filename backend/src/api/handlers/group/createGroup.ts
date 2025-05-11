@@ -6,6 +6,8 @@ import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
 import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
 import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
 import { ToDoGroupInsert } from "../../../interfaces/group/ToDoGroupInsert";
+import { GroupDto } from "../../../dtos/group/Group.dto";
+import { ToDoGroup } from "../../../interfaces/group/ToDoGroup";
 
 /**
  *
@@ -15,7 +17,7 @@ import { ToDoGroupInsert } from "../../../interfaces/group/ToDoGroupInsert";
  */
 export async function createGroup(
   req: Request,
-  res: Response<ToDoDto, AuthorizedAttributes>,
+  res: Response<GroupDto, AuthorizedAttributes>,
   next: NextFunction
 ) {
   // validate request body and create SQL query
@@ -34,7 +36,7 @@ export async function createGroup(
 
   // insert into todo
   try {
-    var result2 = await query<ToDoDto>(queryStr);
+    var result2 = await query<Required<ToDoGroup>>(queryStr);
   } catch (err) {
     console.log(err);
     next(ErrorEnvelope.validationError());
@@ -43,5 +45,5 @@ export async function createGroup(
 
   // return group id
   var rows2 = [...result2];
-  res.send(rows2[0]);
+  res.send({ ...rows2[0], filters: [], todos: [] });
 }

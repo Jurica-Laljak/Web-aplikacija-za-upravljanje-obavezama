@@ -1,24 +1,30 @@
 import { NextFunction, Request, Response } from "express";
+import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
+import ToDoList from "../../../interfaces/list/ToDoList";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
-import { ToDoGroup } from "../../../interfaces/group/ToDoGroup";
+import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
 
-export function authorizeGroup<R = any>(paramName: string) {
+export function authorizeObjects<R = any>(
+  topLevelParam: string,
+  otherParams: string[]
+) {
   return async function (
     req: Request,
-    res: Response<R, GroupAuthorizedAttributes>,
+    res: Response<R, TokenAttributes>,
     next: NextFunction
   ) {
-    var groupId = req.params[paramName];
     // querying the database
     try {
-      var sqlRes = await query<ToDoGroup>(
+      var sqlRes = await query<ToDoList>(
+        `SELECT * FROM 
+
+          `
         selectAllConditionally(
-          "todogroup",
-          ["listid", res.locals.listid],
-          ["groupid", groupId]
+          "todolist",
+          ["userid", res.locals.userId],
+          ["listid", listId]
         )
       );
     } catch (err) {
@@ -26,13 +32,12 @@ export function authorizeGroup<R = any>(paramName: string) {
       next(ErrorEnvelope.databaseError());
       return;
     }
-    // if result is empty, user isn't authorized to access the group
+    // if result is empty, user isn't authorized to access the object
     if (sqlRes.rows.length == 0) {
-      next(ErrorEnvelope.authorizationError("group"));
+      next(ErrorEnvelope.authorizationError());
       return;
     } else {
       // otherwise, continue processing the request
-      res.locals.groupid = groupId;
       next();
     }
   };

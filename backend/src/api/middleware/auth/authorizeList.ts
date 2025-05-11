@@ -28,7 +28,7 @@ export function authorizeList<R = any>(paramName: string) {
     }
     // if result is empty, user isn't authorized to access the list
     if (sqlRes.rows.length == 0) {
-      next(ErrorEnvelope.authorizationError());
+      next(ErrorEnvelope.authorizationError("list"));
       return;
     } else {
       // otherwise, continue processing the request

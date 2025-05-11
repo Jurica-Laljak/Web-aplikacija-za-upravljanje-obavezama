@@ -5,6 +5,8 @@ import { createGroup } from "../handlers/group/createGroup";
 import { patchGroup } from "../handlers/group/patchGroup";
 import { deleteGroup } from "../handlers/group/deleteGroup";
 import { authorizeGroup } from "../middleware/auth/authorizeGroup";
+import { authorizeToDo } from "../middleware/auth/authorizeToDo";
+import { addToGroup } from "../handlers/group/addToGroup";
 
 const groupRouter = express.Router();
 
@@ -41,7 +43,7 @@ groupRouter.delete(
   deleteGroup
 );
 
-groupRouter.patch(
+groupRouter.put(
   "/:groupid/todo/:todoid",
   param("groupid")
     .exists()
@@ -53,7 +55,9 @@ groupRouter.patch(
     .withMessage("No todo id given.")
     .isInt()
     .withMessage("Id is not integer."),
-  throwIfError
+  throwIfError,
+  authorizeToDo("todoid"),
+  addToGroup
 );
 
 export = groupRouter;

@@ -2,23 +2,23 @@ import { NextFunction, Request, Response } from "express";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
-import { ToDoGroup } from "../../../interfaces/group/ToDoGroup";
+import ToDo from "../../../interfaces/todo/ToDo";
+import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/ToDoAuthorizedAttributes";
 
-export function authorizeGroup<R = any>(paramName: string) {
+export function authorizeToDo<R = any>(paramName: string) {
   return async function (
     req: Request,
-    res: Response<R, GroupAuthorizedAttributes>,
+    res: Response<R, ToDoAuthorizedAttributes>,
     next: NextFunction
   ) {
-    var groupId = req.params[paramName];
+    var toDoId = req.params[paramName];
     // querying the database
     try {
-      var sqlRes = await query<ToDoGroup>(
+      var sqlRes = await query<ToDo>(
         selectAllConditionally(
-          "todogroup",
+          "todo",
           ["listid", res.locals.listid],
-          ["groupid", groupId]
+          ["todoid", toDoId]
         )
       );
     } catch (err) {
@@ -28,11 +28,11 @@ export function authorizeGroup<R = any>(paramName: string) {
     }
     // if result is empty, user isn't authorized to access the group
     if (sqlRes.rows.length == 0) {
-      next(ErrorEnvelope.authorizationError("group"));
+      next(ErrorEnvelope.authorizationError("todo"));
       return;
     } else {
       // otherwise, continue processing the request
-      res.locals.groupid = groupId;
+      res.locals.todoid = toDoId;
       next();
     }
   };
