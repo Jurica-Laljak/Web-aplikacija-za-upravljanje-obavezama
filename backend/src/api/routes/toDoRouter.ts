@@ -4,6 +4,8 @@ import { throwIfError } from "../middleware/other/throwIfError";
 import { postTodo } from "../handlers/todo/postToDo";
 import { patchTodo } from "../handlers/todo/patchToDo";
 import { deleteTodo } from "../handlers/todo/deleteToDo";
+import { authorizeToDo } from "../middleware/auth/authorizeToDo";
+import { putToDoPrefixes } from "../handlers/todo/putToDoPrefixes";
 
 const toDoRouter = express.Router();
 
@@ -22,6 +24,8 @@ toDoRouter.patch(
     .isInt()
     .withMessage("Id is not integer."),
   throwIfError,
+  authorizeToDo("todoid"),
+  throwIfError,
   patchTodo
 );
 
@@ -33,7 +37,22 @@ toDoRouter.delete(
     .isInt()
     .withMessage("Id is not integer."),
   throwIfError,
+  authorizeToDo("todoid"),
+  throwIfError,
   deleteTodo
+);
+
+toDoRouter.put(
+  "/:todoid",
+  param("todoid")
+    .exists()
+    .withMessage("No todo id given.")
+    .isInt()
+    .withMessage("Id is not integer."),
+  throwIfError,
+  authorizeToDo("todoid"),
+  throwIfError,
+  putToDoPrefixes
 );
 
 export = toDoRouter;

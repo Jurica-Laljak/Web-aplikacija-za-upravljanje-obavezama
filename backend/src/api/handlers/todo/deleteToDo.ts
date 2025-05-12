@@ -4,6 +4,7 @@ import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
 import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
 import { delete_ } from "../../../database/queries/deleteGeneric";
 import anonymousQuery from "../../../database/anonymousQuery";
+import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/ToDoAuthorizedAttributes";
 
 /**
  *
@@ -13,13 +14,11 @@ import anonymousQuery from "../../../database/anonymousQuery";
  */
 export async function deleteTodo(
   req: Request,
-  res: Response<ToDoDto, AuthorizedAttributes>,
+  res: Response<ToDoDto, ToDoAuthorizedAttributes>,
   next: NextFunction
 ) {
-  var toDoId = req.params.todoid;
-
   // delete given todo
-  var queryStr = delete_("todo", ["todoid", toDoId]);
+  var queryStr = delete_("todo", ["todoid", res.locals.todoid]);
   console.log(queryStr);
   try {
     var result = await anonymousQuery(queryStr);

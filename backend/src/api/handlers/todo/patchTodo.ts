@@ -4,6 +4,7 @@ import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
 import { update } from "../../../database/queries/updateGeneric";
 import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
 import anonymousQuery from "../../../database/anonymousQuery";
+import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/ToDoAuthorizedAttributes";
 
 /**
  *
@@ -13,11 +14,9 @@ import anonymousQuery from "../../../database/anonymousQuery";
  */
 export async function patchTodo(
   req: Request,
-  res: Response<{}, AuthorizedAttributes>,
+  res: Response<{}, ToDoAuthorizedAttributes>,
   next: NextFunction
 ) {
-  var toDoId = req.params.todoid;
-
   // validate request body
   try {
     var updateObj = { ...req.body };
@@ -26,7 +25,7 @@ export async function patchTodo(
     var queryStr = update<Partial<ToDoInsert>>(
       "todo",
       updateObj,
-      ["todoid", toDoId],
+      ["todoid", res.locals.todoid],
       "*"
     );
   } catch (err) {
@@ -35,6 +34,7 @@ export async function patchTodo(
     return;
   }
 
+  console.log(queryStr);
   // insert into todo
   try {
     await anonymousQuery(queryStr);

@@ -27,8 +27,10 @@ export function insert<I extends Object>(
   var sqlQuery = `INSERT INTO ${tableName} (${keys.join(
     ", "
   )}) VALUES (${values.join(", ")})`;
+
   if (returningAttribute != "") {
-    sqlQuery += ` RETURNING ${returningAttribute}`;
+    sqlQuery += `\nRETURNING ${returningAttribute}`;
   }
+
   return sqlQuery + ";\n";
 }

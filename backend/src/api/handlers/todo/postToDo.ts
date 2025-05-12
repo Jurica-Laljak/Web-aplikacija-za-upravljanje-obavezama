@@ -5,6 +5,13 @@ import { insert } from "../../../database/queries/insertGeneric";
 import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
 import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
 import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+import { selectAllConditionally } from "../../../database/queries/selectAll";
+import { Condition } from "../../../interfaces/type/Condition";
+import { Filter } from "../../../interfaces/filter/Filter";
+import { ToDo } from "../../../interfaces/todo/ToDo";
+import anonymousQuery from "../../../database/anonymousQuery";
+import { multiInsert } from "../../../database/queries/multiInsert";
+import { ownsPrefixes } from "./helper/ownsPrefixes";
 
 /**
  *
@@ -17,9 +24,25 @@ export async function postTodo(
   res: Response<ToDoDto, AuthorizedAttributes>,
   next: NextFunction
 ) {
+  if (req.body.prefixes === undefined) {
+    var remainingBody = req.body;
+  } else {
+    var { prefixes, ...remainingBody } = req.body;
+
+    // validate if user has right to access prefixes
+    var valid = await ownsPrefixes(res.locals.userId, prefixes);
+
+    console.log(valid);
+    if (!valid) {
+      // prefixes are not valid
+      next(ErrorEnvelope.authorizationError("filter"));
+      return;
+    }
+  }
+
   // validate request body and create SQL query
   try {
-    var insertObj = { ...req.body, listid: res.locals.listid };
+    var insertObj = { ...remainingBody, listid: res.locals.listid };
     var queryStr = insert<ToDoInsert & { listid: number }>(
       "todo",
       insertObj,
@@ -31,16 +54,41 @@ export async function postTodo(
     return;
   }
 
-  // insert into todo
+  // insert todo into relation todo
   try {
-    var result2 = await query<ToDoDto>(queryStr);
+    var todo = await query<ToDo>(queryStr);
   } catch (err) {
     console.log(err);
     next(ErrorEnvelope.validationError());
     return;
   }
+  var returnVal = [...todo];
 
-  // return todo id
-  var rows2 = [...result2];
-  res.send(rows2[0]);
+  if (!(req.body.prefixes === undefined)) {
+    var todoId = returnVal[0].todoid;
+
+    // multi-insert entries to todoassociates
+    // table for all provided prefixes
+    var records: { todoid: number; filterid: string }[] = [];
+    for (let pID of prefixes) {
+      records.push({ todoid: todoId, filterid: pID });
+    }
+    queryStr = multiInsert<{ todoid: number; filterid: string }>(
+      "todoassociates",
+      records
+    );
+
+    console.log(queryStr);
+
+    try {
+      await anonymousQuery(queryStr);
+    } catch (err) {
+      console.log(err);
+      next(ErrorEnvelope.validationError());
+      return;
+    }
+  }
+
+  // return ToDoDto
+  res.send({ ...returnVal[0], todos: [], prefixes: prefixes || [] });
 }

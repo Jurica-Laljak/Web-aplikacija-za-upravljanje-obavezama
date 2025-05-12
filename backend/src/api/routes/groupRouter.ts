@@ -7,6 +7,7 @@ import { deleteGroup } from "../handlers/group/deleteGroup";
 import { authorizeGroup } from "../middleware/auth/authorizeGroup";
 import { authorizeToDo } from "../middleware/auth/authorizeToDo";
 import { addToGroup } from "../handlers/group/addToGroup";
+import { groupDefineFilters } from "../handlers/group/groupDefineFilters";
 
 const groupRouter = express.Router();
 
@@ -58,6 +59,20 @@ groupRouter.put(
   throwIfError,
   authorizeToDo("todoid"),
   addToGroup
+);
+
+groupRouter.put(
+  "/:groupid/filter",
+  param("groupid")
+    .exists()
+    .withMessage("No todo id given.")
+    .isInt()
+    .withMessage("Id is not integer."),
+  throwIfError,
+  authorizeGroup("groupid"),
+  throwIfError,
+  body().exists().withMessage("Request body is empty"),
+  groupDefineFilters
 );
 
 export = groupRouter;

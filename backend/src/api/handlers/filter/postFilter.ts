@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { insert } from "../../../database/queries/insertGeneric";
-import { FilterDto } from "../../../dtos/filter/Filter.dto";
 import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
 import { FilterInsert } from "../../../interfaces/filter/FilterInsert";
 import { Filter, FilterCore } from "../../../interfaces/filter/Filter";
@@ -60,7 +59,8 @@ export async function postFilter(
       if (reqBody.prefix) {
         newQuery = insert<{ filterid: number; prefix: string }>(type, {
           filterid: filterId,
-          prefix: reqBody.prefix,
+          prefix: reqBody.prefix.toLowerCase(),
+          // all prefixes are stored as lowercase strings
         });
       }
       break;
