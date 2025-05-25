@@ -1,0 +1,61 @@
+.text-c {
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 1.25rem;
+}
+
+.hover:hover {
+  cursor: pointer;
+}
+
+.link-wrapper {
+  color: black;
+}
+
+.link-wrapper:hover {
+  cursor: pointer;
+}
+
+.link-wrapper:visited {
+  color: black;
+}
+
+.link-wrapper:link {
+  color: black;
+}
+
+.page-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-left: 2rem;
+  font-size: large;
+  gap: 2rem;
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: var(--main-color) 3px solid;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  width: fit-content;
+  height: fit-content;
+}
+
+.button-wrapper:hover {
+  cursor: pointer;
+}
+
+.button-wrapper:visited {
+  color: var(--main-color);
+}
+
+.button-wrapper:link {
+  color: var(--main-color);
+}

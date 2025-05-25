@@ -2,12 +2,15 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ToDoListMiddleware from "./components/todolist/ToDoListMiddleware";
 import FilterMiddleware from "./components/filter/FilterMiddleware";
-import NotFoundPage from "./components/other/NotFoundPage";
+import NotFoundPage from "./components/auth/NotFoundPage";
 import { UserContext, UserContextType } from "./context/userContext";
 import Home from "./components/app/Home";
 import AntiProtectedRoute from "./components/auth/AntiProtectedRoute";
 import LoginMiddleware from "./components/login/LoginMiddleware";
 import CalendarMiddleware from "./components/calendar/CalendarMiddleware";
+import "./styles/common.css";
+import RegisterMiddleware from "./components/register/RegisterMiddleware";
+import { RouteContext, RouteContextType } from "./context/routeContext";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,6 +27,14 @@ function App() {
       element: (
         <AntiProtectedRoute>
           <LoginMiddleware></LoginMiddleware>
+        </AntiProtectedRoute>
+      ),
+    },
+    {
+      path: "/register",
+      element: (
+        <AntiProtectedRoute>
+          <RegisterMiddleware></RegisterMiddleware>
         </AntiProtectedRoute>
       ),
     },
@@ -68,9 +79,15 @@ function App() {
     accessToken: localStorage.getItem("accessToken"),
   };
 
+  var routeContext: RouteContextType = {
+    redirectedFrom: null,
+  };
+
   return (
     <UserContext.Provider value={userContext}>
-      <RouterProvider router={router}></RouterProvider>
+      <RouteContext.Provider value={routeContext}>
+        <RouterProvider router={router}></RouterProvider>
+      </RouteContext.Provider>
     </UserContext.Provider>
   );
 }

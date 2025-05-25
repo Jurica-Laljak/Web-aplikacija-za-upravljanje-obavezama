@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
-  margin: 0px;
   padding: 0px;
+  margin: 0px;
 }
 
 html,
@@ -13,26 +13,7 @@ body,
   font-family: "Trebuchet MS", sans-serif;
   --main-color: #00a85f;
   color: var(--main-color);
-}
-
-.text-c {
-  font-weight: bold;
-  text-decoration: underline;
-  font-size: 1.25rem;
-}
-
-.hover:hover {
-  cursor: pointer;
-}
-
-.link:hover {
-  cursor: pointer;
-}
-
-.link:visited {
-  color: black;
-}
-
-.link:link {
-  color: black;
+  margin: 0px;
+  padding: 0px;
+  /* background-image: -moz-repeating-linear-gradient(270deg, #ffffff, #f6f6f6 5%); */
 }

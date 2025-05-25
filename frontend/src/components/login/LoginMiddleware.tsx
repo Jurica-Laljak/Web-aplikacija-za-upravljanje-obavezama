@@ -1,7 +1,11 @@
-import { PropsWithChildren } from "react";
+import Login from "./Login";
 
-function LoginMiddleware(props: PropsWithChildren) {
-  return <>{props.children}</>;
+function LoginMiddleware() {
+  return (
+    <>
+      <Login></Login>
+    </>
+  );
 }
 
 export default LoginMiddleware;
