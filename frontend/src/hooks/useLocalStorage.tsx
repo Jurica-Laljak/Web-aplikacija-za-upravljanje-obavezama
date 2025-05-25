@@ -1,16 +1,23 @@
 import { useState } from "react";
 
 type LocalStorageSetterFunction = {
-  description: string;
+  description?: string;
   (currentValue: string): string;
 };
 
-export const useLocalStorage = (key: string, defaultValue?: string) => {
+export function useLocalStorage<T>(
+  key: string,
+  defaultValue?: string
+): [any, (valueOrFn: string | LocalStorageSetterFunction) => void] {
   const [localStorageValue, setLocalStorageValue] = useState(() => {
     try {
       const value = localStorage.getItem(key);
       if (value) {
-        return JSON.parse(value);
+        if (typeof value === "string") {
+          return value;
+        } else {
+          return JSON.parse(value);
+        }
       } else if (defaultValue) {
         localStorage.setItem(key, JSON.stringify(defaultValue));
         return defaultValue;
@@ -33,8 +40,10 @@ export const useLocalStorage = (key: string, defaultValue?: string) => {
       newValue = fn(localStorageValue);
     }
 
-    localStorage.setItem(key, JSON.stringify(newValue));
+    if (newValue !== "") {
+      localStorage.setItem(key, newValue);
+    }
     setLocalStorageValue(newValue);
   };
   return [localStorageValue, setLocalStorageStateValue];
-};
+}

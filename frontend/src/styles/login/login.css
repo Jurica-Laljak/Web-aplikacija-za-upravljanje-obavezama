@@ -59,6 +59,10 @@ h1 {
   margin: 0%;
 }
 
+.login-description {
+  color: black;
+}
+
 .login-label {
   font-size: 1.25rem;
 }
@@ -74,9 +78,17 @@ h1 {
 
 input {
   margin: 0.25em;
-  width: 22em;
+  width: 18em;
   font-size: 1rem;
   text-align: center;
+}
+
+.password-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25em;
+  align-items: center;
+  align-self: center;
 }
 
 #username {

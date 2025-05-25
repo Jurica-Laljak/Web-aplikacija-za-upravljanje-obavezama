@@ -1,12 +1,19 @@
-import { FaKey, FaRegUserCircle } from "react-icons/fa";
+import {
+  FaKey,
+  FaRegUserCircle,
+  FaRegEye,
+  FaRegEyeSlash,
+} from "react-icons/fa";
 import IconText from "../other/IconText";
+import { useState } from "react";
 
 function CredentialsForm(props: {
   username: string;
-  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  setUsername: any;
   password: string;
-  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  setPassword: any;
 }) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
     <>
       <div>
@@ -34,15 +41,37 @@ function CredentialsForm(props: {
             Lozinka
           </IconText>
         </label>
-        <input
-          id="password"
-          type="text"
-          value={props.password}
-          maxLength={40}
-          onChange={(e) => {
-            props.setPassword(e.target.value);
-          }}
-        ></input>
+        <span className="password-wrapper">
+          <IconText
+            style={{ visibility: "hidden" }}
+            icon={<FaRegEyeSlash />}
+            iconStyle={{ size: "1.5rem" }}
+          ></IconText>
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            value={props.password}
+            maxLength={40}
+            onChange={(e) => {
+              props.setPassword(e.target.value);
+            }}
+          ></input>
+          {showPassword ? (
+            <IconText
+              style={{ cursor: "pointer" }}
+              icon={<FaRegEyeSlash />}
+              iconStyle={{ size: "1.5rem" }}
+              onClick={() => setShowPassword(false)}
+            ></IconText>
+          ) : (
+            <IconText
+              style={{ cursor: "pointer" }}
+              icon={<FaRegEye />}
+              iconStyle={{ size: "1.5rem" }}
+              onClick={() => setShowPassword(true)}
+            ></IconText>
+          )}
+        </span>
       </div>
     </>
   );

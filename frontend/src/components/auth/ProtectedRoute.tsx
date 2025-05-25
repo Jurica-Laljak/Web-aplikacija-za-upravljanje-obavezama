@@ -1,14 +1,11 @@
 import { PropsWithChildren, useContext } from "react";
-import { UserContext } from "../../context/userContext";
+import { UserContext, UserContextType } from "../../context/userContext";
 import { Navigate } from "react-router";
-import { RouteContext } from "../../context/routeContext";
 
 function ProtectedRoute(props: PropsWithChildren) {
-  const userContext = useContext(UserContext);
-  const routeContext = useContext(RouteContext);
+  const userContext = useContext(UserContext) as UserContextType;
 
   if (
-    userContext &&
     userContext.accessToken &&
     userContext.username &&
     userContext.userId &&

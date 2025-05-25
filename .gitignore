@@ -8,5 +8,5 @@ dist/
 *.pem
 *.env
 
-# Ignore temp file "text.txt"
-text.txt
+# Ignore temp file "tmp.txt"
+tmp.txt

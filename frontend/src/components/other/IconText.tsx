@@ -3,6 +3,7 @@ import { IconContext } from "react-icons";
 function IconText(props: {
   children?: React.ReactNode;
   style?: React.CSSProperties;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   icon: React.ReactElement;
   iconStyle: IconContext;
 }) {
@@ -28,6 +29,7 @@ function IconText(props: {
             justifyContent: "center",
             height: "100%",
           }}
+          onClick={props.onClick}
         >
           {props.icon}
         </div>

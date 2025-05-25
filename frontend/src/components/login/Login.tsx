@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../../context/userContext";
+import { useContext } from "react";
+import { UserContext, UserContextType } from "../../context/userContext";
 import "../../styles/login/login.css";
 import Button from "../other/Button";
 import ButtonLink from "../other/ButtonLink";
@@ -8,9 +8,7 @@ import { CiLogin } from "react-icons/ci";
 import IconText from "../other/IconText";
 
 function Login() {
-  const userContext = useContext(UserContext);
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const userContext = useContext(UserContext) as UserContextType;
 
   return (
     <div className="page-wrapper" id="login-wrapper">
@@ -18,17 +16,17 @@ function Login() {
         <IconText icon={<CiLogin />} iconStyle={{ size: "3rem" }}>
           <h1>Prijavite se</h1>
         </IconText>
-        <span>
+        <span className="login-description">
           Potrebno je unijeti vaše <b>korisničko ime</b> i <b>lozinku</b> kako
           biste pristupili resursu.
         </span>
       </div>
       <div className="login-form-wrapper">
         <CredentialsForm
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
+          username={userContext.username}
+          setUsername={userContext.setUsername}
+          password={userContext.password}
+          setPassword={userContext.setPassword}
         ></CredentialsForm>
         <Button style={{ width: "fit-content", padding: "0.5rem" }}>
           <span>Prijavi me</span>
