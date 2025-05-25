@@ -43,7 +43,7 @@ toDoRouter.delete(
 );
 
 toDoRouter.put(
-  "/:todoid",
+  "/:todoid/prefix",
   param("todoid")
     .exists()
     .withMessage("No todo id given.")

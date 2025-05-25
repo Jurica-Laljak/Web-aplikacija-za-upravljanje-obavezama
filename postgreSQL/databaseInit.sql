@@ -150,7 +150,7 @@ CREATE TABLE ToDoAssociates
   FOREIGN KEY (FilterId) REFERENCES PrefixFilter(FilterId) ON DELETE CASCADE
 );
 
---initialize admin, and 3 lists
+--initialize admin user and their 3 lists
 
 INSERT INTO UserData (Username, Password, RefreshTokenId)
 VALUES ('admin', 'gfOeKsixgkD0u3Xt7OuLgJ9fwEXFufEw97t8zG9o', 'D9u"�l[�:↓r♣�*p�');

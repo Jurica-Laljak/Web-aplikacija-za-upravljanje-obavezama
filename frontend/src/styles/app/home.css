@@ -1,0 +1,21 @@
+#app-div {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#content-area-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#content-area-subwrapper {
+  width: 65rem;
+  height: 100%;
+}
