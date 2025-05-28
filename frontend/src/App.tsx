@@ -10,6 +10,7 @@ import LoginMiddleware from "./components/login/LoginMiddleware";
 import CalendarMiddleware from "./components/calendar/CalendarMiddleware";
 import "./styles/common.css";
 import RegisterMiddleware from "./components/register/RegisterMiddleware";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   const router = createBrowserRouter([
@@ -70,10 +71,14 @@ function App() {
     { path: "*", element: <NotFoundPage></NotFoundPage> },
   ]);
 
+  const queryClient = new QueryClient();
+
   return (
-    <UserContextProvider>
-      <RouterProvider router={router}></RouterProvider>
-    </UserContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserContextProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </UserContextProvider>
+    </QueryClientProvider>
   );
 }
 

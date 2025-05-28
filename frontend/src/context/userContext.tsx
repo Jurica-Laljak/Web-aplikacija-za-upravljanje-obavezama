@@ -1,20 +1,7 @@
 import * as React from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-
-export type UserContextType = {
-  username: string;
-  setUsername: (username: string) => void;
-  password: string;
-  setPassword: (password: string) => void;
-  userId: string;
-  setUserId: (userId: string) => void;
-  refreshToken: string;
-  setRefreshToken: (refreshToken: string) => void;
-  accessToken: string;
-  setAccessToken: (accessToken: string) => void;
-  toDoListIds: string[];
-  setToDoListIds: (idArrayStringified: string) => void;
-};
+import { useParseLocalStorage } from "../hooks/useParseLocalStorage";
+import { UserContextType } from "../types/user/UserContext";
 
 export const UserContext = React.createContext<UserContextType | null>(null);
 
@@ -23,10 +10,9 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [username, setUsername] = useLocalStorage("username");
   const [password, setPassword] = useLocalStorage("password");
-  const [userId, setUserId] = useLocalStorage("userId");
   const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken");
   const [accessToken, setAccessToken] = useLocalStorage("accessToken");
-  const [toDoListIds, setToDoListIds] = useLocalStorage("toDoListIds");
+  const [toDoListIds, setToDoListIds] = useParseLocalStorage("toDoListIds");
 
   return (
     <UserContext.Provider
@@ -35,8 +21,6 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setUsername,
         password,
         setPassword,
-        userId,
-        setUserId,
         refreshToken,
         setRefreshToken,
         accessToken,

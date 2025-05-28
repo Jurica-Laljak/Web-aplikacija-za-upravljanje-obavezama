@@ -1,23 +1,22 @@
 import { useState } from "react";
 
-type LocalStorageSetterFunction = {
+type LocalStorageSetterFunction<T> = {
   description?: string;
-  (currentValue: string): string;
+  (currentValue: Array<T> | Object): Array<T> | Object;
 };
 
-export function useLocalStorage(
+export function useParseLocalStorage<T = string>(
   key: string,
-  defaultValue?: string
-): [any, (valueOrFn: string | LocalStorageSetterFunction) => void] {
+  defaultValue?: Array<T> | Object
+): [
+  any,
+  (valueOrFn: Array<T> | Object | LocalStorageSetterFunction<T>) => void
+] {
   const [localStorageValue, setLocalStorageValue] = useState(() => {
     try {
       const value = localStorage.getItem(key);
       if (value) {
-        if (typeof value === "string") {
-          return value;
-        } else {
-          return JSON.parse(value);
-        }
+        return JSON.parse(value);
       } else if (defaultValue) {
         localStorage.setItem(key, JSON.stringify(defaultValue));
         return defaultValue;
@@ -30,19 +29,17 @@ export function useLocalStorage(
   });
 
   const setLocalStorageStateValue = (
-    valueOrFn: string | LocalStorageSetterFunction
+    valueOrFn: Array<T> | Object | LocalStorageSetterFunction<T>
   ) => {
-    let newValue: string;
-    if (typeof valueOrFn === "string") {
+    let newValue: Object;
+    if (typeof valueOrFn === "object") {
       newValue = valueOrFn;
     } else {
       const fn = valueOrFn;
       newValue = fn(localStorageValue);
     }
 
-    if (newValue !== "") {
-      localStorage.setItem(key, newValue);
-    }
+    localStorage.setItem(key, JSON.stringify(newValue));
     setLocalStorageValue(newValue);
   };
   return [localStorageValue, setLocalStorageStateValue];
