@@ -3,7 +3,7 @@ import { selectAllConditionally } from "../../../database/queries/selectAll";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { ToDoGroup } from "../../../interfaces/group/ToDoGroup";
-import { FilterAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/FilterAuthorizedAttributes";
+import { FilterAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/FilterAuthorizedAttributes";
 
 export function authorizeFilter<R = any>(paramName: string) {
   return async function (

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { ToDoListDto } from "../../../dtos/list/ToDoList.dto";
-import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+import { ToDoListDto } from "../../../../../shared/list/ToDoList.dto";
+import { AuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/AuthorizedAttributes";
 
 import query from "../../../database/query";
 

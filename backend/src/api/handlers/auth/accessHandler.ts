@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { signToken } from "./signToken";
 import { randomBytes } from "crypto";
+import { UserAccessToken } from "../../../../../shared/auth/UserData.dto";
 
 /**
  * Creates access token for client with correct refresh token
@@ -10,7 +11,7 @@ import { randomBytes } from "crypto";
  */
 export async function accessHandler(
   req: Request,
-  res: Response,
+  res: Response<UserAccessToken>,
   next: NextFunction
 ) {
   // generate access cookie
@@ -21,5 +22,5 @@ export async function accessHandler(
     randomBytes(16).toString()
   );
 
-  res.send({ access: accessToken }); //send token to user
+  res.send({ accesstoken: accessToken }); //send token to user
 }

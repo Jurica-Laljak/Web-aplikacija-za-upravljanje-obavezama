@@ -3,12 +3,12 @@ import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { insert } from "../../../database/queries/insertGeneric";
 import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
-import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
-import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+import { ToDoDto } from "../../../../../shared/todo/ToDo.dto";
+import { AuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/AuthorizedAttributes";
 import { ToDoGroupInsert } from "../../../interfaces/group/ToDoGroupInsert";
 import { update } from "../../../database/queries/updateGeneric";
 import anonymousQuery from "../../../database/anonymousQuery";
-import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
+import { GroupAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/GroupAuthorizedAttributes";
 
 /**
  *

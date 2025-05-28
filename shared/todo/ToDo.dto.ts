@@ -1,4 +1,4 @@
-import { ToDo } from "../../interfaces/todo/ToDo";
+import { ToDo } from "../../backend/src/interfaces/todo/ToDo";
 
 export interface ToDoDto extends ToDo {
   todos: ToDoDto[];

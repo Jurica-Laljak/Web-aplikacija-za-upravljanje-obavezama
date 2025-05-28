@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/ToDoAuthorizedAttributes";
+import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/ToDoAuthorizedAttributes";
 import { ownsPrefixes } from "./helper/ownsPrefixes";
 import { delete_ } from "../../../database/queries/deleteGeneric";
 import query from "../../../database/query";

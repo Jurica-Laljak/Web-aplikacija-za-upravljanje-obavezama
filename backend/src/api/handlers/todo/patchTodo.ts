@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { ToDoInsert } from "../../../interfaces/todo/ToDoInsert";
 import { update } from "../../../database/queries/updateGeneric";
-import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+import { AuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/AuthorizedAttributes";
 import anonymousQuery from "../../../database/anonymousQuery";
-import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/ToDoAuthorizedAttributes";
+import { ToDoAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/ToDoAuthorizedAttributes";
 
 /**
  *

@@ -5,6 +5,10 @@ import { ErrorEnvelope } from "./interfaces/other/ErrorEnvelope";
 import config from "./config";
 import { connectToDb } from "./database/connectToDb";
 import { test } from "./test";
+import { readFileSync } from "fs";
+import { createServer } from "https";
+import { logger } from "./api/middleware/other/logger";
+import { log } from "console";
 
 async function run() {
   const PORT = 3000;
@@ -16,8 +20,19 @@ async function run() {
   app.use(bodyParser.json()); //parser for json bodies
   app.use(cookieParser(config.COOKIE_KEY)); //cookie parser
 
+  // enabling CORS
+  var cors = require("cors"); // enable CORS
+  const corsOptions = {
+    origin: ["http://localhost:5173"],
+    credentials: true,
+    // preflightContinue: true,
+    // allowedHeaders: ["Content-Type", "Authorization"],
+  };
+
+  app.use(cors(corsOptions));
+
   //API router
-  app.use("/api", apiRouter);
+  app.use("/api", logger, apiRouter);
 
   //error handler
   app.use(
@@ -41,22 +56,21 @@ async function run() {
 
   await connectToDb(); //database connection
 
+  // starting server
   app.listen(PORT, () => {
     console.log(`HTTP server started on ${PORT}`);
   });
 
   // starting secure server
-  // https
-  //   .createServer(
-  //     {
-  //       key: fs.readFileSync("key.pem"),
-  //       cert: fs.readFileSync("cert.pem"),
-  //     },
-  //     app
-  //   )
-  //   .listen(PORT, () => {
-  //     console.log(`HTTPS server started on ${PORT}`);
-  //   });
+  // createServer(
+  //   {
+  //     key: readFileSync("key.pem"),
+  //     cert: readFileSync("cert.pem"),
+  //   },
+  //   app
+  // ).listen(PORT, () => {
+  //   console.log(`HTTPS server started on ${PORT}`);
+  // });
 }
 
 run(); // run server

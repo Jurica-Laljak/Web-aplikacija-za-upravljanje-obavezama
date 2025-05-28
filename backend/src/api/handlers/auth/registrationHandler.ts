@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { UserDataDto } from "../../../dtos/auth/UserData.dto";
+import { UserDataDto } from "../../../../../shared/auth/UserData.dto";
+import { UserDataCore } from "../../../../../shared/auth/UserDataCore";
 import { UserData } from "../../../interfaces/auth/UserData";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import { signToken } from "./signToken";
@@ -17,8 +18,8 @@ import { ToDoListInsert } from "../../../interfaces/list/ToDoListInsert";
  * @returns
  */
 export async function registrationHandler(
-  req: Request<{}, {}, UserDataDto>,
-  res: Response,
+  req: Request<{}, {}, UserDataCore>,
+  res: Response<UserDataDto>,
   next: NextFunction
 ) {
   var username = req.body.username;
@@ -49,7 +50,7 @@ export async function registrationHandler(
       insert<UserDataInsert>(
         "userdata",
         { username: username, password: password, refreshtokenid: tokenId },
-        "UserData.userid"
+        "userid"
       )
     );
   } catch (err) {
@@ -95,9 +96,9 @@ export async function registrationHandler(
 
   //append cookies to resonse
   res.send({
-    refresh: refreshToken,
-    access: accessToken,
-    todolist: toDoListIds,
+    refreshtoken: refreshToken,
+    accesstoken: accessToken,
+    todoids: toDoListIds,
   }); //send tokens to client
   return;
 }

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
-import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
+import { ToDoDto } from "../../../../../shared/todo/ToDo.dto";
+import { GroupAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/GroupAuthorizedAttributes";
 import anonymousQuery from "../../../database/anonymousQuery";
 import { delete_ } from "../../../database/queries/deleteGeneric";
 

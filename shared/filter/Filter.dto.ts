@@ -1,5 +1,5 @@
-import { Filter } from "../../interfaces/filter/Filter";
-import { DateType } from "../../interfaces/type/DateType";
+import { Filter } from "../../backend/src/interfaces/filter/Filter";
+import { DateType } from "../../backend/src/interfaces/type/DateType";
 
 export interface SizeFilterDto extends Filter {
   size: number;

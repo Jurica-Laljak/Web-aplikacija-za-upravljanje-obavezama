@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
+import { GroupAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/GroupAuthorizedAttributes";
 import { ToDoGroup } from "../../../interfaces/group/ToDoGroup";
 
 export function authorizeGroup<R = any>(paramName: string) {

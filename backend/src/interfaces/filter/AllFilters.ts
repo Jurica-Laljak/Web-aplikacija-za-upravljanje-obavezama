@@ -3,7 +3,7 @@ import {
   PrefixFilterDto,
   PriorityFilterDto,
   TimePeriodFilterDto,
-} from "../../dtos/filter/Filter.dto";
+} from "../../../../shared/filter/Filter.dto";
 
 export interface AllFilters {
   sizefilters: SizeFilterDto[];

@@ -1,5 +1,4 @@
 import ListItem from "../list/ListItem";
-import Prefix from "../filter/PrefixFilter";
 
 interface ToDo extends ListItem {
   content: string;
@@ -13,7 +12,7 @@ interface ToDo extends ListItem {
   isForced: boolean;
   isArchived: boolean;
   toDos: ToDo[];
-  prefixes: Prefix[];
+  prefixes: number[];
 }
 
 export = ToDo;

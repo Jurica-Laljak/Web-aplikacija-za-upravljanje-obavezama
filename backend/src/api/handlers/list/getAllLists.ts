@@ -6,7 +6,7 @@ import {
 } from "../../../database/queries/selectAll";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
-import { ToDoListDto } from "../../../dtos/list/ToDoList.dto";
+import { ToDoListDto } from "../../../../../shared/list/ToDoList.dto";
 
 /**
  *

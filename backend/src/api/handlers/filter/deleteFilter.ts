@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { FilterAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/FilterAuthorizedAttributes";
+import { FilterAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/FilterAuthorizedAttributes";
 import { delete_ } from "../../../database/queries/deleteGeneric";
 import anonymousQuery from "../../../database/anonymousQuery";
 

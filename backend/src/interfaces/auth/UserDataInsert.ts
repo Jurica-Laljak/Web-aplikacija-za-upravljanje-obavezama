@@ -1,5 +1,5 @@
-import { UserDataDto } from "../../dtos/auth/UserData.dto";
+import { UserDataCore } from "../../../../shared/auth/UserDataCore";
 
-export interface UserDataInsert extends UserDataDto {
+export interface UserDataInsert extends UserDataCore {
   refreshtokenid: string;
 }

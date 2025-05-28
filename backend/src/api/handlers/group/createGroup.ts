@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { insert } from "../../../database/queries/insertGeneric";
-import { AuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/AuthorizedAttributes";
+import { AuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/AuthorizedAttributes";
 import { ToDoGroupInsert } from "../../../interfaces/group/ToDoGroupInsert";
-import { GroupDto } from "../../../dtos/group/Group.dto";
+import { GroupDto } from "../../../../../shared/group/Group.dto";
 import { ToDoGroup } from "../../../interfaces/group/ToDoGroup";
 
 /**

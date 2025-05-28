@@ -1,4 +1,4 @@
-export interface UserDataDto {
+export interface UserDataCore {
   username: string;
   password: string;
 }

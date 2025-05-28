@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
-import { GroupAuthorizedAttributes } from "../../../interfaces/auth/Authorized Attributes/GroupAuthorizedAttributes";
+import { GroupAuthorizedAttributes } from "../../../interfaces/auth/authorizedAttributes/GroupAuthorizedAttributes";
 import { delete_ } from "../../../database/queries/deleteGeneric";
 import query from "../../../database/query";
 import { multiInsert } from "../../../database/queries/multiInsert";

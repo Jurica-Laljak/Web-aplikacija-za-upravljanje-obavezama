@@ -5,7 +5,7 @@ import {
   PrefixFilterDto,
   PriorityFilterDto,
   TimePeriodFilterDto,
-} from "../../../dtos/filter/Filter.dto";
+} from "../../../../../shared/filter/Filter.dto";
 import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
 import query from "../../../database/query";
 import { AllFilters } from "../../../interfaces/filter/AllFilters";

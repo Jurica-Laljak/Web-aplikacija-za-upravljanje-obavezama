@@ -5,8 +5,9 @@ import { UserData } from "../../../interfaces/auth/UserData";
 import { selectAllConditionally } from "../../../database/queries/selectAll";
 import { signToken } from "./signToken";
 import anonymousQuery from "../../../database/anonymousQuery";
-import { UserDataDto } from "../../../dtos/auth/UserData.dto";
+import { UserDataCore } from "../../../../../shared/auth/UserDataCore";
 import { randomBytes } from "crypto";
+import { UserTokens } from "../../../../../shared/auth/UserData.dto";
 
 /**
  * Creates refresh token for client with correct credentials
@@ -15,8 +16,8 @@ import { randomBytes } from "crypto";
  * @returns
  */
 export async function refreshHandler(
-  req: Request<{}, {}, UserDataDto>,
-  res: Response,
+  req: Request<{}, {}, UserDataCore>,
+  res: Response<UserTokens>,
   next: NextFunction
 ) {
   var username = req.body.username;
@@ -64,7 +65,7 @@ export async function refreshHandler(
       randomBytes(16).toString()
     );
 
-    res.send({ refresh: refreshToken, access: accessToken }); //send tokens to user
+    res.send({ refresh: refreshToken, accesstoken: accessToken }); //send tokens to user
   } else {
     // failed authentication
     next(ErrorEnvelope.userCredentialsError());

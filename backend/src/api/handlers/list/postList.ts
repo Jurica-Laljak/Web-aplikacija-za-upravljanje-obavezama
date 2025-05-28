@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import query from "../../../database/query";
 import { ErrorEnvelope } from "../../../interfaces/other/ErrorEnvelope";
 import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
-import { ToDoDto } from "../../../dtos/todo/ToDo.dto";
+import { ToDoDto } from "../../../../../shared/todo/ToDo.dto";
 
 /**
  *
