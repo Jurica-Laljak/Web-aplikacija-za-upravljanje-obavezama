@@ -4,6 +4,9 @@ import NavBar from "./NavBar";
 import { FaRegUserCircle } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
 import { IconContext } from "react-icons";
+import IconText from "../other/IconText";
+import { FaHome } from "react-icons/fa";
+import ButtonLink from "../other/ButtonLink";
 
 function Sidebar() {
   const userContext = useContext(UserContext);
@@ -11,17 +14,23 @@ function Sidebar() {
   if (userContext) {
     return (
       <>
-        <div id="user-container">
-          <IconContext.Provider
-            value={{ color: "var(--main-color)", size: "2rem" }}
-          >
-            <div>
-              <FaRegUserCircle />
-            </div>
-          </IconContext.Provider>
-          <p className="text-c">{userContext.username}</p>
-        </div>
         <div id="sidebar-container">
+          <div id="header-container">
+            <div id="user-container">
+              <IconContext.Provider value={{ size: "2rem" }}>
+                <div>
+                  <FaRegUserCircle />
+                </div>
+              </IconContext.Provider>
+              <p className="text-c">{userContext.username}</p>
+            </div>
+            <ButtonLink to={"/"} style={{ border: "0px" }}>
+              <IconText
+                icon={<FaHome />}
+                iconStyle={{ size: "2.5rem" }}
+              ></IconText>
+            </ButtonLink>
+          </div>
           <NavBar></NavBar>
         </div>
       </>

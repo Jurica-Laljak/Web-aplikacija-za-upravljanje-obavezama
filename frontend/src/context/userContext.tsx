@@ -2,6 +2,7 @@ import * as React from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useParseLocalStorage } from "../hooks/useParseLocalStorage";
 import { UserContextType } from "../types/user/UserContext";
+import { RoutesString } from "../types/other/RoutesString";
 
 export const UserContext = React.createContext<UserContextType | null>(null);
 
@@ -12,7 +13,12 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [password, setPassword] = useLocalStorage("password");
   const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken");
   const [accessToken, setAccessToken] = useLocalStorage("accessToken");
-  const [toDoListIds, setToDoListIds] = useParseLocalStorage("toDoListIds");
+  const [lists, setLists] = useParseLocalStorage("lists");
+  const [openedTab, setOpenedTab] = React.useState<RoutesString | undefined>(
+    undefined
+  );
+  const [listid, setListid] = React.useState<number | undefined>(undefined);
+  const [showList, setShowList] = React.useState<boolean>(false);
 
   return (
     <UserContext.Provider
@@ -25,8 +31,14 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setRefreshToken,
         accessToken,
         setAccessToken,
-        toDoListIds,
-        setToDoListIds,
+        lists,
+        setLists,
+        openedTab,
+        setOpenedTab,
+        listid,
+        setListid,
+        showList,
+        setShowList,
       }}
     >
       {children}

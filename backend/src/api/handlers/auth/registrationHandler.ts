@@ -10,6 +10,7 @@ import { randomBytes } from "crypto";
 import { insert } from "../../../database/queries/insertGeneric";
 import { UserDataInsert } from "../../../interfaces/auth/UserDataInsert";
 import { ToDoListInsert } from "../../../interfaces/list/ToDoListInsert";
+import { ToDoListCore } from "../../../../../shared/list/ToDoListCore";
 
 /**
  * Registers client with given username and password
@@ -63,19 +64,19 @@ export async function registrationHandler(
   // created user
   var rows = [...sqlRes];
   var userId = rows[0].userid;
-  var toDoListIds: number[] = [];
+  var lists: ToDoListCore[] = [];
 
   for (let num = 1; num <= 3; num++) {
     try {
-      var sqlRes2 = await query<{ listid: number }>(
+      var sqlRes2 = await query<ToDoListCore>(
         insert<ToDoListInsert>(
           "todolist",
           { userid: userId, name: `Lista ${num}`, serialNumber: num },
-          "listid"
+          "listid, name"
         )
       );
       var rows2 = [...sqlRes2];
-      toDoListIds.push(rows2[0].listid);
+      lists.push(rows2[0]);
     } catch (err) {
       console.log(err);
       next(ErrorEnvelope.databaseError());
@@ -98,7 +99,7 @@ export async function registrationHandler(
   res.send({
     refreshtoken: refreshToken,
     accesstoken: accessToken,
-    todoids: toDoListIds,
+    lists: lists,
   }); //send tokens to client
   return;
 }

@@ -1,3 +1,5 @@
+import { ToDoListCore } from "../list/ToDoListCore";
+
 export interface UserAccessToken {
   accesstoken: string;
 }
@@ -7,5 +9,5 @@ export interface UserTokens extends UserAccessToken {
 }
 
 export interface UserDataDto extends UserTokens {
-  todoids: number[];
+  lists: ToDoListCore[];
 }

@@ -21,7 +21,11 @@ function Register() {
       }).then((data) => {
         userContext.setAccessToken(data.accesstoken);
         userContext.setRefreshToken(data.refreshtoken);
-        userContext.setToDoListIds(JSON.stringify(data.todoids));
+        userContext.setLists(
+          data.lists.map((el) => {
+            return { ...el, selected: false };
+          })
+        );
       });
       setSendReq(false);
     }

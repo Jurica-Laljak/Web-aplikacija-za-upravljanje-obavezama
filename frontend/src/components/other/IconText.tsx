@@ -6,21 +6,26 @@ function IconText(props: {
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   icon: React.ReactElement;
   iconStyle: IconContext;
+  className?: string;
+  id?: string;
 }) {
+  const coreStyle: React.CSSProperties = {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    height: "fit-content",
+    justifyContent: "center",
+  };
+
+  var divStyle: React.CSSProperties;
+  if (props.style && props.style.gap) {
+    divStyle = Object.assign({}, coreStyle, props.style);
+  } else {
+    divStyle = Object.assign({}, { gap: "0.75rem" }, coreStyle, props.style);
+  }
+
   return (
-    <div
-      style={Object.assign(
-        {
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          height: "fit-content",
-          justifContent: "center",
-          gap: "0.25rem",
-        },
-        props.style
-      )}
-    >
+    <div style={divStyle} id={props.id} className={props.className}>
       <IconContext.Provider value={Object.assign(props.iconStyle)}>
         <div
           style={{

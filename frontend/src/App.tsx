@@ -39,6 +39,14 @@ function App() {
       ),
     },
     {
+      path: "/list",
+      element: (
+        <ProtectedRoute>
+          <Home></Home>
+        </ProtectedRoute>
+      ),
+    },
+    {
       path: "/list/:id",
       element: (
         <ProtectedRoute>
