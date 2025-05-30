@@ -14,8 +14,6 @@ export type UserContextType = {
   setLists: (objOrFn: any) => void;
   listid: number | undefined;
   setListid: any;
-  openedTab: RoutesString | undefined;
-  setOpenedTab: (newSelected: RoutesString | undefined) => void;
-  showList: boolean;
-  setShowList: any;
+  // showList: boolean;
+  // setShowList: any;
 };

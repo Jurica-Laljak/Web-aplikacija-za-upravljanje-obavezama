@@ -1,10 +1,16 @@
-import { PropsWithChildren, useContext, useEffect, useState } from "react";
+import { PropsWithChildren, useContext, useEffect } from "react";
 import { UserContext } from "../../context/userContext";
 import { UserContextType } from "../../types/user/UserContext";
-import { Navigate } from "react-router";
+import { Navigate, useLocation, useParams } from "react-router";
+import { ViewContext } from "../../context/viewContext";
+import { ViewContextType } from "../../types/other/ViewContext";
+import { filterNames } from "../../data/filterNames";
+import { REACT_URI } from "../../data/URIs";
 
 function ProtectedRoute(props: PropsWithChildren) {
   const userContext = useContext(UserContext) as UserContextType;
+  const viewContext = useContext(ViewContext) as ViewContextType;
+  const location = useLocation();
   const contextValid =
     userContext.accessToken &&
     userContext.username &&
@@ -15,8 +21,9 @@ function ProtectedRoute(props: PropsWithChildren) {
     //
     // alert(JSON.stringify(userContext));
     //
+
     if (contextValid) {
-      if (window.location.href.includes("list")) {
+      if (location.pathname.includes("list")) {
         // checking if listid is user's
         const currentListId = window.location.href.slice(27);
         if (currentListId !== "") {
@@ -31,54 +38,42 @@ function ProtectedRoute(props: PropsWithChildren) {
 
           if (Number.isNaN(listidNum) || !idExists) {
             // if user doesn't own list, redirect back to home
-            window.location.href = "http://localhost:5173/";
+            window.location.href = REACT_URI;
           } else {
-            userContext.setOpenedTab("list");
-            // userContext.setLists(
-            //   userContext.lists.map((el) => {
-            //     if (el.listid == listidNum) {
-            //       return { ...el, selected: true };
-            //     } else {
-            //       return { ...el, selected: false };
-            //     }
-            //   })
-            // );
+            viewContext.setOpenedTab("list");
+            userContext.setListid(currentListId);
           }
         }
       } else {
-        userContext.setShowList(false);
-        if (window.location.href.includes("filters")) {
-          userContext.setOpenedTab("filters");
-          // userContext.setLists(
-          //   userContext.lists.map((el) => {
-          //     if (el.selected) {
-          //       return { ...el, selected: false };
-          //     } else {
-          //       return el;
-          //     }
-          //   })
-          // );
-        } else if (window.location.href.includes("calendar")) {
-          userContext.setOpenedTab("calendar");
-          // userContext.lists.map((el) => {
-          //   if (el.selected) {
-          //     return { ...el, selected: false };
-          //   } else {
-          //     return el;
-          //   }
-          // });
+        // list not in focus; need to clear current list id
+        userContext.setListid(undefined);
+
+        if (location.pathname.includes("filter")) {
+          // check if suffix is filter type
+          const uriSuffix = window.location.href.slice(29);
+          var contains = false;
+          filterNames.forEach((fi) =>
+            String(fi) === uriSuffix ? (contains = true) : null
+          );
+          if (contains) {
+            viewContext.setOpenedTab("filter");
+          } else {
+            window.location.href = REACT_URI;
+          }
+
+          for (let i = 0; i < filterNames.length; i++) {
+            if (window.location.href.includes(filterNames[i])) {
+              viewContext.setSelectedFilter(filterNames[i]);
+            }
+          }
+        } else if (location.pathname.includes("calendar")) {
+          viewContext.setOpenedTab("calendar");
         } else {
-          userContext.setOpenedTab(undefined);
+          viewContext.setOpenedTab(undefined);
         }
       }
     }
-  }, [window.location.href, userContext.listid]);
-
-  useEffect(() => {
-    if (!window.location.href.includes("list")) {
-      userContext.setListid(undefined);
-    }
-  }, [window.location.href]);
+  }, [location.pathname]);
 
   if (contextValid) return <>{props.children}</>;
 

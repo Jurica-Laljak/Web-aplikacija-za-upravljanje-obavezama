@@ -64,25 +64,25 @@ export async function registrationHandler(
   // created user
   var rows = [...sqlRes];
   var userId = rows[0].userid;
-  var lists: ToDoListCore[] = [];
+  // var lists: ToDoListCore[] = [];
 
-  for (let num = 1; num <= 3; num++) {
-    try {
-      var sqlRes2 = await query<ToDoListCore>(
-        insert<ToDoListInsert>(
-          "todolist",
-          { userid: userId, name: `Lista ${num}`, serialNumber: num },
-          "listid, name"
-        )
-      );
-      var rows2 = [...sqlRes2];
-      lists.push(rows2[0]);
-    } catch (err) {
-      console.log(err);
-      next(ErrorEnvelope.databaseError());
-      return;
-    }
-  }
+  // for (let num = 1; num <= 3; num++) {
+  //   try {
+  //     var sqlRes2 = await query<ToDoListCore>(
+  //       insert<ToDoListInsert>(
+  //         "todolist",
+  //         { userid: userId, name: `Lista ${num}`, serialNumber: num },
+  //         "listid, name"
+  //       )
+  //     );
+  //     var rows2 = [...sqlRes2];
+  //     lists.push(rows2[0]);
+  //   } catch (err) {
+  //     console.log(err);
+  //     next(ErrorEnvelope.databaseError());
+  //     return;
+  //   }
+  // }
 
   // generate refresh token
   const refreshToken = signToken("refresh", username, userId, tokenId);
@@ -99,7 +99,7 @@ export async function registrationHandler(
   res.send({
     refreshtoken: refreshToken,
     accesstoken: accessToken,
-    lists: lists,
+    // lists: lists,
   }); //send tokens to client
   return;
 }

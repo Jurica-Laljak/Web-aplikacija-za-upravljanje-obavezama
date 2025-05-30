@@ -1,1 +1,1 @@
-export type RoutesString = "list" | "filters" | "calendar";
+export type RoutesString = "list" | "filter" | "calendar";

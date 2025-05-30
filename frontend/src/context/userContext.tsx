@@ -14,11 +14,8 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken");
   const [accessToken, setAccessToken] = useLocalStorage("accessToken");
   const [lists, setLists] = useParseLocalStorage("lists");
-  const [openedTab, setOpenedTab] = React.useState<RoutesString | undefined>(
-    undefined
-  );
   const [listid, setListid] = React.useState<number | undefined>(undefined);
-  const [showList, setShowList] = React.useState<boolean>(false);
+  // const [showList, setShowList] = React.useState<boolean>(false);
 
   return (
     <UserContext.Provider
@@ -33,12 +30,10 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setAccessToken,
         lists,
         setLists,
-        openedTab,
-        setOpenedTab,
         listid,
         setListid,
-        showList,
-        setShowList,
+        // showList,
+        // setShowList
       }}
     >
       {children}

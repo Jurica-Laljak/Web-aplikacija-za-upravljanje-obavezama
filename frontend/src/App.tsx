@@ -11,6 +11,9 @@ import CalendarMiddleware from "./components/calendar/CalendarMiddleware";
 import "./styles/common.css";
 import RegisterMiddleware from "./components/register/RegisterMiddleware";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ViewContextProvider } from "./context/viewContext";
+import { filterNames } from "./data/filterNames";
+import HomeContent from "./components/app/HomeContent";
 
 function App() {
   const router = createBrowserRouter([
@@ -18,7 +21,9 @@ function App() {
       path: "/",
       element: (
         <ProtectedRoute>
-          <Home></Home>
+          <Home>
+            <HomeContent></HomeContent>
+          </Home>
         </ProtectedRoute>
       ),
     },
@@ -39,15 +44,7 @@ function App() {
       ),
     },
     {
-      path: "/list",
-      element: (
-        <ProtectedRoute>
-          <Home></Home>
-        </ProtectedRoute>
-      ),
-    },
-    {
-      path: "/list/:id",
+      path: "/list/:listId",
       element: (
         <ProtectedRoute>
           <Home>
@@ -57,7 +54,7 @@ function App() {
       ),
     },
     {
-      path: "/filters",
+      path: `/filter/:filterName`,
       element: (
         <ProtectedRoute>
           <Home>
@@ -84,7 +81,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <UserContextProvider>
-        <RouterProvider router={router}></RouterProvider>
+        <ViewContextProvider>
+          <RouterProvider router={router}></RouterProvider>
+        </ViewContextProvider>
       </UserContextProvider>
     </QueryClientProvider>
   );

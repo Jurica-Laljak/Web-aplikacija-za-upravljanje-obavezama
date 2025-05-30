@@ -9,5 +9,5 @@ export interface UserTokens extends UserAccessToken {
 }
 
 export interface UserDataDto extends UserTokens {
-  lists: ToDoListCore[];
+  // lists: ToDoListCore[];
 }

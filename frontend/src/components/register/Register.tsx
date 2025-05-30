@@ -21,11 +21,7 @@ function Register() {
       }).then((data) => {
         userContext.setAccessToken(data.accesstoken);
         userContext.setRefreshToken(data.refreshtoken);
-        userContext.setLists(
-          data.lists.map((el) => {
-            return { ...el, selected: false };
-          })
-        );
+        userContext.setLists([]);
       });
       setSendReq(false);
     }
