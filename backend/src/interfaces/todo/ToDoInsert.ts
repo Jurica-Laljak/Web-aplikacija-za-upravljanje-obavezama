@@ -5,7 +5,7 @@ export interface ToDoInsert {
   depth?: number;
   priority?: number;
   groupid?: number;
-  parenttodoid?: number;
-  isarchived?: boolean;
-  serialnumber: number;
+  // parenttodoid?: number;
+  // isarchived?: boolean;
+  // serialnumber: number;
 }

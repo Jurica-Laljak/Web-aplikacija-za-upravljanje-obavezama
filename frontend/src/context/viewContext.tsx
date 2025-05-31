@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ViewContextType } from "../types/other/ViewContext";
 import { RoutesString } from "../types/other/RoutesString";
 import { FilterName } from "../data/filterNames";
@@ -17,6 +17,10 @@ export const ViewContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [selectedFilter, setSelectedFilter] = React.useState<
     FilterName | undefined
   >(undefined);
+  const [fullscreenHeader, setFullscrenHeader] = useState<string>("");
+  const [fullscreenContent, setfullscreenContent] = useState<React.ReactNode>(
+    <></>
+  );
 
   return (
     <ViewContext.Provider
@@ -29,6 +33,10 @@ export const ViewContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setUri,
         elementFocused,
         setElementFocused,
+        fullscreenHeader,
+        setFullscrenHeader,
+        fullscreenContent,
+        setfullscreenContent,
       }}
     >
       {children}

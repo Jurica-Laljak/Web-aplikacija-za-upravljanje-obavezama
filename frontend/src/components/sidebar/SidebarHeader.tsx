@@ -14,14 +14,14 @@ function SidebarHeader() {
   return (
     <>
       <div id="user-container-wrapper">
-        <div id="user-container">
+        {/* <div id="user-container">
           <IconContext.Provider value={{ size: "2rem" }}>
             <div>
               <FaRegUserCircle />
             </div>
           </IconContext.Provider>
           <p className="text-c">{userContext.username}</p>
-        </div>
+        </div> */}
       </div>
     </>
   );

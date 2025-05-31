@@ -21,6 +21,9 @@ import { useLocation } from "react-router";
 import TextField from "../element/TextField";
 import { FilterContext } from "../../context/filterContext";
 import { FilterContextType } from "../../types/filter/FilterContextType";
+import { injectContent } from "../../handlers/app/injectContent";
+import { ToDoListInsert } from "../../../../backend/src/interfaces/list/ToDoListInsert";
+import { apiPostList } from "../../handlers/list/apiPostList";
 
 function NavBar() {
   const userContext = useContext(UserContext) as UserContextType;
@@ -57,16 +60,29 @@ function NavBar() {
 
   //handlers
   function handleAddListPress() {
-    viewContext.setElementFocused(true);
-    alert("lmao");
-  }
+    const emptyObj: ToDoListInsert = {
+      name: "",
+    };
 
-  function submitList() {}
+    injectContent(
+      viewContext,
+      userContext,
+      {},
+      "Dodajte popis obaveza",
+      emptyObj,
+      apiPostList
+    );
+  }
 
   return (
     <>
       <div className="navbar-container">
-        <ButtonLink className="navbar-option" style={buttonStyle} to={"/"}>
+        <ButtonLink
+          className="navbar-option"
+          id={location.pathname === "/" ? "selected-list-option" : ""}
+          style={buttonStyle}
+          to={"/"}
+        >
           <IconText icon={<FaHome />} iconStyle={largeIcon}>
             Početna stranica
           </IconText>
@@ -84,7 +100,7 @@ function NavBar() {
               Popisi obaveza
             </IconText>
             <div className="options-wrapper" id="todolistlabel">
-              <div
+              {/* <div
                 className="flex-div-column add-list-wrapper pop-in"
                 style={{
                   display: `${viewContext.elementFocused ? "block" : "none"}`,
@@ -98,7 +114,7 @@ function NavBar() {
                 >
                   Dodaj
                 </Button>
-              </div>
+              </div> */}
               {userContext.lists.map((li) => (
                 <ButtonLink
                   key={li.listid}

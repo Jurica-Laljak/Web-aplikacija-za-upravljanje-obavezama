@@ -21,6 +21,7 @@ body,
 #root {
   --main-color: #00a85f;
   --secondary-color: #3d3d3d;
+  --warning: #a80000;
 }
 
 ::selection {

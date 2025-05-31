@@ -1,6 +1,6 @@
 export interface ToDoGroupInsert {
   name: string;
-  serialnumber: number;
+  // serialnumber: number;
   highLevelSort?: string;
   midLevelSort?: string;
   lowLevelSort?: string;

@@ -38,11 +38,11 @@ CREATE TABLE ToDoList
   UserId INT NOT NULL,
   ListId SERIAL,
   Name VARCHAR(50) NOT NULL,
-  SerialNumber INT NOT NULL,
+  -- SerialNumber INT NOT NULL,
   HighLevelSort SORT DEFAULT 'timecreated:asc',
   MidLevelSort SORT,
   LowLevelSort SORT,
-  DefaultGroupId INT,
+  -- DefaultGroupId INT,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (ListId),
   FOREIGN KEY (UserId) REFERENCES UserData(UserId) ON DELETE CASCADE,
@@ -58,7 +58,7 @@ CREATE TABLE ToDoGroup
   MidLevelSort SORT,
   LowLevelSort SORT,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-  SerialNumber INT NOT NULL,
+  -- SerialNumber INT NOT NULL,
   PRIMARY KEY (GroupId),
   FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
   CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
@@ -122,22 +122,22 @@ CREATE TABLE GroupDefined
 CREATE TABLE ToDo
 (
   ListId INT NOT NULL,
+  GroupId INT,
   ToDoId SERIAL,
   Content VARCHAR(500) NOT NULL,
   DueDate DATE,
   IssueDate DATE,
   Priority INT DEFAULT 3,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-  Depth INT DEFAULT 1,
-  GroupId INT,
-  ParentToDoId INT,
-  IsArchived BOOLEAN DEFAULT 'False',
-  SerialNumber INT,
+  -- Depth INT DEFAULT 1,
+  -- ParentToDoId INT,
+  -- IsArchived BOOLEAN DEFAULT 'False',
+  -- SerialNumber INT,
   PRIMARY KEY (ToDoId),
   FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
   FOREIGN KEY (GroupId) REFERENCES ToDoGroup(GroupId) ON DELETE SET NULL,
-  FOREIGN KEY (ParentToDoId) REFERENCES ToDo(ToDoId) ON DELETE SET NULL,
-  CONSTRAINT depthLimit CHECK (Depth BETWEEN 1 AND 3),
+  -- FOREIGN KEY (ParentToDoId) REFERENCES ToDo(ToDoId) ON DELETE SET NULL,
+  -- CONSTRAINT depthLimit CHECK (Depth BETWEEN 1 AND 3),
   CONSTRAINT priorityIntegrity CHECK (Priority BETWEEN 1 AND 5)
 );
 
@@ -152,14 +152,14 @@ CREATE TABLE ToDoAssociates
 
 --initialize admin user and their 3 lists
 
-INSERT INTO UserData (Username, Password, RefreshTokenId)
-VALUES ('admin', 'gfOeKsixgkD0u3Xt7OuLgJ9fwEXFufEw97t8zG9o', 'D9u"�l[�:↓r♣�*p�');
+-- INSERT INTO UserData (Username, Password, RefreshTokenId)
+-- VALUES ('admin', 'gfOeKsixgkD0u3Xt7OuLgJ9fwEXFufEw97t8zG9o', 'D9u"�l[�:↓r♣�*p�');
 
-INSERT INTO ToDoList (UserId, Name, SerialNumber)
-VALUES (1, 'Lista 1', 1);
+-- INSERT INTO ToDoList (UserId, Name, SerialNumber)
+-- VALUES (1, 'Lista 1', 1);
 
-INSERT INTO ToDoList (UserId, Name, SerialNumber)
-VALUES (1, 'Lista 2', 2);
+-- INSERT INTO ToDoList (UserId, Name, SerialNumber)
+-- VALUES (1, 'Lista 2', 2);
 
-INSERT INTO ToDoList (UserId, Name, SerialNumber)
-VALUES (1, 'Lista 3', 3);
+-- INSERT INTO ToDoList (UserId, Name, SerialNumber)
+-- VALUES (1, 'Lista 3', 3);

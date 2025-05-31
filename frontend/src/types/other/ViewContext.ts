@@ -10,4 +10,8 @@ export type ViewContextType = {
   setOpenedTab: (newSelected: RoutesString | undefined) => void;
   selectedFilter: FilterName | undefined;
   setSelectedFilter: any;
+  fullscreenHeader: string;
+  setFullscrenHeader: any;
+  fullscreenContent: React.ReactNode;
+  setfullscreenContent: any;
 };
