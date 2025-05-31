@@ -1,0 +1,41 @@
+import { PropsWithChildren, useContext, useEffect } from "react";
+import Sidebar from "../sidebar/Sidebar";
+import ContentArea from "./ContentArea";
+import "../../styles/app/home.css";
+import { FilterContext } from "../../context/filterContext";
+import { FilterContextType } from "../../types/filter/FilterContextType";
+import { call } from "../../api/call";
+import { UserContext } from "../../context/userContext";
+import { UserContextType } from "../../types/user/UserContext";
+import { AllFilters } from "../../../../backend/src/interfaces/filter/AllFilters";
+import { SizeFilterDto } from "../../../../shared/filter/Filter.dto";
+
+function Home(props: PropsWithChildren) {
+  const filterContext = useContext(FilterContext) as FilterContextType;
+  const userContext = useContext(UserContext) as UserContextType;
+
+  useEffect(() => {
+    call<any, AllFilters>("/filter/", "get", {}, userContext).then((data) => {
+      filterContext.saveFilters("size", data.sizefilters);
+      filterContext.saveFilters("timeperiod", data.timeperiodfilters);
+      filterContext.saveFilters("priority", data.priorityfilters);
+      filterContext.saveFilters("prefix", data.prefixfilters);
+      //
+      // alert(JSON.stringify(filterContext));
+      //
+    });
+  }, []);
+
+  return (
+    <div id="app-div">
+      <Sidebar></Sidebar>
+      <div id="content-area-wrapper">
+        <div id="content-area-subwrapper">
+          <ContentArea>{props.children}</ContentArea>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Home;

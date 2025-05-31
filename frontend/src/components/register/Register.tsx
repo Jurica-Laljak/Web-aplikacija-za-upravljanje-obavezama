@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext";
-import Button from "../other/Button";
-import IconText from "../other/IconText";
+import Button from "../element/Button";
+import IconText from "../element/IconText";
 import { FaRegUserCircle } from "react-icons/fa";
 import CredentialsForm from "../login/CredentialsForm";
 import { call } from "../../api/call";

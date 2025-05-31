@@ -1,4 +1,4 @@
-import ButtonLink from "../other/ButtonLink";
+import ButtonLink from "../element/ButtonLink";
 
 function NotFoundPage() {
   return (

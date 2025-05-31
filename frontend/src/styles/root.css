@@ -22,3 +22,7 @@ body,
   --main-color: #00a85f;
   --secondary-color: #3d3d3d;
 }
+
+::selection {
+  background-color: color(from var(--main-color) srgb r g b / 0.65);
+}

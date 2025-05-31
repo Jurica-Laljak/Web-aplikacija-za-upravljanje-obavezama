@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { UserContext, UserContextType } from "../../context/userContext";
 import "../../styles/login/login.css";
-import Button from "../other/Button";
-import ButtonLink from "../other/ButtonLink";
+import Button from "../element/Button";
+import ButtonLink from "../element/ButtonLink";
 import CredentialsForm from "./CredentialsForm";
 import { CiLogin } from "react-icons/ci";
-import IconText from "../other/IconText";
+import IconText from "../element/IconText";
 
 function Login() {
   const userContext = useContext(UserContext) as UserContextType;

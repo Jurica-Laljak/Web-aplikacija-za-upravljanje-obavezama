@@ -4,7 +4,7 @@ import ToDoListMiddleware from "./components/todolist/ToDoListMiddleware";
 import FilterMiddleware from "./components/filter/FilterMiddleware";
 import NotFoundPage from "./components/auth/NotFoundPage";
 import { UserContextProvider } from "./context/userContext";
-import Home from "./components/app/Home";
+import Home from "./components/home/Home";
 import AntiProtectedRoute from "./components/auth/AntiProtectedRoute";
 import LoginMiddleware from "./components/login/LoginMiddleware";
 import CalendarMiddleware from "./components/calendar/CalendarMiddleware";
@@ -12,8 +12,11 @@ import "./styles/common.css";
 import RegisterMiddleware from "./components/register/RegisterMiddleware";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ViewContextProvider } from "./context/viewContext";
-import { filterNames } from "./data/filterNames";
-import HomeContent from "./components/app/HomeContent";
+
+import HomeContent from "./components/home/HomeContent";
+import ToDoListHeader from "./components/todolist/ToDoListHeader";
+import ToDoListContent from "./components/todolist/ToDoListContent";
+import { FilterContextProvider } from "./context/filterContext";
 
 function App() {
   const router = createBrowserRouter([
@@ -48,7 +51,10 @@ function App() {
       element: (
         <ProtectedRoute>
           <Home>
-            <ToDoListMiddleware></ToDoListMiddleware>
+            <ToDoListMiddleware>
+              <ToDoListHeader></ToDoListHeader>
+              <ToDoListContent></ToDoListContent>
+            </ToDoListMiddleware>
           </Home>
         </ProtectedRoute>
       ),
@@ -63,16 +69,16 @@ function App() {
         </ProtectedRoute>
       ),
     },
-    {
-      path: "/calendar",
-      element: (
-        <ProtectedRoute>
-          <Home>
-            <CalendarMiddleware></CalendarMiddleware>
-          </Home>
-        </ProtectedRoute>
-      ),
-    },
+    // {
+    //   path: "/calendar",
+    //   element: (
+    //     <ProtectedRoute>
+    //       <Home>
+    //         <CalendarMiddleware></CalendarMiddleware>
+    //       </Home>
+    //     </ProtectedRoute>
+    //   ),
+    // },
     { path: "*", element: <NotFoundPage></NotFoundPage> },
   ]);
 
@@ -82,7 +88,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <UserContextProvider>
         <ViewContextProvider>
-          <RouterProvider router={router}></RouterProvider>
+          <FilterContextProvider>
+            <RouterProvider router={router}></RouterProvider>
+          </FilterContextProvider>
         </ViewContextProvider>
       </UserContextProvider>
     </QueryClientProvider>

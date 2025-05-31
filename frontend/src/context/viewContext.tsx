@@ -10,7 +10,7 @@ export const ViewContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [uri, setUri] = React.useState<string>(REACT_URI);
-  const [fullscreenFocus, setFullscreenFocus] = React.useState<boolean>(false);
+  const [elementFocused, setElementFocused] = React.useState<boolean>(false);
   const [openedTab, setOpenedTab] = React.useState<RoutesString | undefined>(
     undefined
   );
@@ -27,8 +27,8 @@ export const ViewContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setSelectedFilter,
         uri,
         setUri,
-        fullscreenFocus,
-        setFullscreenFocus,
+        elementFocused,
+        setElementFocused,
       }}
     >
       {children}

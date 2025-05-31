@@ -4,7 +4,7 @@ import {
   FaRegEye,
   FaRegEyeSlash,
 } from "react-icons/fa";
-import IconText from "../other/IconText";
+import IconText from "../element/IconText";
 import { useState } from "react";
 
 function CredentialsForm(props: {

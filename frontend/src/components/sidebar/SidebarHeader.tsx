@@ -1,9 +1,9 @@
 import { IconContext } from "react-icons";
 import { FaRegUserCircle } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
-import IconText from "../other/IconText";
+import IconText from "../element/IconText";
 import { FaHome } from "react-icons/fa";
-import ButtonLink from "../other/ButtonLink";
+import ButtonLink from "../element/ButtonLink";
 import { useContext } from "react";
 import { UserContextType } from "../../types/user/UserContext";
 import "../../styles/app/sidebar-header.css";
@@ -13,7 +13,7 @@ function SidebarHeader() {
 
   return (
     <>
-      <div id="header-container">
+      <div id="user-container-wrapper">
         <div id="user-container">
           <IconContext.Provider value={{ size: "2rem" }}>
             <div>

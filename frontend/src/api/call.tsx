@@ -1,3 +1,4 @@
+import { EXPRESS_URI } from "../data/URIs";
 import { UserContextType } from "../types/user/UserContext";
 import axios from "axios";
 
@@ -8,22 +9,24 @@ export async function call<Req extends Object, Res extends Object>(
   userContext?: UserContextType,
   customHeaders?: HeadersInit
 ): Promise<Res> {
-  var authValue: HeadersInit = {};
-  if (userContext) {
-    authValue = { Authorization: "Bearer " + userContext.accessToken };
-  }
-
   var reqConfig: Axios.AxiosXHRConfig<unknown> = {
-    url: path,
-    baseURL: "http://localhost:3000/api",
+    url: EXPRESS_URI + path,
     method: httpMethod,
-    data: JSON.stringify(content),
     headers: {
+      Authorization: `Bearer ${userContext?.accessToken}`,
       Accept: "application/json",
       "Content-Type": "application/json",
       ...customHeaders,
     },
   };
+
+  if (httpMethod == "post" || httpMethod == "patch" || httpMethod == "put") {
+    reqConfig.data = content;
+  }
+
+  //
+  // alert(JSON.stringify(reqConfig));
+  //
 
   var res = await axios(reqConfig);
   console.log("> Response data: " + JSON.stringify(res.data));

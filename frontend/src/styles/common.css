@@ -62,6 +62,60 @@
   color: inherit;
 }
 
+.text-field {
+  padding: 0.5em;
+  width: 100%;
+  height: fit-content;
+  color: var(--secondary-color);
+  text-align: start;
+  border-radius: 0.5em;
+  border: none;
+  font-weight: bold;
+}
+
+.pop-in {
+  animation: pop-in 0.5s;
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.text-field:focus {
+  outline: none;
+}
+
+.flex-div-row {
+  display: flex;
+  flex-direction: "row";
+  justify-content: "center";
+  align-items: "center";
+  gap: 0.25em;
+  height: 100%;
+  width: fit-content;
+}
+
+.flex-div-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25em;
+  width: 100%;
+  height: fit-content;
+}
+
+.input-element {
+  width: 100%;
+}
+
 .invisible {
   display: none;
   visibility: hidden;

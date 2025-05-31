@@ -1,14 +1,14 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import "../../styles/app/sidebar.css";
-import ButtonLink from "../other/ButtonLink";
-import IconText from "../other/IconText";
+import ButtonLink from "../element/ButtonLink";
+import IconText from "../element/IconText";
 import { FaCalendarAlt, FaHome, FaRegListAlt } from "react-icons/fa";
 import { FaFilter } from "react-icons/fa";
 import { UserContext } from "../../context/userContext";
 import { UserContextType } from "../../types/user/UserContext";
 import { GoDotFill } from "react-icons/go";
 import { largeIcon, mediumIcon, smallIcon } from "../../types/style/iconStyle";
-import Button from "../other/Button";
+import Button from "../element/Button";
 import { MdExpandMore } from "react-icons/md";
 import { IoAddCircleSharp } from "react-icons/io5";
 import { IconContext } from "react-icons";
@@ -18,6 +18,9 @@ import { filterNames } from "../../data/filterNames";
 import { capitalize } from "../../helper/capitalize";
 import { filterIcon } from "../../data/filterIcon";
 import { useLocation } from "react-router";
+import TextField from "../element/TextField";
+import { FilterContext } from "../../context/filterContext";
+import { FilterContextType } from "../../types/filter/FilterContextType";
 
 function NavBar() {
   const userContext = useContext(UserContext) as UserContextType;
@@ -52,6 +55,14 @@ function NavBar() {
     margin: "0.25rem",
   };
 
+  //handlers
+  function handleAddListPress() {
+    viewContext.setElementFocused(true);
+    alert("lmao");
+  }
+
+  function submitList() {}
+
   return (
     <>
       <div className="navbar-container">
@@ -72,7 +83,22 @@ function NavBar() {
             >
               Popisi obaveza
             </IconText>
-            <div className="options-wrapper">
+            <div className="options-wrapper" id="todolistlabel">
+              <div
+                className="flex-div-column add-list-wrapper pop-in"
+                style={{
+                  display: `${viewContext.elementFocused ? "block" : "none"}`,
+                }}
+              >
+                <TextField></TextField>
+                <Button
+                  className="interactable"
+                  style={{ width: "100%" }}
+                  onClick={() => submitList()}
+                >
+                  Dodaj
+                </Button>
+              </div>
               {userContext.lists.map((li) => (
                 <ButtonLink
                   key={li.listid}
@@ -93,6 +119,7 @@ function NavBar() {
               <Button
                 className="list-option transition interactable"
                 style={Object.assign(listOptionStyle)}
+                onClick={() => handleAddListPress()}
               >
                 <IconText icon={<IoAddCircleSharp />} iconStyle={largeIcon}>
                   Dodajte popis obaveza
