@@ -17,6 +17,9 @@ import HomeContent from "./components/home/HomeContent";
 import ToDoListHeader from "./components/todolist/ToDoListHeader";
 import ToDoListContent from "./components/todolist/ToDoListContent";
 import { FilterContextProvider } from "./context/filterContext";
+import { ListContext, ListContextProvider } from "./context/listContext";
+import ToDoListFooter from "./components/todolist/ToDoListFooter";
+import FilterDOM from "./components/filter/FilterContent";
 
 function App() {
   const router = createBrowserRouter([
@@ -51,10 +54,13 @@ function App() {
       element: (
         <ProtectedRoute>
           <Home>
-            <ToDoListMiddleware>
-              <ToDoListHeader></ToDoListHeader>
-              <ToDoListContent></ToDoListContent>
-            </ToDoListMiddleware>
+            <ListContextProvider>
+              <ToDoListMiddleware>
+                <ToDoListHeader></ToDoListHeader>
+                <ToDoListContent></ToDoListContent>
+                <ToDoListFooter></ToDoListFooter>
+              </ToDoListMiddleware>
+            </ListContextProvider>
           </Home>
         </ProtectedRoute>
       ),
@@ -64,7 +70,7 @@ function App() {
       element: (
         <ProtectedRoute>
           <Home>
-            <FilterMiddleware></FilterMiddleware>
+            <FilterDOM></FilterDOM>
           </Home>
         </ProtectedRoute>
       ),

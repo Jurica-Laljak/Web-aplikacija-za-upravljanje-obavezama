@@ -62,6 +62,14 @@
   color: inherit;
 }
 
+/* .rename-button {
+  background-color: var(--rename);
+}
+
+.delete-button {
+  background-color: var(--delete);
+} */
+
 .text-field {
   padding: 0.5em;
   width: 100%;
@@ -131,4 +139,27 @@
 
 .interactable {
   background-color: var(--secondary-color);
+}
+
+.header {
+  text-decoration: underline;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  /* box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); */
+  padding: 0.75rem 1rem;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
 }

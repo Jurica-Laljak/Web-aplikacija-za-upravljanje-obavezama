@@ -7,7 +7,7 @@ import { UserContextType } from "../../types/user/UserContext";
 export function injectContent(
   viewContext: ViewContextType,
   userContext: UserContextType,
-  handlerContext: ListContextType | FilterContextType,
+  handlerContext: ListContextType | FilterContextType | undefined,
   name: string,
   emptyObj: Object,
   onSubmit: any,
@@ -20,7 +20,11 @@ export function injectContent(
     <form
       action={async (formData) => {
         const formResults = Object.fromEntries(formData.entries());
-        await onSubmit(formResults, userContext, handlerContext);
+        if (handlerContext) {
+          await onSubmit(formResults, userContext, handlerContext);
+        } else {
+          await onSubmit(formResults, userContext);
+        }
         viewContext.setElementFocused(false);
       }}
     >
@@ -37,6 +41,12 @@ export function injectContent(
         <input
           type="submit"
           value="Predajte"
+          style={{
+            background: "var(--main-color)",
+            border: "white",
+            color: "white",
+            fontSize: "large",
+          }}
           className="button-wrapper flex-div-row"
         ></input>
       </div>

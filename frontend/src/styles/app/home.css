@@ -9,7 +9,7 @@
 
 #content-area-wrapper {
   width: 99.5%;
-  height: 98%;
+  height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -18,26 +18,30 @@
 
 #content-area-subwrapper {
   height: 100%;
+  width: 100%;
   padding: 0.5rem;
 }
 
-#fullscreen-div {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: width 0.3s ease, height 0.3s ease;
-  z-index: 999;
+.fullscreen-div {
+  display: none;
+  width: 0px;
+  height: 0px;
 }
 
 .show-fullscreen {
   background-color: rgba(255, 255, 255, 0);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  transition: width 0.3s ease, height 0.3s ease;
+  z-index: 999;
+  display: flex;
 }
 
 #fullscreen-content-wrapper {
@@ -91,6 +95,6 @@
 
 #quit-button {
   color: white;
-  background-color: var(--main-color);
+  background-color: var(--warning);
   border-color: white;
 }

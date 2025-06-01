@@ -67,7 +67,7 @@ function NavBar() {
     injectContent(
       viewContext,
       userContext,
-      {},
+      undefined,
       "Dodajte popis obaveza",
       emptyObj,
       apiPostList

@@ -8,3 +8,9 @@ export const filterIcon = {
   timeperiod: <IoIosTimer />,
   prefix: <SiAutoprefixer />,
 };
+
+export const filterIconMap = new Map();
+filterIconMap.set("size", <IoMdResize />);
+filterIconMap.set("timeperiod", <IoIosTimer />);
+filterIconMap.set("priority", <GoNumber />);
+filterIconMap.set("prefix", <SiAutoprefixer />);

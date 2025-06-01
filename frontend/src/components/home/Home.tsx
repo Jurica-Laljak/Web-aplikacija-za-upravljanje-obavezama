@@ -40,8 +40,9 @@ function Home(props: PropsWithChildren) {
         </div>
       </div>
       <div
-        id="fullscreen-div"
-        className={viewContext.elementFocused ? "show-fullscreen" : "invisible"}
+        className={
+          viewContext.elementFocused ? "show-fullscreen" : "fullscreen-div"
+        }
       >
         <div id="fullscreen-content-wrapper">
           <div id="inject-header">{viewContext.fullscreenHeader}</div>

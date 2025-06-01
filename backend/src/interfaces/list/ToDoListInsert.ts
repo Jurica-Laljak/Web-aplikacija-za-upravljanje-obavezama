@@ -4,6 +4,6 @@ export interface ToDoListInsert {
   highLevelSort?: string;
   midLevelSort?: string;
   lowLevelSort?: string;
-  highlightdefault?: boolean;
+  // highlightdefault?: boolean;
   // defaultGroupId?: number;
 }

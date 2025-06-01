@@ -1,0 +1,20 @@
+#filter-container-wrapper {
+  display: grid;
+  grid-template-rows: 6rem 1fr;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+#filter-header {
+  background-color: var(--main-color);
+  width: 100%;
+  padding: 0.5rem;
+  color: white;
+  align-items: center;
+  font-style: italic;
+}
+
+.filter-icontext {
+  font-size: 3rem;
+}
