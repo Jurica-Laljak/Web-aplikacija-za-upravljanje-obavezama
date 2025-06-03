@@ -3,6 +3,8 @@ import { UserContext } from "../../context/userContext";
 import { UserContextType } from "../../types/user/UserContext";
 import { ListContext } from "../../context/listContext";
 import { ListContextType } from "../../types/list/ListContextType";
+import { ToDoListDto } from "../../../../shared/list/ToDoList.dto";
+import { call } from "../../api/call";
 
 function ToDoListMiddleware(props: PropsWithChildren) {
   const isMounted = useRef(false);
@@ -11,7 +13,32 @@ function ToDoListMiddleware(props: PropsWithChildren) {
 
   useEffect(() => {
     if (isMounted.current) {
-      // alert(JSON.stringify(listContext));
+      call<any, ToDoListDto>(
+        `/list/${userContext.listid}`,
+        "get",
+        {},
+        userContext
+      ).then((data) => {
+        listContext.setName(data.name);
+        listContext.updateListAttributes(
+          "highlevelsort",
+          data.highlevelsort,
+          false
+        );
+        listContext.updateListAttributes(
+          "midlevelsort",
+          data.midlevelsort,
+          false
+        );
+        listContext.updateListAttributes(
+          "lowlevelsort",
+          data.lowlevelsort,
+          false
+        );
+        listContext.flushContent();
+        listContext.createTodos(data.todos, false);
+        listContext.createGroups(data.groups, false);
+      });
     } else {
       isMounted.current = true;
     }

@@ -17,7 +17,24 @@ function ToDoListHeader() {
     border: "none",
   };
 
-  function handleSortChange(x: any) {}
+  function handleSortChange(newValue: string, level: number) {
+    alert(JSON.stringify(newValue));
+    if (level == 0) {
+      listContext.updateListAttributes("highlevelsort", newValue);
+    } else if (level == 1) {
+      if (newValue === ".hide") {
+        listContext.updateListAttributes("midlevelsort", "");
+      } else {
+        listContext.updateListAttributes("midlevelsort", newValue);
+      }
+    } else if (level == 2) {
+      if (newValue === ".hide") {
+        listContext.updateListAttributes("lowlevelsort", "");
+      } else {
+        listContext.updateListAttributes("midlevelsort", newValue);
+      }
+    }
+  }
 
   return (
     <div id="list-header-container">
@@ -36,17 +53,7 @@ function ToDoListHeader() {
           <select
             className="sort-dropdown-content"
             onChange={(e) => {
-              handleSortChange(e.target);
-            }}
-          >
-            <option value="">{listContext.highlevelsort}</option>
-            <option value="lmao">prefixalphabetical:desc</option>
-          </select>
-          <div className="sort-interfix">, zatim</div>
-          <select
-            className="sort-dropdown-content"
-            onChange={(e) => {
-              handleSortChange(e.target);
+              handleSortChange(e.target.value, 0);
             }}
           >
             <option value="">{listContext.highlevelsort}</option>
@@ -55,11 +62,50 @@ function ToDoListHeader() {
           <select
             className="sort-dropdown-content"
             onChange={(e) => {
-              handleSortChange(e.target);
+              handleSortChange(e.target.value, 1);
             }}
           >
-            <option value="">{listContext.highlevelsort}</option>
+            <option value="">
+              {listContext.midlevelsort === "" ? (
+                <p> - </p>
+              ) : (
+                listContext.midlevelsort
+              )}
+            </option>
+            {listContext.midlevelsort === "" ? (
+              <></>
+            ) : (
+              <option value=".hide"> - Uklonite sortiranje - </option>
+            )}
+            <option value="bruh">Bruh</option>
           </select>
+
+          {listContext.midlevelsort === "" ? (
+            <></>
+          ) : (
+            <>
+              <div className="sort-interfix">, zatim</div>
+              <select
+                className="sort-dropdown-content"
+                onChange={(e) => {
+                  handleSortChange(e.target.value, 2);
+                }}
+              >
+                <option value="">
+                  {listContext.lowlevelsort === "" ? (
+                    <p> - </p>
+                  ) : (
+                    listContext.lowlevelsort
+                  )}
+                </option>
+                {listContext.lowlevelsort === "" ? (
+                  <></>
+                ) : (
+                  <option value=".hide"> - Uklonite sortiranje - </option>
+                )}
+              </select>
+            </>
+          )}
         </form>
         {/* <div id="sort-wrapper">
           

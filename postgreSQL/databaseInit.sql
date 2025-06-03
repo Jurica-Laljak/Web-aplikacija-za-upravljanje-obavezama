@@ -1,22 +1,30 @@
 --type definition
 
-CREATE TYPE SORT AS ENUM (
+CREATE TYPE SORTTYPE AS ENUM (
   'timecreated:asc',
   'timecreated:desc',
   'alphabetical:asc',
   'alphabetical:desc',
   'duedate:asc',
   'duedate:desc',
-  'prefixalphabetical:asc',
-  'prefixalphabetical:desc',
   'priority:asc',
   'priority:desc'
 );
 
-CREATE TYPE DATETYPE AS ENUM (
-  'duedate',
-  'issuedate'
+CREATE TYPE DAYOFWEEK AS ENUM (
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday'
 );
+
+-- CREATE TYPE DATETYPE AS ENUM (
+--   'duedate',
+--   'issuedate'
+-- );
 
 --create tables
 
@@ -39,9 +47,9 @@ CREATE TABLE ToDoList
   ListId SERIAL,
   Name VARCHAR(50) NOT NULL,
   -- SerialNumber INT NOT NULL,
-  HighLevelSort SORT DEFAULT 'timecreated:asc',
-  MidLevelSort SORT,
-  LowLevelSort SORT,
+  HighLevelSort SORTTYPE DEFAULT 'timecreated:asc',
+  MidLevelSort SORTTYPE,
+  LowLevelSort SORTTYPE,
   -- DefaultGroupId INT,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (ListId),
@@ -54,14 +62,14 @@ CREATE TABLE ToDoGroup
   ListId INT NOT NULL,
   GroupId SERIAL,
   Name VARCHAR(50) NOT NULL,
-  HighLevelSort SORT DEFAULT 'timecreated:asc',
-  MidLevelSort SORT,
-  LowLevelSort SORT,
+  -- HighLevelSort SORTTYPE DEFAULT 'timecreated:asc',
+  -- MidLevelSort SORTTYPE,
+  -- LowLevelSort SORTTYPE,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
-  -- SerialNumber INT NOT NULL,
+  SerialNumber INT NOT NULL,
   PRIMARY KEY (GroupId),
-  FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE,
-  CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
+  FOREIGN KEY (ListId) REFERENCES ToDoList(ListId) ON DELETE CASCADE
+  -- CONSTRAINT sortOrder CHECK (NOT ((MidLevelSort IS NULL) AND (LowLevelSort IS NOT NULL)))
 );
 
 CREATE TABLE Filter
@@ -102,9 +110,9 @@ CREATE TABLE PriorityFilter
 CREATE TABLE TimePeriodFilter
 (
   FilterId INT NOT NULL,
-  DateType DATETYPE,
-  LowerBound DATE,
-  HigherBound DATE,
+  -- DateType DATETYPE,
+  LowerBound DAYOFWEEK,
+  HigherBound DAYOFWEEK,
   PRIMARY KEY (FilterId),
   FOREIGN KEY (FilterId) REFERENCES Filter(FilterId) ON DELETE CASCADE,
   CONSTRAINT boundDefined CHECK ((LowerBound IS NOT NULl) OR (HigherBound IS NOT NULl))
@@ -126,8 +134,8 @@ CREATE TABLE ToDo
   ToDoId SERIAL,
   Content VARCHAR(500) NOT NULL,
   DueDate DATE,
-  IssueDate DATE,
-  Priority INT DEFAULT 3,
+  -- IssueDate DATE,
+  Priority INT DEFAULT 2,
   TimeCreated TIMESTAMP(0) DEFAULT CURRENT_TIMESTAMP,
   -- Depth INT DEFAULT 1,
   -- ParentToDoId INT,
@@ -141,14 +149,14 @@ CREATE TABLE ToDo
   CONSTRAINT priorityIntegrity CHECK (Priority BETWEEN 1 AND 5)
 );
 
-CREATE TABLE ToDoAssociates
-(
-  ToDoId INT NOT NULL,
-  FilterId INT NOT NULL,
-  PRIMARY KEY (ToDoId, FilterId),
-  FOREIGN KEY (ToDoId) REFERENCES ToDo(ToDoId) ON DELETE CASCADE,
-  FOREIGN KEY (FilterId) REFERENCES PrefixFilter(FilterId) ON DELETE CASCADE
-);
+-- CREATE TABLE ToDoAssociates
+-- (
+--   ToDoId INT NOT NULL,
+--   FilterId INT NOT NULL,
+--   PRIMARY KEY (ToDoId, FilterId),
+--   FOREIGN KEY (ToDoId) REFERENCES ToDo(ToDoId) ON DELETE CASCADE,
+--   FOREIGN KEY (FilterId) REFERENCES PrefixFilter(FilterId) ON DELETE CASCADE
+-- );
 
 --initialize admin user and their 3 lists
 

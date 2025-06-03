@@ -76,9 +76,8 @@ export async function getAllFilters(
   // select timeperiodfilters
   try {
     var timePeriodFilters = await query<TimePeriodFilterDto>(`SELECT f.*,
-    tpf.datetype::text AS datetype,
-		DATE(tpf.lowerbound)::text AS lowerbound,
-    DATE(tpf.higherbound)::text AS higherbound
+		tpf.lowerbound AS lowerbound,
+    tpf.higherbound AS higherbound
 		
     FROM filter f JOIN timeperiodfilter tpf
 		ON f.filterid = tpf.filterid
@@ -91,9 +90,9 @@ export async function getAllFilters(
   }
 
   // merge all data and send to client
-  returnArray.prefixfilters = [...prefixFilters];
   returnArray.sizefilters = [...sizeFilters];
-  returnArray.priorityfilters = [...priorityFilters];
   returnArray.timeperiodfilters = [...timePeriodFilters];
+  returnArray.prefixfilters = [...prefixFilters];
+  returnArray.priorityfilters = [...priorityFilters];
   res.send(returnArray);
 }

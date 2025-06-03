@@ -6,29 +6,27 @@ import {
   TimePeriodFilterDto,
 } from "../../../../shared/filter/Filter.dto";
 import { FilterName } from "../../data/filterNames";
+import { FilterInternal } from "./FilterInternal";
 
 export type FilterContextType = {
-  sizefilters: Map<number, SizeFilterDto>;
+  filters: Array<FilterInternal>;
+  // sizefilters: Map<number, SizeFilterDto>;
   // saveSizeFilters: (sf: SizeFilterDto) => void;
   // updateSizeFilter: (id: string) => void;
   // deleteSizeFilter: (id: string) => void;
-  timeperiodfilters: Map<number, TimePeriodFilterDto>;
+  // timeperiodfilters: Map<number, TimePeriodFilterDto>;
   // saveTimeperiodFilters: (tpf: TimePeriodFilterDto) => void;
   // updateTimeperiodFilter: (id: string) => void;
   // deleteTimeperiodFilter: (id: string) => void;
-  priorityfilters: Map<number, PriorityFilterDto>;
+  // priorityfilters: Map<number, PriorityFilterDto>;
   // savePriorityFilters: (pf: PriorityFilterDto) => void;
   // updatePriorityFilter: (id: string) => void;
   // deletePriorityFilter: (id: string) => void;
-  prefixfilters: Map<number, PrefixFilterDto>;
+  // prefixfilters: Map<number, PrefixFilterDto>;
   // savePrefixFilters: (sf: SizeFilterDto) => void;
   // updatePrefixFilter: (id: string) => void;
   // deletePrefixFilter: (id: string) => void;
-  saveFilters: <T extends Filter>(type: string, filterDtos: T[]) => void;
-  updateFilter: <T extends Filter>(
-    type: string,
-    id: number,
-    updateObj: Partial<T>
-  ) => void;
-  deleteFilter: (type: string, id: number) => void;
+  saveFilters: (filterDtos: Filter[]) => void;
+  updateFilter: (newObject: FilterInternal) => void;
+  deleteFilter: (id: number) => void;
 };

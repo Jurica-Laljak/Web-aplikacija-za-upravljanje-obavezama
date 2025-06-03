@@ -13,7 +13,7 @@ function ToDoListFooter() {
     <div id="list-footer-container" className="flex-row-div">
       <div id="list-footer-subcontainer">
         <Button
-          className="interactable list-add-option header"
+          className="interactable list-add-option"
           onClick={() => console.log()}
           style={borderStyle}
         >
@@ -22,7 +22,7 @@ function ToDoListFooter() {
           </IconText>
         </Button>
         <Button
-          className="interactable list-add-option header"
+          className="interactable list-add-option"
           onClick={() => console.log()}
           style={borderStyle}
         >

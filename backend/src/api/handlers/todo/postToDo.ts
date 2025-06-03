@@ -90,5 +90,5 @@ export async function postTodo(
   }
 
   // return ToDoDto
-  res.send({ ...returnVal[0], todos: [], prefixes: prefixes || [] });
+  res.send(returnVal[0]);
 }

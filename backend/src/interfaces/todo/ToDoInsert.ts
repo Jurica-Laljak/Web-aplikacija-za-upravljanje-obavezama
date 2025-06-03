@@ -1,10 +1,10 @@
 export interface ToDoInsert {
   content: string;
   duedate?: Date;
-  issuedate?: Date;
-  depth?: number;
   priority?: number;
-  groupid?: number;
+  groupid?: number | null;
+  // depth?: number;
+  // issuedate?: Date;
   // parenttodoid?: number;
   // isarchived?: boolean;
   // serialnumber: number;

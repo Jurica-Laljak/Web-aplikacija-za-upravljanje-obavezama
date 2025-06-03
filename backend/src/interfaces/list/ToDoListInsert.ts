@@ -1,9 +1,9 @@
 export interface ToDoListInsert {
   name: string;
   // serialNumber: number;
-  highLevelSort?: string;
-  midLevelSort?: string;
-  lowLevelSort?: string;
+  highlevelsort?: string | null;
+  midlevelsort?: string | null;
+  lowlevelsort?: string | null;
   // highlightdefault?: boolean;
   // defaultGroupId?: number;
 }

@@ -3,7 +3,12 @@ import {
   PriorityFilterDto,
   SizeFilterDto,
   TimePeriodFilterDto,
-} from "../../../shared/filter/Filter.dto";
+} from "../../../../shared/filter/Filter.dto";
+import { FilterInternal } from "../../types/filter/FilterInternal";
+
+export function assertIsFilterInternal(
+  value: unknown
+): asserts value is FilterInternal {}
 
 export function assertIsSizeFilter(
   value: unknown

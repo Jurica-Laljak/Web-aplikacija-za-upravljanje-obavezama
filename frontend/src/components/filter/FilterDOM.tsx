@@ -2,6 +2,7 @@ import FilterContentHeader from "./FilterContentHeader";
 import { useLocation } from "react-router";
 import "../../styles/filter/filter-content.css";
 import FilterContentArea from "./FilterContentArea";
+import { useEffect, useRef } from "react";
 
 function FilterDOM() {
   const location = useLocation();
@@ -12,7 +13,7 @@ function FilterDOM() {
         type={location.pathname.replace("/filter/", "")}
       ></FilterContentHeader>
       <FilterContentArea
-        type={location.pathname.replace("/filter/", "")}
+        type={[location.pathname.replace("/filter/", ""), "filter"].join("")}
       ></FilterContentArea>
     </div>
   );

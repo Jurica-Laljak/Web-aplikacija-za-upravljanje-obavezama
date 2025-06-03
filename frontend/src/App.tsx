@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ToDoListMiddleware from "./components/todolist/ToDoListMiddleware";
-import FilterMiddleware from "./components/filter/FilterMiddleware";
+import FilterMiddleware from "./components/filter/FilterDOM";
 import NotFoundPage from "./components/auth/NotFoundPage";
 import { UserContextProvider } from "./context/userContext";
 import Home from "./components/home/Home";
@@ -19,7 +19,7 @@ import ToDoListContent from "./components/todolist/ToDoListContent";
 import { FilterContextProvider } from "./context/filterContext";
 import { ListContext, ListContextProvider } from "./context/listContext";
 import ToDoListFooter from "./components/todolist/ToDoListFooter";
-import FilterDOM from "./components/filter/FilterContent";
+import FilterDOM from "./components/filter/FilterDOM";
 
 function App() {
   const router = createBrowserRouter([

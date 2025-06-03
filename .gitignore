@@ -8,5 +8,6 @@ dist/
 *.pem
 *.env
 
-# Ignore temp file "tmp.txt"
+# Ignore temp files
 tmp.txt
+example.json

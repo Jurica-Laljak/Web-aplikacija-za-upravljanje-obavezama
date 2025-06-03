@@ -21,13 +21,14 @@ function Home(props: PropsWithChildren) {
 
   useEffect(() => {
     call<any, AllFilters>("/filter/", "get", {}, userContext).then((data) => {
-      filterContext.saveFilters("size", data.sizefilters);
-      filterContext.saveFilters("timeperiod", data.timeperiodfilters);
-      filterContext.saveFilters("priority", data.priorityfilters);
-      filterContext.saveFilters("prefix", data.prefixfilters);
-      //
+      // alert(JSON.stringify(data));
+
+      filterContext.saveFilters(data.sizefilters);
+      filterContext.saveFilters(data.timeperiodfilters);
+      filterContext.saveFilters(data.priorityfilters);
+      filterContext.saveFilters(data.prefixfilters);
+
       // alert(JSON.stringify(filterContext));
-      //
     });
   }, []);
 
