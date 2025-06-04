@@ -8,5 +8,5 @@
   width: 100%;
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: 8rem 1fr 5.75rem;
+  grid-template-rows: 7rem 1fr 5rem;
 }

@@ -32,7 +32,7 @@ export async function getListAndContents(
 			ELSE json_agg(DISTINCT jsonb_build_object(
 			'listid', todo.listid,
 			'todoid', todo.todoid,
-            'contents', todo.content,
+            'content', todo.content,
             'duedate', todo.duedate,
             'priority', todo.priority,
             'groupid', todo.groupid,
@@ -52,11 +52,9 @@ export async function getListAndContents(
     return;
   }
 
-  console.log("Lol!");
-
-  console.log(`List:
-    ${JSON.stringify([...lists][0])}
-    `);
+  // console.log(`List:
+  //   ${JSON.stringify([...lists][0])}
+  //   `);
 
   var list = [...lists][0];
 
@@ -83,7 +81,9 @@ export async function getListAndContents(
 				
 	WHERE todogroup.listid = ${res.locals.listid}
 	
-	GROUP BY todogroup.groupid`;
+	GROUP BY todogroup.groupid
+  
+	ORDER BY todogroup.serialnumber ASC;`;
 
   try {
     var groups = await query<GroupDto>(queryStr2);
@@ -93,9 +93,9 @@ export async function getListAndContents(
     return;
   }
 
-  console.log(`Groups:
-    ${JSON.stringify([...groups])}
-    `);
+  // console.log(`Groups:
+  //   ${JSON.stringify([...groups])}
+  //   `);
 
   var retObj = Object.assign({}, list, { groups: [...groups] });
   res.send(retObj);

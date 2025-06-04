@@ -1,4 +1,14 @@
 #list-content-container {
   height: 100%;
   width: 100%;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+#list-content-subcontainer {
+  height: 100%;
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0.5rem;
+  border: 0.25rem dashed var(--secondary-color);
 }

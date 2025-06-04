@@ -45,23 +45,29 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
     filters,
   };
 
+  function callRefreshList() {
+    refreshList(refreshListArgs);
+  }
+
   function flushContent() {
     setGroups([]);
     setTodos([]);
     setUngroupedTodos([]);
   }
 
-  function createTodos(todos: ToDoDto[], invokeRefresh: boolean = true) {
-    if (todos.length > 0) {
-      setTodos((prev) => {
-        for (let todo of todos) {
-          let expandedTodo = { ...todo, virtualGroupId: null };
-          prev.push(expandedTodo);
-        }
-        return prev;
-      });
+  function createTodos(
+    providedTodos: ToDoDto[],
+    invokeRefresh: boolean = true
+  ) {
+    if (providedTodos.length > 0) {
+      const newTodos: Array<ToDoInternal> = [];
+      for (let todo of providedTodos) {
+        let expandedTodo = { ...todo, virtualGroupId: null };
+        newTodos.push(expandedTodo);
+      }
+      setTodos([...todos, ...newTodos]);
       if (invokeRefresh) {
-        refreshList(refreshListArgs);
+        callRefreshList();
       }
     }
   }
@@ -77,7 +83,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         updatedTodo
       );
     });
-    refreshList(refreshListArgs);
+    callRefreshList();
   }
 
   function deleteTodo(id: number) {
@@ -89,21 +95,27 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         1
       );
     });
-    refreshList(refreshListArgs);
+    callRefreshList();
   }
 
-  function createGroups(groups: GroupDto[], invokeRefresh: boolean = true) {
-    if (groups.length > 0) {
-      setGroups((prev) => {
-        for (let group of groups) {
-          let virutalToDoIds: Array<number> = [];
-          let expandedGroup = { ...group, virtualToDoIds: virutalToDoIds };
-          prev.push(expandedGroup);
-        }
-        return prev;
-      });
+  function createGroups(
+    providedGroups: GroupDto[],
+    invokeRefresh: boolean = true
+  ) {
+    if (providedGroups.length > 0) {
+      const newGroups: Array<GroupInternal> = [];
+      for (let group of providedGroups) {
+        let virutalToDoIds: Array<number> = [];
+        let expandedGroup = {
+          ...group,
+          virtualToDoIds: virutalToDoIds,
+          remainingReservedSpots: 0,
+        };
+        newGroups.push(expandedGroup);
+      }
+      setGroups([...groups, ...newGroups]);
       if (invokeRefresh) {
-        refreshList(refreshListArgs);
+        callRefreshList();
       }
     }
   }
@@ -119,7 +131,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         updatedGroup
       );
     });
-    refreshList(refreshListArgs);
+    callRefreshList();
   }
 
   function deleteGroup(id: number) {
@@ -131,7 +143,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         1
       );
     });
-    refreshList(refreshListArgs);
+    callRefreshList();
   }
 
   function updateListAttributes(
@@ -174,7 +186,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     if (invokeRefresh) {
-      refreshList(refreshListArgs);
+      callRefreshList();
     }
   }
 
@@ -197,6 +209,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         updateGroup,
         deleteGroup,
         updateListAttributes,
+        callRefreshList,
       }}
     >
       {children}

@@ -1,5 +1,5 @@
-import { GroupDto } from "../../../../shared/group/Group.dto";
-import { ToDoDto } from "../../../../shared/todo/ToDo.dto";
+import { GroupInternal } from "../group/GroupInternal";
+import { ToDoInternal } from "../todo/ToDoInternal";
 
 export type ListContextType = {
   name: string;
@@ -7,8 +7,8 @@ export type ListContextType = {
   highlevelsort: string;
   midlevelsort: string;
   lowlevelsort: string;
-  groups: Array<GroupDto>;
-  todos: Array<ToDoDto>;
+  groups: Array<GroupInternal>;
+  todos: Array<ToDoInternal>;
   ungroupedTodos: Array<number>;
   flushContent: any;
   createTodos: any;
@@ -18,4 +18,5 @@ export type ListContextType = {
   updateGroup: any;
   deleteGroup: any;
   updateListAttributes: any;
+  callRefreshList: any;
 };

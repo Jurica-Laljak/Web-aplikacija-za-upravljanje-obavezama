@@ -22,12 +22,22 @@ export function refreshList(args: {
   setUngroupedTodos: React.Dispatch<React.SetStateAction<number[]>>;
   filters: FilterInternal[];
 }) {
+  // alert(`Provided args: ${JSON.stringify(args)}`);
+
   var refreshedTodos = [...args.todos];
+
+  // alert(`Initial: ${JSON.stringify(refreshedTodos)}`);
 
   // sort todos based on sort preferences
   refreshedTodos = refreshedTodos.sort((a, b) => {
     // high level sort
+    // if ((a.todoid == 4 || a.todoid == 6) && (b.todoid == 4 || b.todoid == 6)) {
+    //   alert(`a, b = ${JSON.stringify(a.todoid)}, ${JSON.stringify(b.todoid)}`);
+    // }
     let res = sortToDos(a, b, args.highlevelsort);
+    // if ((a.todoid == 4 || a.todoid == 6) && (b.todoid == 4 || b.todoid == 6)) {
+    //   alert(`High level sorted: ${JSON.stringify(res)}`);
+    // }
     if (res != 0) {
       return res;
     }
@@ -35,6 +45,12 @@ export function refreshList(args: {
     if (args.midlevelsort !== "") {
       // mid level sort (if it's defined)
       res = sortToDos(a, b, args.midlevelsort);
+      // if (
+      //   (a.todoid == 4 || a.todoid == 6) &&
+      //   (b.todoid == 4 || b.todoid == 6)
+      // ) {
+      //   alert(`Mid level sorted: ${JSON.stringify(res)}`);
+      // }
       if (res != 0) {
         return res;
       }
@@ -42,6 +58,12 @@ export function refreshList(args: {
       if (args.lowlevelsort !== "") {
         // low level sort (if it's defined)
         res = sortToDos(a, b, args.lowlevelsort);
+        // if (
+        //   (a.todoid == 4 || a.todoid == 6) &&
+        //   (b.todoid == 4 || b.todoid == 6)
+        // ) {
+        //   alert(`Low level sorted: ${JSON.stringify(res)}`);
+        // }
         if (res != 0) {
           return res;
         }
@@ -51,19 +73,35 @@ export function refreshList(args: {
     return 0;
   });
 
+  // alert(`Sorted: ${JSON.stringify(refreshedTodos)}`);
+
   // clearing virtual todos from all groups
   var clearIdArray: Array<number> = [];
   var refreshedGroups = [...args.groups];
   refreshedGroups = refreshedGroups.map((group) => ({
     ...group,
     virtualToDoIds: clearIdArray,
+    remainingReservedSpots: group.todoids ? group.todoids.length : 0,
   }));
+
+  refreshedGroups = refreshedGroups.sort((a, b) => {
+    if (a.serialnumber < b.serialnumber) {
+      return -1;
+    } else if (a.serialnumber > b.serialnumber) {
+      return 1;
+    }
+    return 0;
+  });
 
   // clearing virtual group pointers from todos
   refreshedTodos = refreshedTodos.map((todo) => ({
     ...todo,
     virtualGroupId: null,
   }));
+
+  // alert(`Refreshed groups: ${JSON.stringify(refreshedGroups)}`);
+
+  // alert(`Refreshed todos: ${JSON.stringify(refreshedTodos)}`);
 
   // helper variables
   var refreshedUngroupedTodos: Array<number> = [];
@@ -75,10 +113,22 @@ export function refreshList(args: {
   );
   nextMondayMidnight.setHours(0, 0, 0, 0);
 
+  // alert(JSON.stringify(nextMondayMidnight) + nextMondayMidnight.getDay());
+
+  // alert(`Refreshed ungrouped: ${JSON.stringify(refreshedUngroupedTodos)}`);
+
   // virtually group todos
   for (let todo of refreshedTodos) {
-    // skip todos that are forced into a group
+    // todos that are forced into a group are added
+    // to that groups virtual todo list
+    // alert(JSON.stringify(todo));
     if (todo.groupid) {
+      const groupIndex = refreshedGroups.findIndex((g) =>
+        g.groupid == todo.groupid ? true : false
+      );
+      refreshedGroups[groupIndex].virtualToDoIds.push(todo.todoid);
+      refreshedGroups[groupIndex].remainingReservedSpots -= 1;
+      todo.virtualGroupId = refreshedGroups[groupIndex].groupid;
       continue;
     }
 
@@ -86,18 +136,20 @@ export function refreshList(args: {
 
     // iterate over groups
     for (let group of refreshedGroups) {
+      // alert(JSON.stringify(todo) + "\n\n" + JSON.stringify(group));
       // skip static groups
-      if (group.filterIds.length == 0) {
+      if (group.filterids.length == 0) {
         continue;
       }
 
       // data structures for current evaluation
       let acceptIntoCurrent = true;
-      let totalSize = group.toDoIds.length + group.virtualToDoIds.length;
 
       // iterate over filters associated with group
-      for (let filterId of group.filterIds) {
-        if (!acceptIntoCurrent) break;
+      for (let filterId of group.filterids) {
+        if (!acceptIntoCurrent) {
+          break;
+        }
 
         // find filter for id
         let filter =
@@ -107,13 +159,21 @@ export function refreshList(args: {
             )
           ];
 
+        // alert(JSON.stringify(filter));
+
         // determine filter type and carry out action
         switch (filter.type) {
           //
           case "sizefilter": {
             assertIsSizeFilter(filter);
             // reject todo if group total size exceeds or is equal to filter defined limit
-            if (totalSize >= filter.size) {
+            alert(
+              `${group.virtualToDoIds.length}, ${group.remainingReservedSpots} <?> ${filter.size}`
+            );
+            if (
+              group.virtualToDoIds.length + group.remainingReservedSpots >=
+              filter.size
+            ) {
               acceptIntoCurrent = false;
             }
             break;
@@ -121,8 +181,11 @@ export function refreshList(args: {
           //
           case "timeperiodfilter": {
             assertIsTimeperiodFilter(filter);
+            const todoDate = new Date(todo.duedate);
+            // alert(JSON.stringify(filter));
+
             // reject todo if it's due date is next week or later
-            if (todo.duedate.getTime() >= nextMondayMidnight.getTime()) {
+            if (todoDate.getTime() >= nextMondayMidnight.getTime()) {
               acceptIntoCurrent = false;
             }
             // reject todo if it's due date is earlier than lower bound
@@ -130,7 +193,7 @@ export function refreshList(args: {
               let lowerBoundDOW = timePeriodStringToDOW.get(
                 filter.lowerbound.toLowerCase().slice(0, 3)
               );
-              if (lowerBoundDOW && todo.duedate.getDay() < lowerBoundDOW) {
+              if (lowerBoundDOW && todoDate.getDay() < lowerBoundDOW) {
                 acceptIntoCurrent = false;
               }
             }
@@ -139,7 +202,7 @@ export function refreshList(args: {
               let higherBoundDOW = timePeriodStringToDOW.get(
                 filter.higherbound.toLowerCase().slice(0, 3)
               );
-              if (higherBoundDOW && todo.duedate.getDay() > higherBoundDOW) {
+              if (higherBoundDOW && todoDate.getDay() > higherBoundDOW) {
                 acceptIntoCurrent = false;
               }
             }
@@ -167,9 +230,14 @@ export function refreshList(args: {
           //
           case "prefixfilter": {
             assertIsPrefixFilter(filter);
+            // alert(
+            //   `${filter.prefix} - ${todo.content.toLowerCase()} - ${todo.content
+            //     .toLowerCase()
+            //     .includes(filter.prefix)}`
+            // );
             // reject todo if the filter.prefix is not a substring of todo.content
-            if (todo.content.toLowerCase().includes(filter.prefix)) {
-              acceptIntoCurrent = true;
+            if (!todo.content.toLowerCase().includes(filter.prefix)) {
+              acceptIntoCurrent = false;
             }
             break;
           }
@@ -179,8 +247,19 @@ export function refreshList(args: {
       // if todo matches group filters, add todoid to group
       if (acceptIntoCurrent) {
         acceptedIntoGroup = true;
-        group.virtualToDoIds.push(todo.todoid);
+        const groupIndex = refreshedGroups.findIndex((g) =>
+          g.groupid == group.groupid ? true : false
+        );
+        // alert(JSON.stringify(refreshedGroups));
+        refreshedGroups[groupIndex].virtualToDoIds = [
+          ...refreshedGroups[groupIndex].virtualToDoIds,
+          todo.todoid,
+        ];
         todo.virtualGroupId = group.groupid;
+        // alert(
+        //   "Added!\n" + JSON.stringify(todo) + "\n\n" + JSON.stringify(group)
+        // );
+        // alert(JSON.stringify(refreshedGroups));
         break;
       }
     }
@@ -190,6 +269,11 @@ export function refreshList(args: {
       refreshedUngroupedTodos.push(todo.todoid);
     }
   }
+
+  alert(`Refreshed todos: ${JSON.stringify(refreshedTodos)}`);
+  alert(`Refreshed groups: ${JSON.stringify(refreshedGroups)}`);
+  alert(`Ungrouped: ${JSON.stringify(refreshedUngroupedTodos)}`);
+  return;
 
   //set state
   args.setTodos(refreshedTodos);
