@@ -9,9 +9,6 @@ import { TokenType } from "../../../interfaces/type/TokenType";
 import { TokenAttributes } from "../../../interfaces/auth/TokenAttributes";
 
 export function verifyToken<T = any>(tokenType: TokenType) {
-  //
-  console.log("in verify token");
-  //
   switch (tokenType) {
     case "access":
       return function (

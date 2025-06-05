@@ -15,3 +15,7 @@ export const largeIcon: IconContext = {
 export const veryLargeIcon: IconContext = {
   size: "2.5rem",
 };
+
+export const veryveryLargeIcon: IconContext = {
+  size: "3rem",
+};

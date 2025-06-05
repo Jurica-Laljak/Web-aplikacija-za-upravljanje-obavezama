@@ -108,6 +108,7 @@
   gap: 0.25em;
   height: 100%;
   width: fit-content;
+  align-items: center;
 }
 
 .flex-div-column {
@@ -118,6 +119,7 @@
   gap: 0.25em;
   width: 100%;
   height: fit-content;
+  align-items: center;
 }
 
 .input-element {
@@ -126,6 +128,10 @@
 
 .invisible {
   display: none;
+  visibility: hidden;
+}
+
+.hidden {
   visibility: hidden;
 }
 

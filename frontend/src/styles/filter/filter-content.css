@@ -1,7 +1,6 @@
 #filter-container-wrapper {
   display: grid;
   grid-template-rows: 6rem 1fr;
-  align-items: center;
   width: 100%;
   height: 100%;
 }
@@ -11,10 +10,45 @@
   width: 100%;
   padding: 0.5rem;
   color: white;
-  align-items: center;
   font-style: italic;
+}
+
+#filter-content-wrapper {
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  flex-direction: column;
+  padding: 0.5rem;
+  align-items: start;
+  padding-top: 2rem;
+  gap: 2rem;
 }
 
 .filter-icontext {
   font-size: 3rem;
+}
+
+.filter-wrapper {
+  width: 50rem;
+  border: 0.25rem solid var(--main-color);
+  padding: 0.5rem;
+  font-size: x-large;
+  font-weight: bold;
+  align-items: start;
+}
+
+.filter-operator {
+  background-color: var(--secondary-color);
+  padding: 0.25rem;
+  border: none;
+  color: white;
+}
+
+.filter-content-wrapper {
+  align-items: start;
+  font-style: italic;
+  font-size: large;
+  padding-left: 1.5rem;
+  padding-top: 0.5rem;
+  color: var(--secondary-color);
 }
