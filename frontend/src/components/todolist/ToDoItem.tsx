@@ -1,12 +1,9 @@
 import { ToDoInternal } from "../../types/todo/ToDoInternal";
+import "../../styles/todolist/list-content.css";
 
 function ToDoItem(props: { todo: ToDoInternal | undefined }) {
   if (props.todo) {
-    return (
-      <div style={{ border: "0.25rem solid red" }}>
-        {JSON.stringify(props.todo)}
-      </div>
-    );
+    return <div className="todo-container">{JSON.stringify(props.todo)}</div>;
   }
 
   return <></>;

@@ -1,7 +1,4 @@
--- create and update todolist
-
-INSERT INTO todolist (userid, name) VALUES (1, 
-'Obaveze');
+-- update todolist
 
 UPDATE todolist SET highlevelsort = 'priority:desc';
 

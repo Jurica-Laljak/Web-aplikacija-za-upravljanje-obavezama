@@ -8,17 +8,17 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
   const listContext = useContext(ListContext) as ListContextType;
 
   return (
-    <div>
+    <div className="group-container flex-div-column">
       <div>{[props.group.groupid, props.group.name].join(" - ")}</div>
-      <div style={{ border: "0.5rem dashed darkgreen" }}>
+      <div>
         {props.group.virtualToDoIds.map((vt) => (
           <ToDoItem
             key={`todo-${vt}`}
             todo={
               listContext.todos[
-                listContext.todos.findIndex((t) => {
-                  t.todoid == vt ? true : false;
-                })
+                listContext.todos.findIndex((t) =>
+                  t.todoid == vt ? true : false
+                )
               ]
             }
           ></ToDoItem>

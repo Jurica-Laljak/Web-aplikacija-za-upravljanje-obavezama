@@ -38,6 +38,7 @@ function ToDoListMiddleware(props: PropsWithChildren) {
         listContext.flushContent();
         listContext.createTodos(data.todos, false);
         listContext.createGroups(data.groups, false);
+        listContext.setFetchedListData(listContext.fetchedListData + 1);
       });
     } else {
       isMounted.current = true;

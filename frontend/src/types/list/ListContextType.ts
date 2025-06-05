@@ -19,4 +19,6 @@ export type ListContextType = {
   deleteGroup: any;
   updateListAttributes: any;
   callRefreshList: any;
+  fetchedListData: number;
+  setFetchedListData: any;
 };

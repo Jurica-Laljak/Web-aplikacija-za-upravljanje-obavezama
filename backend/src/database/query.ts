@@ -7,5 +7,6 @@ export = async function query<T>(
 ): Promise<ResultIterator<T>> {
   console.log("query()|", text);
   let result = client().query<T>(text, values);
+  console.log(result);
   return result;
 };

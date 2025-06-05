@@ -15,22 +15,23 @@ function ToDoListContent() {
     } else {
       isMounted.current = true;
     }
-  }, [listContext.todos]);
+  }, [listContext.fetchedListData]);
 
   return (
     <div id="list-content-container" className="flex-div-column">
       <div id="list-content-subcontainer" className="flex-div-column">
-        <div id="group-container">
+        <div id="group-wrapper" className="flex-div-column">
           {listContext.groups.map((g) => (
             <ToDoGroupItem group={g} key={`group-${g.groupid}`}></ToDoGroupItem>
           ))}
         </div>
-        <div style={{ border: "0.5rem dashed darkgreen" }}>
+        <div>
+          <div></div>
           {listContext.ungroupedTodos.map((t) => (
             <ToDoItem
-              todo={listContext.todos.find((el) => {
-                el.todoid == t ? true : false;
-              })}
+              todo={listContext.todos.find((el) =>
+                el.todoid == t ? true : false
+              )}
               key={`todo-${t}`}
             ></ToDoItem>
           ))}

@@ -104,7 +104,7 @@ export function refreshList(args: {
   // alert(`Refreshed todos: ${JSON.stringify(refreshedTodos)}`);
 
   // helper variables
-  var refreshedUngroupedTodos: Array<number> = [];
+  var ungroupedTodoIds: Array<number> = [];
   var nextMondayMidnight = new Date();
   nextMondayMidnight.setDate(
     nextMondayMidnight.getDate() +
@@ -167,9 +167,9 @@ export function refreshList(args: {
           case "sizefilter": {
             assertIsSizeFilter(filter);
             // reject todo if group total size exceeds or is equal to filter defined limit
-            alert(
-              `${group.virtualToDoIds.length}, ${group.remainingReservedSpots} <?> ${filter.size}`
-            );
+            // alert(
+            //   `${group.virtualToDoIds.length}, ${group.remainingReservedSpots} <?> ${filter.size}`
+            // );
             if (
               group.virtualToDoIds.length + group.remainingReservedSpots >=
               filter.size
@@ -266,17 +266,16 @@ export function refreshList(args: {
 
     // if todo not grouped, add todoid to ungrouped todos
     if (!acceptedIntoGroup) {
-      refreshedUngroupedTodos.push(todo.todoid);
+      ungroupedTodoIds.push(todo.todoid);
     }
   }
 
-  alert(`Refreshed todos: ${JSON.stringify(refreshedTodos)}`);
-  alert(`Refreshed groups: ${JSON.stringify(refreshedGroups)}`);
-  alert(`Ungrouped: ${JSON.stringify(refreshedUngroupedTodos)}`);
-  return;
+  // alert(`Refreshed todos: ${JSON.stringify(refreshedTodos)}`);
+  // alert(`Refreshed groups: ${JSON.stringify(refreshedGroups)}`);
+  // alert(`Ungrouped: ${JSON.stringify(ungroupedTodoIds)}`);
 
   //set state
-  args.setTodos(refreshedTodos);
-  args.setGroups(refreshedGroups);
-  args.setUngroupedTodos(refreshedUngroupedTodos);
+  args.setTodos([...refreshedTodos]);
+  args.setGroups([...refreshedGroups]);
+  args.setUngroupedTodos([...ungroupedTodoIds]);
 }

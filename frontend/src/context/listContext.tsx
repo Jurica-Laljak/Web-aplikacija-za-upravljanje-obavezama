@@ -27,6 +27,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [groups, setGroups] = useState<Array<GroupInternal>>([]);
   const [todos, setTodos] = useState<Array<ToDoInternal>>([]);
   const [ungroupedTodos, setUngroupedTodos] = useState<Array<number>>([]);
+  const [fetchedListData, setFetchedListData] = useState<number>(0);
 
   // use user context
   const { lists, setLists } = useContext(UserContext) as UserContextType;
@@ -210,6 +211,8 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         deleteGroup,
         updateListAttributes,
         callRefreshList,
+        fetchedListData,
+        setFetchedListData,
       }}
     >
       {children}
