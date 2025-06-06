@@ -25,15 +25,12 @@ export async function apiPatchList(
       userContext.setLists([...newLists]);
       listContext.setName(object.name);
     }
-
     if ("highlevelsort" in object) {
       listContext.updateListAttributes("highlevelsort", object.highlevelsort);
     }
-
     if ("midlevelsort" in object) {
       listContext.updateListAttributes("midlevelsort", object.midlevelsort);
     }
-
     if ("lowlevelsort" in object) {
       listContext.updateListAttributes("lowlevelsort", object.lowlevelsort);
     }

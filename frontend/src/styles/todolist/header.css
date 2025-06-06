@@ -66,14 +66,30 @@
 .sort-dropdown-content {
   color: white;
   background-color: var(--secondary-color);
-  border: 3px solid white;
+  border: 0.25rem solid white;
   padding: 0.5rem;
   font-weight: bold;
   font-style: italic;
+  font-size: 1rem;
   border-radius: 0.75rem;
   margin-left: 0.5rem;
-  width: 10.5rem;
+  width: 10.75rem;
   text-align: center;
+}
+
+#current-sort-0,
+#current-sort-1,
+#current-sort-2 {
+  background-color: var(--main-color);
+  color: white;
+}
+
+#remove-sort-1,
+#remove-sort-2 {
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  font-size: large;
 }
 
 .sort-dropdown-content:hover {
@@ -83,6 +99,10 @@
 .sort-dropdown-content * {
   background-color: white;
   color: var(--secondary-color);
+}
+
+.sort-dropdown-content > option {
+  font-size: 1rem;
 }
 
 .sort-interfix {

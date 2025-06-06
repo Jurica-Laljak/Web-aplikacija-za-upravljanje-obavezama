@@ -16,6 +16,8 @@ import { apiPatchList } from "../../handlers/list/apiPatchList";
 import { ToDoListDto } from "../../../../shared/list/ToDoList.dto";
 import { deleteContent } from "../../handlers/app/deleteContent";
 import { apiDeleteList } from "../../handlers/list/apiDeleteList";
+import { sortIcons, sortTypes } from "../../data/sortTypes";
+import { formAttributeTranslation } from "../../data/translate";
 
 function ToDoListHeader() {
   const userContext = useContext(UserContext) as UserContextType;
@@ -38,24 +40,26 @@ function ToDoListHeader() {
   }
 
   function handleSortChange(newValue: string, level: number) {
-    var updateObj: Partial<ToDoListDto> = {};
-    if (level == 0) {
-      updateObj = { highlevelsort: newValue };
-    } else if (level == 1) {
-      if (newValue === ".hide") {
-        updateObj = { midlevelsort: "" };
-      } else {
-        updateObj = { midlevelsort: newValue };
+    if (newValue !== "") {
+      var updateObj: Partial<ToDoListDto> = {};
+      if (level == 0) {
+        updateObj = { highlevelsort: newValue };
+      } else if (level == 1) {
+        if (newValue === ".hide") {
+          updateObj = { midlevelsort: "" };
+        } else {
+          updateObj = { midlevelsort: newValue };
+        }
+      } else if (level == 2) {
+        if (newValue === ".hide") {
+          updateObj = { lowlevelsort: "" };
+        } else {
+          updateObj = { lowlevelsort: newValue };
+        }
       }
-    } else if (level == 2) {
-      if (newValue === ".hide") {
-        updateObj = { lowlevelsort: "" };
-      } else {
-        updateObj = { lowlevelsort: newValue };
-      }
-    }
 
-    apiPatchList(updateObj, userContext, listContext);
+      apiPatchList(updateObj, userContext, listContext);
+    }
   }
 
   function handleDelete() {
@@ -97,7 +101,18 @@ function ToDoListHeader() {
               handleSortChange(e.target.value, 0);
             }}
           >
-            <option value="">{listContext.highlevelsort}</option>
+            <option value="" id="current-sort-0">
+              {sortIcons.get(listContext.highlevelsort)}
+            </option>
+            {sortTypes.map((so) =>
+              listContext.highlevelsort === so ||
+              listContext.midlevelsort === so ||
+              listContext.lowlevelsort === so ? (
+                <></>
+              ) : (
+                <option value={so}>{sortIcons.get(so)}</option>
+              )
+            )}
           </select>
           <div className="sort-interfix">, zatim</div>
           <select
@@ -106,19 +121,27 @@ function ToDoListHeader() {
               handleSortChange(e.target.value, 1);
             }}
           >
-            <option value="">
-              {listContext.midlevelsort === "" ? (
-                <p> - </p>
-              ) : (
-                listContext.midlevelsort
-              )}
+            <option value="" id="current-sort-1">
+              {listContext.midlevelsort === ""
+                ? "-"
+                : sortIcons.get(listContext.midlevelsort)}
             </option>
+            {sortTypes.map((so) =>
+              listContext.highlevelsort === so ||
+              listContext.midlevelsort === so ||
+              listContext.lowlevelsort === so ? (
+                <></>
+              ) : (
+                <option value={so}>{sortIcons.get(so)}</option>
+              )
+            )}
             {listContext.midlevelsort === "" ? (
               <></>
             ) : (
-              <option value=".hide"> - Uklonite sortiranje - </option>
+              <option value=".hide" id="remove-sort-1">
+                - Uklonite -
+              </option>
             )}
-            <option value="bruh">Bruh</option>
           </select>
 
           {listContext.midlevelsort === "" ? (
@@ -132,17 +155,26 @@ function ToDoListHeader() {
                   handleSortChange(e.target.value, 2);
                 }}
               >
-                <option value="">
-                  {listContext.lowlevelsort === "" ? (
-                    <p> - </p>
-                  ) : (
-                    listContext.lowlevelsort
-                  )}
+                <option value="" id="current-sort-2">
+                  {listContext.lowlevelsort === ""
+                    ? "-"
+                    : sortIcons.get(listContext.lowlevelsort)}
                 </option>
+                {sortTypes.map((so) =>
+                  listContext.highlevelsort === so ||
+                  listContext.midlevelsort === so ||
+                  listContext.lowlevelsort === so ? (
+                    <></>
+                  ) : (
+                    <option value={so}>{sortIcons.get(so)}</option>
+                  )
+                )}
                 {listContext.lowlevelsort === "" ? (
                   <></>
                 ) : (
-                  <option value=".hide"> - Uklonite sortiranje - </option>
+                  <option value=".hide" id="remove-sort-2">
+                    - Uklonite -
+                  </option>
                 )}
               </select>
             </>
