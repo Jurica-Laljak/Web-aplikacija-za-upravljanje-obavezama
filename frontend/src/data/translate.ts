@@ -6,3 +6,6 @@ dayOfWeekTranslation.set("thursday", "četvrtak");
 dayOfWeekTranslation.set("friday", "petak");
 dayOfWeekTranslation.set("saturday", "subota");
 dayOfWeekTranslation.set("sunday", "nedjelja");
+
+export const formAttributeTranslation: Map<string, string> = new Map();
+formAttributeTranslation.set("name", "ime");

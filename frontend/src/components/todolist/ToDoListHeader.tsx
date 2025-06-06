@@ -7,44 +7,85 @@ import IconText from "../element/IconText";
 import { largeIcon } from "../../types/style/iconStyle";
 import { CgRename } from "react-icons/cg";
 import { MdDelete } from "react-icons/md";
-import { BiSolidSortAlt } from "react-icons/bi";
-import { FaSort } from "react-icons/fa";
+import { injectContent } from "../../handlers/app/injectContent";
+import { UserContext } from "../../context/userContext";
+import { UserContextType } from "../../types/user/UserContext";
+import { ViewContext } from "../../context/viewContext";
+import { ViewContextType } from "../../types/other/ViewContext";
+import { apiPatchList } from "../../handlers/list/apiPatchList";
+import { ToDoListDto } from "../../../../shared/list/ToDoList.dto";
+import { deleteContent } from "../../handlers/app/deleteContent";
+import { apiDeleteList } from "../../handlers/list/apiDeleteList";
 
 function ToDoListHeader() {
+  const userContext = useContext(UserContext) as UserContextType;
+  const viewContext = useContext(ViewContext) as ViewContextType;
   const listContext = useContext(ListContext) as ListContextType;
 
   const iconStyles: React.CSSProperties = {
     border: "none",
   };
 
+  function handleRename() {
+    injectContent(
+      viewContext,
+      userContext,
+      listContext,
+      "Preimenujte popis obaveza",
+      { name: listContext.name },
+      apiPatchList
+    );
+  }
+
   function handleSortChange(newValue: string, level: number) {
-    alert(JSON.stringify(newValue));
+    var updateObj: Partial<ToDoListDto> = {};
     if (level == 0) {
-      listContext.updateListAttributes("highlevelsort", newValue);
+      updateObj = { highlevelsort: newValue };
     } else if (level == 1) {
       if (newValue === ".hide") {
-        listContext.updateListAttributes("midlevelsort", "");
+        updateObj = { midlevelsort: "" };
       } else {
-        listContext.updateListAttributes("midlevelsort", newValue);
+        updateObj = { midlevelsort: newValue };
       }
     } else if (level == 2) {
       if (newValue === ".hide") {
-        listContext.updateListAttributes("lowlevelsort", "");
+        updateObj = { lowlevelsort: "" };
       } else {
-        listContext.updateListAttributes("midlevelsort", newValue);
+        updateObj = { lowlevelsort: newValue };
       }
     }
+
+    apiPatchList(updateObj, userContext, listContext);
+  }
+
+  function handleDelete() {
+    deleteContent(
+      viewContext,
+      userContext,
+      listContext,
+      "popis obaveza",
+      {},
+      apiDeleteList
+    );
   }
 
   return (
     <div id="list-header-container">
       <div id="list-header-subcontainer">
         <div id="list-header-central">
-          <Button className="interactable" style={iconStyles}>
+          <Button
+            className="interactable"
+            style={iconStyles}
+            onClick={handleRename}
+          >
             <IconText icon={<CgRename />} iconStyle={largeIcon}></IconText>
           </Button>
           <div id="list-title">{listContext.name}</div>
-          <Button className="interactable" style={iconStyles}>
+          <Button
+            className="interactable"
+            style={iconStyles}
+            onClick={handleDelete}
+          >
             <IconText icon={<MdDelete />} iconStyle={largeIcon}></IconText>
           </Button>
         </div>
@@ -107,9 +148,6 @@ function ToDoListHeader() {
             </>
           )}
         </form>
-        {/* <div id="sort-wrapper">
-          
-        </div> */}
       </div>
     </div>
   );

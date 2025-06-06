@@ -31,8 +31,28 @@ toDoListRouter.post(
   postList
 );
 
-toDoListRouter.patch("/:listid", patchList);
+toDoListRouter.patch(
+  "/:listid",
+  param("listid")
+    .exists()
+    .withMessage("No id given.")
+    .isNumeric()
+    .withMessage("Invalid id"),
+  throwIfError,
+  authorizeList("listid"),
+  patchList
+);
 
-toDoListRouter.delete("/:listid", deleteList);
+toDoListRouter.delete(
+  "/:listid",
+  param("listid")
+    .exists()
+    .withMessage("No id given.")
+    .isNumeric()
+    .withMessage("Invalid id"),
+  throwIfError,
+  authorizeList("listid"),
+  deleteList
+);
 
 export = toDoListRouter;

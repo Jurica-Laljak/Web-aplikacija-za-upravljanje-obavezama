@@ -23,7 +23,7 @@ apiRouter.use(
   toDoListRouter
 );
 apiRouter.use(
-  "/list/",
+  "/list",
   header("Authorization")
     .exists()
     .withMessage("No authorization header provided"),

@@ -1,3 +1,4 @@
+import { formAttributeTranslation } from "../../data/translate";
 import { capitalize } from "../../helper/capitalize";
 import { FilterContextType } from "../../types/filter/FilterContextType";
 import { ListContextType } from "../../types/list/ListContextType";
@@ -9,7 +10,7 @@ export function injectContent(
   userContext: UserContextType,
   handlerContext: ListContextType | FilterContextType | undefined,
   name: string,
-  emptyObj: Object,
+  object: Object,
   onSubmit: any,
   additionalValues: Object = {}
 ) {
@@ -28,9 +29,12 @@ export function injectContent(
         viewContext.setElementFocused(false);
       }}
     >
-      {Object.keys(emptyObj).map((key) => (
+      {Object.keys(object).map((key) => (
         <div key={key} className="input-row">
-          <label htmlFor={key}>{capitalize(key)}:</label>
+          <label htmlFor={key}>
+            {capitalize(formAttributeTranslation.get(key.toLowerCase()) || key)}
+            :
+          </label>
           <input name={key} type="text" className="input-text"></input>
         </div>
       ))}
