@@ -7,7 +7,7 @@ import ToDoItem from "./ToDoItem";
 import Button from "../element/Button";
 import IconText from "../element/IconText";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { veryLargeIcon, veryveryLargeIcon } from "../../types/style/iconStyle";
+import { veryveryLargeIcon } from "../../types/style/iconStyle";
 
 function ToDoListContent() {
   const isMounted = useRef(false);
@@ -20,7 +20,20 @@ function ToDoListContent() {
     } else {
       isMounted.current = true;
     }
-  }, [listContext.fetchedListData]);
+  }, [
+    listContext.fetchedListData,
+    listContext.highlevelsort,
+    listContext.midlevelsort,
+    listContext.lowlevelsort,
+  ]);
+
+  useEffect(() => {
+    // alert("triggered");
+    if (listContext.forceRefresh) {
+      listContext.callRefreshList();
+      listContext.setForceRefresh(false);
+    }
+  }, [listContext.todos, listContext.groups, listContext.ungroupedTodos]);
 
   function handleExpandGroup() {
     setUngroupedVisible(!ungroupedVisible);

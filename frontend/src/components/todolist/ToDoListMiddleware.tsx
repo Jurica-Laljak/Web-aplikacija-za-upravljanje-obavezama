@@ -20,25 +20,12 @@ function ToDoListMiddleware(props: PropsWithChildren) {
         userContext
       ).then((data) => {
         listContext.setName(data.name);
-        listContext.updateListAttributes(
-          "highlevelsort",
-          data.highlevelsort,
-          false
-        );
-        listContext.updateListAttributes(
-          "midlevelsort",
-          data.midlevelsort,
-          false
-        );
-        listContext.updateListAttributes(
-          "lowlevelsort",
-          data.lowlevelsort,
-          false
-        );
+        listContext.updateListAttributes("highlevelsort", data.highlevelsort);
+        listContext.updateListAttributes("midlevelsort", data.midlevelsort);
+        listContext.updateListAttributes("lowlevelsort", data.lowlevelsort);
         listContext.flushContent();
-        listContext.createTodos(data.todos, false);
-        listContext.createGroups(data.groups, false);
-        listContext.setFetchedListData(listContext.fetchedListData + 1);
+        listContext.createTodos(data.todos);
+        listContext.createGroups(data.groups);
       });
     } else {
       isMounted.current = true;

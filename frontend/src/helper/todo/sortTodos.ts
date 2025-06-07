@@ -6,12 +6,16 @@ export function sortToDos(
   b: ToDoInternal,
   sortType: SortType
 ): number {
+  //   alert(`a = ${JSON.stringify(a)}
+
+  // b = ${JSON.stringify(b)}`);
   switch (sortType) {
+    //
     case "timecreated:asc": {
-      if (a.todoid > b.todoid) {
+      if (a.todoid < b.todoid) {
         return 1;
       }
-      if (a.todoid < b.todoid) {
+      if (a.todoid > b.todoid) {
         return -1;
       }
       return 0;
@@ -25,38 +29,45 @@ export function sortToDos(
       }
       return 0;
     }
+
+    //
     case "alphabetical:asc": {
       if (a.content.toLocaleLowerCase() < b.content.toLocaleLowerCase()) {
-        return 1;
+        return -1;
       }
       if (a.content.toLocaleLowerCase() > b.content.toLocaleLowerCase()) {
-        return -1;
+        return 1;
       }
       return 0;
     }
     case "alphabetical:desc": {
       if (a.content.toLocaleLowerCase() < b.content.toLocaleLowerCase()) {
-        return -1;
+        return 1;
       }
       if (a.content.toLocaleLowerCase() > b.content.toLocaleLowerCase()) {
-        return 1;
+        return -1;
       }
       return 0;
     }
+
+    //
     case "duedate:asc": {
       if (a.duedate === null && b.duedate !== null) {
-        return -1;
-      } else if (a.duedate !== null && b.duedate === null) {
         return 1;
+      } else if (a.duedate !== null && b.duedate === null) {
+        return -1;
       } else if (a.duedate === null && b.duedate === null) {
         return 0;
       }
 
-      if (a.duedate.getTime() < b.duedate.getTime()) {
-        return 1;
-      }
-      if (a.duedate.getTime() > b.duedate.getTime()) {
+      const aDate = new Date(a.duedate);
+      const bDate = new Date(b.duedate);
+
+      if (aDate.getTime() < bDate.getTime()) {
         return -1;
+      }
+      if (aDate.getTime() > bDate.getTime()) {
+        return 1;
       }
       return 0;
     }
@@ -69,29 +80,34 @@ export function sortToDos(
         return 0;
       }
 
-      if (a.duedate.getTime() < b.duedate.getTime()) {
-        return -1;
-      }
-      if (a.duedate.getTime() > b.duedate.getTime()) {
+      const aDate = new Date(a.duedate);
+      const bDate = new Date(b.duedate);
+
+      if (aDate.getTime() < bDate.getTime()) {
         return 1;
+      }
+      if (aDate.getTime() > bDate.getTime()) {
+        return -1;
       }
       return 0;
     }
+
+    //
     case "priority:asc": {
       if (a.priority < b.priority) {
-        return -1;
+        return 1;
       }
       if (a.priority > b.priority) {
-        return 1;
+        return -1;
       }
       return 0;
     }
     case "priority:desc": {
       if (a.priority < b.priority) {
-        return 1;
+        return -1;
       }
       if (a.priority > b.priority) {
-        return -1;
+        return 1;
       }
       return 0;
     }

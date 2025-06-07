@@ -25,7 +25,7 @@ export function verifyToken<T = any>(tokenType: TokenType) {
           next(ErrorEnvelope.tokenVerificationError(tokenType));
           next();
         }
-        console.log(rawToken);
+
         try {
           var token = jwt.verify(rawToken, config.JWT_ACCESS_KEY);
         } catch (err) {

@@ -46,7 +46,13 @@ export async function postTodo(
     var queryStr = insert<ToDoInsert & { listid: number }>(
       "todo",
       insertObj,
-      "*"
+      `todo.listid, 
+      todo.todoid, 
+      todo.content, 
+      todo.duedate, 
+      todo.priority, 
+      todo.groupid,
+      todo.timecreated`
     );
   } catch (err) {
     console.log(err);
@@ -90,5 +96,5 @@ export async function postTodo(
   }
 
   // return ToDoDto
-  res.send(returnVal[0]);
+  res.send({ ...returnVal[0], duedate: req.body.duedate || null });
 }

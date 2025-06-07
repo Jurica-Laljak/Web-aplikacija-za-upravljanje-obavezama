@@ -8,7 +8,9 @@ export type ListContextType = {
   midlevelsort: string;
   lowlevelsort: string;
   groups: Array<GroupInternal>;
+  setGroups: any;
   todos: Array<ToDoInternal>;
+  setTodos: any;
   ungroupedTodos: Array<number>;
   flushContent: any;
   createTodos: any;
@@ -18,7 +20,9 @@ export type ListContextType = {
   updateGroup: any;
   deleteGroup: any;
   updateListAttributes: any;
-  callRefreshList: any;
   fetchedListData: number;
   setFetchedListData: any;
+  callRefreshList: any;
+  forceRefresh: boolean;
+  setForceRefresh: any;
 };

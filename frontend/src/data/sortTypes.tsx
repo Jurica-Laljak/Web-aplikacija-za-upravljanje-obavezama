@@ -12,11 +12,11 @@ export const sortTypes = [
 ];
 
 export const sortIcons: Map<string, ReactNode> = new Map();
-sortIcons.set("timecreated:asc", `Starosti ⇈`);
-sortIcons.set("timecreated:desc", `Starosti ⇊`);
-sortIcons.set("alphabetical:asc", `Sadržaju ⇈`);
-sortIcons.set("alphabetical:desc", `Sadržaju ⇊`);
-sortIcons.set("duedate:asc", `Krajnjem roku ⇈`);
-sortIcons.set("duedate:desc", `Krajnjem roku ⇊`);
-sortIcons.set("priority:asc", `Prioritetu ⇈`);
-sortIcons.set("priority:desc", `Prioritetu ⇊`);
+sortIcons.set("timecreated:asc", `Po starosti ⇈`);
+sortIcons.set("timecreated:desc", `Po starosti ⇊`);
+sortIcons.set("alphabetical:asc", `Po sadržaju ⇈`);
+sortIcons.set("alphabetical:desc", `Po sadržaju ⇊`);
+sortIcons.set("duedate:asc", `Po roku ⇈`);
+sortIcons.set("duedate:desc", `Po roku ⇊`);
+sortIcons.set("priority:asc", `Po prioritetu ⇈`);
+sortIcons.set("priority:desc", `Po prioritetu ⇊`);

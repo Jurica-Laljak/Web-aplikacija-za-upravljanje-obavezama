@@ -19,7 +19,7 @@ export function update<U extends Object>(
   var values = Object.values(object);
 
   for (let i in values) {
-    if (values[i].toString() == "") {
+    if (values[i] === null || values[i].toString() === "") {
       // null
       values[i] = "NULL";
     } else {

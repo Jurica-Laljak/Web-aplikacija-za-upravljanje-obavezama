@@ -9,3 +9,6 @@ dayOfWeekTranslation.set("sunday", "nedjelja");
 
 export const formAttributeTranslation: Map<string, string> = new Map();
 formAttributeTranslation.set("name", "ime");
+formAttributeTranslation.set("content", "sadržaj");
+formAttributeTranslation.set("duedate", "rok");
+formAttributeTranslation.set("priority", "prioritet");

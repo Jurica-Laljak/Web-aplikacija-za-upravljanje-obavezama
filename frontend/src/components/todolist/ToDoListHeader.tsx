@@ -17,7 +17,6 @@ import { ToDoListDto } from "../../../../shared/list/ToDoList.dto";
 import { deleteContent } from "../../handlers/app/deleteContent";
 import { apiDeleteList } from "../../handlers/list/apiDeleteList";
 import { sortIcons, sortTypes } from "../../data/sortTypes";
-import { formAttributeTranslation } from "../../data/translate";
 
 function ToDoListHeader() {
   const userContext = useContext(UserContext) as UserContextType;

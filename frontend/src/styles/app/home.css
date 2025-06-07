@@ -46,9 +46,9 @@
 
 #fullscreen-content-wrapper {
   height: fit-content;
-  width: 33rem;
+  width: 30rem;
   background-color: white;
-  border: 10px solid var(--secondary-color);
+  border: 0.75rem solid var(--secondary-color);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -67,30 +67,43 @@
 #inject-content {
   background-color: white;
   height: fit-content;
-  width: 27rem;
+  width: 24.5rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
   text-align: center;
   border: 3px solid var(--main-color);
   border-radius: 1.5rem;
   margin: 1em;
-  padding: 0.75em;
+  padding: 0.5em;
+}
+
+#fullscreen-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .input-row {
   width: 100%;
   padding-top: 0.25em;
   padding-bottom: 0.25em;
-  gap: 0.25em;
-  display: flex;
-  justify-content: space-evenly;
+  gap: 0.75em;
+  display: grid;
+  grid-template-columns: 4rem auto;
+  justify-content: center;
   align-items: center;
+  text-align: start;
 }
 
-.input-text {
+#submit-button-row {
+  grid-column: 1 / span 2;
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 #quit-button {

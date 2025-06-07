@@ -21,6 +21,7 @@ export const ViewContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [fullscreenContent, setfullscreenContent] = useState<React.ReactNode>(
     <></>
   );
+  const [formFieldType, setFormFieldType] = useState("text");
 
   return (
     <ViewContext.Provider
@@ -37,6 +38,8 @@ export const ViewContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setFullscrenHeader,
         fullscreenContent,
         setfullscreenContent,
+        formFieldType,
+        setFormFieldType,
       }}
     >
       {children}

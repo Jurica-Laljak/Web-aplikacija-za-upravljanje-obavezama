@@ -14,4 +14,6 @@ export type ViewContextType = {
   setFullscrenHeader: any;
   fullscreenContent: React.ReactNode;
   setfullscreenContent: any;
+  formFieldType: string;
+  setFormFieldType: any;
 };

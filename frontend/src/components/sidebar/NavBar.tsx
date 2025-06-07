@@ -59,7 +59,7 @@ function NavBar() {
   };
 
   //handlers
-  function handleAddListPress() {
+  function handleAddList() {
     const emptyObj: ToDoListInsert = {
       name: "",
     };
@@ -100,21 +100,6 @@ function NavBar() {
               Popisi obaveza
             </IconText>
             <div className="options-wrapper" id="todolistlabel">
-              {/* <div
-                className="flex-div-column add-list-wrapper pop-in"
-                style={{
-                  display: `${viewContext.elementFocused ? "block" : "none"}`,
-                }}
-              >
-                <TextField></TextField>
-                <Button
-                  className="interactable"
-                  style={{ width: "100%" }}
-                  onClick={() => submitList()}
-                >
-                  Dodaj
-                </Button>
-              </div> */}
               {userContext.lists.map((li) => (
                 <ButtonLink
                   key={li.listid}
@@ -135,7 +120,7 @@ function NavBar() {
               <Button
                 className="list-option transition interactable"
                 style={Object.assign(listOptionStyle)}
-                onClick={() => handleAddListPress()}
+                onClick={() => handleAddList()}
               >
                 <IconText icon={<IoAddCircleSharp />} iconStyle={largeIcon}>
                   Dodajte popis obaveza
@@ -175,20 +160,6 @@ function NavBar() {
             </div>
           </div>
         </Button>
-        {/* <ButtonLink
-          className="navbar-option  transition"
-          id={userContext.openedTab === "calendar" ? "selected-option" : ""}
-          style={buttonStyle}
-          to={"/calendar"}
-        >
-          <IconText
-            style={gapStyle}
-            icon={<FaCalendarAlt />}
-            iconStyle={iconStyle}
-          >
-            Kalendar
-          </IconText>
-        </ButtonLink> */}
       </div>
     </>
   );

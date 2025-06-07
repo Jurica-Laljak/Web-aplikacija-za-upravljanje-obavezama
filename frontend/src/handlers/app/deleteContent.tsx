@@ -25,10 +25,11 @@ export function deleteContent(
       className="button-wrapper flex-div-row"
       onClick={async () => {
         if (handlerContext) {
-          await onClick({}, userContext, handlerContext);
+          await onClick(object, userContext, handlerContext);
         } else {
-          await onClick({}, userContext);
+          await onClick(object, userContext);
         }
+        viewContext.setElementFocused(false);
       }}
     >
       Potvrdite

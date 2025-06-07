@@ -20,7 +20,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   //
   const [name, setName] = useState("");
-  const [highlevelsort, setHiglevelsort] =
+  const [highlevelsort, setHighlevelsort] =
     useState<SortType>("timecreated:asc");
   const [midlevelsort, setMidlevelsort] = useState<SortType | "">("");
   const [lowlevelsort, setLowlevelsort] = useState<SortType | "">("");
@@ -28,6 +28,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [todos, setTodos] = useState<Array<ToDoInternal>>([]);
   const [ungroupedTodos, setUngroupedTodos] = useState<Array<number>>([]);
   const [fetchedListData, setFetchedListData] = useState<number>(0);
+  const [forceRefresh, setForceRefresh] = useState<boolean>(false);
 
   // use user context
   const { lists, setLists } = useContext(UserContext) as UserContextType;
@@ -35,18 +36,21 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const { filters } = useContext(FilterContext) as FilterContextType;
 
   const refreshListArgs = {
-    highlevelsort,
-    midlevelsort,
-    lowlevelsort,
-    groups,
-    setGroups,
-    todos,
-    setTodos,
-    setUngroupedTodos,
-    filters,
+    setForceRefresh: setForceRefresh,
+    highlevelsort: highlevelsort,
+    midlevelsort: midlevelsort,
+    lowlevelsort: lowlevelsort,
+    groups: groups,
+    setGroups: setGroups,
+    todos: todos,
+    setTodos: setTodos,
+    setUngroupedTodos: setUngroupedTodos,
+    filters: filters,
+    invokeRefresh: true,
   };
 
   function callRefreshList() {
+    // alert("Externally calling refresh list");
     refreshList(refreshListArgs);
   }
 
@@ -56,54 +60,48 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
     setUngroupedTodos([]);
   }
 
-  function createTodos(
-    providedTodos: ToDoDto[],
-    invokeRefresh: boolean = true
-  ) {
+  function createTodos(providedTodos: ToDoDto[]) {
     if (providedTodos.length > 0) {
       const newTodos: Array<ToDoInternal> = [];
       for (let todo of providedTodos) {
         let expandedTodo = { ...todo, virtualGroupId: null };
         newTodos.push(expandedTodo);
       }
-      setTodos([...todos, ...newTodos]);
-      if (invokeRefresh) {
-        callRefreshList();
-      }
+      // alert(`new todos: ${JSON.stringify(newTodos)}`);
+      refreshList({
+        ...refreshListArgs,
+        todos: [...todos, ...newTodos],
+      });
     }
   }
 
-  function updateTodo(updatedTodo: ToDoInternal) {
-    const id = updatedTodo.todoid;
-    setTodos((prev) => {
-      return prev.splice(
-        prev.findIndex((el) => {
-          el.todoid === id ? true : false;
-        }),
-        1,
-        updatedTodo
-      );
+  function updateTodo(id: number, updateObj: Partial<ToDoDto>) {
+    const todoIndex = todos.findIndex((el) => (el.todoid == id ? true : false));
+    const updatedTodo = {
+      ...todos[todoIndex],
+      ...updateObj,
+    };
+    const todosCopy = [...todos];
+    todosCopy[todoIndex] = updatedTodo;
+    refreshList({
+      ...refreshListArgs,
+      todos: [...todosCopy],
     });
-    callRefreshList();
   }
 
   function deleteTodo(id: number) {
-    setTodos((prev) => {
-      return prev.splice(
-        prev.findIndex((el) => {
-          el.todoid === id ? true : false;
-        }),
-        1
-      );
+    const todoIndex = todos.findIndex((el) => (el.todoid == id ? true : false));
+    const todosCopy = [...todos];
+    todosCopy.splice(todoIndex, 1);
+    refreshList({
+      ...refreshListArgs,
+      todos: [...todosCopy],
     });
-    callRefreshList();
   }
 
-  function createGroups(
-    providedGroups: GroupDto[],
-    invokeRefresh: boolean = true
-  ) {
+  function createGroups(providedGroups: GroupDto[]) {
     if (providedGroups.length > 0) {
+      alert("in");
       const newGroups: Array<GroupInternal> = [];
       for (let group of providedGroups) {
         let virutalToDoIds: Array<number> = [];
@@ -114,44 +112,42 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         };
         newGroups.push(expandedGroup);
       }
-      setGroups([...groups, ...newGroups]);
-      if (invokeRefresh) {
-        callRefreshList();
-      }
+      refreshList({
+        ...refreshListArgs,
+        groups: [...groups, ...newGroups],
+      });
     }
   }
 
-  function updateGroup(updatedGroup: GroupInternal) {
-    const id = updatedGroup.groupid;
-    setGroups((prev) => {
-      return prev.splice(
-        prev.findIndex((el) => {
-          el.groupid === id ? true : false;
-        }),
-        1,
-        updatedGroup
-      );
+  function updateGroup(id: number, updateObj: Partial<GroupInternal>) {
+    const groupIndex = groups.findIndex((el) =>
+      el.groupid == id ? true : false
+    );
+    const updatedGroup = {
+      ...groups[groupIndex],
+      ...updateObj,
+    };
+    const groupsCopy = [...groups];
+    groupsCopy[groupIndex] = updatedGroup;
+    refreshList({
+      ...refreshListArgs,
+      groups: [...groupsCopy],
     });
-    callRefreshList();
   }
 
   function deleteGroup(id: number) {
-    setTodos((prev) => {
-      return prev.splice(
-        prev.findIndex((el) => {
-          el.groupid === id ? true : false;
-        }),
-        1
-      );
+    const groupIndex = groups.findIndex((el) =>
+      el.groupid == id ? true : false
+    );
+    const groupsCopy = [...groups];
+    groupsCopy.splice(groupIndex, 1);
+    refreshList({
+      ...refreshListArgs,
+      groups: [...groupsCopy],
     });
-    callRefreshList();
   }
 
-  function updateListAttributes(
-    attribute: string,
-    newValue: string | null,
-    invokeRefresh: boolean = true
-  ) {
+  function updateListAttributes(attribute: string, newValue: string | null) {
     if (attribute === "name" && newValue !== null) {
       const listId =
         lists[lists.findIndex((el) => (el.name === newValue ? true : false))]
@@ -159,16 +155,15 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
       setName(name);
       const newObj: ToDoListCore = { listid: listId, name: newValue };
       setLists([...lists, newObj]);
-
       return;
     }
 
     if (attribute === "highlevelsort") {
       if (newValue === null) {
-        setHiglevelsort("timecreated:asc");
+        setHighlevelsort("timecreated:asc");
       } else {
         assertValueIsSortType(newValue);
-        setHiglevelsort(newValue);
+        setHighlevelsort(newValue);
       }
     } else if (attribute === "midlevelsort") {
       if (newValue === null) {
@@ -185,10 +180,6 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         setLowlevelsort(newValue);
       }
     }
-
-    if (invokeRefresh) {
-      callRefreshList();
-    }
   }
 
   return (
@@ -200,7 +191,9 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         midlevelsort,
         lowlevelsort,
         groups,
+        setGroups,
         todos,
+        setTodos,
         ungroupedTodos,
         flushContent,
         createTodos,
@@ -210,9 +203,11 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         updateGroup,
         deleteGroup,
         updateListAttributes,
-        callRefreshList,
         fetchedListData,
         setFetchedListData,
+        callRefreshList,
+        forceRefresh,
+        setForceRefresh,
       }}
     >
       {children}

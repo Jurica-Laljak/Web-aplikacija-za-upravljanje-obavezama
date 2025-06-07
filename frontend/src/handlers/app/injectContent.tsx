@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { formAttributeTranslation } from "../../data/translate";
 import { capitalize } from "../../helper/capitalize";
 import { FilterContextType } from "../../types/filter/FilterContextType";
@@ -19,29 +20,53 @@ export function injectContent(
   // generate input form
   viewContext.setfullscreenContent(
     <form
+      id="fullscreen-form"
       action={async (formData) => {
-        const formResults = Object.fromEntries(formData.entries());
+        var preparedObject: { [key: string]: any } = {};
+        for (let [key, value] of formData.entries()) {
+          // alert(`${key} :- ${value}`);
+          if (value && value !== null && value !== "") {
+            preparedObject[key] = value;
+          }
+        }
+        // alert(JSON.stringify(preparedObject));
         if (handlerContext) {
-          await onSubmit(formResults, userContext, handlerContext);
+          await onSubmit(
+            { ...additionalValues, ...preparedObject },
+            userContext,
+            handlerContext
+          );
         } else {
-          await onSubmit(formResults, userContext);
+          await onSubmit(
+            { ...additionalValues, ...preparedObject },
+            userContext
+          );
         }
         viewContext.setElementFocused(false);
       }}
     >
-      {Object.keys(object).map((key) => (
+      {Object.entries(additionalValues).map(([key, value]) => (
+        <input name={key} value={value} type="hidden"></input>
+      ))}
+      {Object.entries(object).map(([key, value]) => (
         <div key={key} className="input-row">
           <label htmlFor={key}>
             {capitalize(formAttributeTranslation.get(key.toLowerCase()) || key)}
             :
           </label>
-          <input name={key} type="text" className="input-text"></input>
+          {key == "duedate" ? (
+            <input name={key} type="date" className="input-text"></input>
+          ) : (
+            <input
+              name={key}
+              type="text"
+              className="input-text"
+              placeholder={value && value !== null && value !== "" ? value : ""}
+            ></input>
+          )}
         </div>
       ))}
-      {Object.entries(additionalValues).map(([key, value]) => (
-        <input name={key} type="hidden" value={value}></input>
-      ))}
-      <div className="input-row">
+      <div className="input-row" id="submit-button-row">
         <input
           type="submit"
           value="Predajte"

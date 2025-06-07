@@ -2,6 +2,7 @@ import { SortType } from "../../../../shared/list/SortType";
 import timePeriodStringToDOW from "../../data/timePeriodStringToDOW";
 import { FilterInternal } from "../../types/filter/FilterInternal";
 import { GroupInternal } from "../../types/group/GroupInternal";
+import RefreshListArgs from "../../types/list/RefreshListArgs";
 import { ToDoInternal } from "../../types/todo/ToDoInternal";
 import {
   assertIsPrefixFilter,
@@ -11,17 +12,7 @@ import {
 } from "../filter/assertFilter";
 import { sortToDos } from "./sortTodos";
 
-export function refreshList(args: {
-  highlevelsort: SortType;
-  midlevelsort: SortType | "";
-  lowlevelsort: SortType | "";
-  groups: Array<GroupInternal>;
-  setGroups: React.Dispatch<React.SetStateAction<GroupInternal[]>>;
-  todos: Array<ToDoInternal>;
-  setTodos: React.Dispatch<React.SetStateAction<ToDoInternal[]>>;
-  setUngroupedTodos: React.Dispatch<React.SetStateAction<number[]>>;
-  filters: FilterInternal[];
-}) {
+export function refreshList(args: RefreshListArgs) {
   // alert(`Provided args: ${JSON.stringify(args)}`);
 
   var refreshedTodos = [...args.todos];
@@ -278,4 +269,9 @@ export function refreshList(args: {
   args.setTodos([...refreshedTodos]);
   args.setGroups([...refreshedGroups]);
   args.setUngroupedTodos([...ungroupedTodoIds]);
+
+  if (args.invokeRefresh) {
+    // alert("set forced refresh");
+    args.setForceRefresh(true);
+  }
 }
