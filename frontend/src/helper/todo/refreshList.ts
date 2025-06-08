@@ -10,6 +10,7 @@ import {
   assertIsSizeFilter,
   assertIsTimeperiodFilter,
 } from "../filter/assertFilter";
+import { sortGroups } from "../group/sortGroups";
 import { sortToDos } from "./sortTodos";
 
 export function refreshList(args: RefreshListArgs): {
@@ -79,14 +80,9 @@ export function refreshList(args: RefreshListArgs): {
   }));
 
   // sort groups by serial number in ascending order
-  refreshedGroups = refreshedGroups.sort((a, b) => {
-    if (a.serialnumber < b.serialnumber) {
-      return -1;
-    } else if (a.serialnumber > b.serialnumber) {
-      return 1;
-    }
-    return 0;
-  });
+  // alert("Before\n" + JSON.stringify(refreshedGroups));
+  refreshedGroups = refreshedGroups.sort(sortGroups);
+  // alert("After\n" + JSON.stringify(refreshedGroups));
 
   // alert("Groups: " + JSON.stringify(refreshedGroups));
 
@@ -108,7 +104,7 @@ export function refreshList(args: RefreshListArgs): {
   nextMondayMidnight.setDate(
     nextMondayMidnight.getDate() +
       ((1 + 7 - nextMondayMidnight.getDay()) % 7 || 7) +
-      1
+      7
   );
   nextMondayMidnight.setHours(0, 0, 0, 0);
 
@@ -143,6 +139,13 @@ export function refreshList(args: RefreshListArgs): {
         continue;
       }
 
+      // if no filters are defined, skip virtual grouping
+      if (!args.filters || args.filters.length == 0) {
+        continue;
+      } else {
+        // alert(JSON.stringify(args.filters));
+      }
+
       // iterate over groups
       for (let group of refreshedGroups) {
         // alert(JSON.stringify(todo) + "\n\n" + JSON.stringify(group));
@@ -168,6 +171,12 @@ export function refreshList(args: RefreshListArgs): {
               )
             ];
 
+          // alert(
+          //   `Group: ${group.groupid}\nGroup filters: ${
+          //     group.filterids
+          //   }\nFilterid: ${filterId}\nFilter: ${JSON.stringify(filter)}`
+          // );
+
           // alert(JSON.stringify(filter));
 
           // determine filter type and carry out action
@@ -192,28 +201,51 @@ export function refreshList(args: RefreshListArgs): {
               assertIsTimeperiodFilter(filter);
               const todoDate = new Date(todo.duedate);
               // alert(JSON.stringify(filter));
+              // alert(
+              //   `Todo: ${
+              //     todo.duedate
+              //   }\nTodo time:${todoDate.getTime()}\nnext monday: ${nextMondayMidnight.getTime()}\n}`
+              // );
+
+              var toDoDow: number;
+              if (todoDate.getDay() == 0) {
+                toDoDow = 6;
+              } else {
+                toDoDow = todoDate.getDay() - 1;
+              }
 
               // reject todo if it's due date is next week or later
               if (todoDate.getTime() >= nextMondayMidnight.getTime()) {
                 acceptIntoCurrent = false;
-              }
-              // reject todo if it's due date is earlier than lower bound
-              else if (filter.lowerbound !== null) {
-                let lowerBoundDOW = timePeriodStringToDOW.get(
-                  filter.lowerbound.toLowerCase().slice(0, 3)
-                );
-                if (lowerBoundDOW && todoDate.getDay() < lowerBoundDOW) {
-                  acceptIntoCurrent = false;
+              } else {
+                // alert(`Accepted into: ${acceptIntoCurrent}`);
+                // reject todo if it's due date is earlier than lower bound
+                if (filter.lowerbound !== null) {
+                  let lowerBoundDOW = timePeriodStringToDOW.get(
+                    filter.lowerbound.toLowerCase().slice(0, 3)
+                  );
+                  // alert(
+                  //   `Todo: ${todo.duedate}\nTodo date:${toDoDow}\nLow bound: ${lowerBoundDOW}\n`
+                  // );
+
+                  if (lowerBoundDOW && toDoDow < lowerBoundDOW) {
+                    acceptIntoCurrent = false;
+                  }
                 }
-              }
-              // reject todo if it's due date is later than higher bound
-              else if (filter.higherbound !== null) {
-                let higherBoundDOW = timePeriodStringToDOW.get(
-                  filter.higherbound.toLowerCase().slice(0, 3)
-                );
-                if (higherBoundDOW && todoDate.getDay() > higherBoundDOW) {
-                  acceptIntoCurrent = false;
+                // alert(`Accepted into: ${acceptIntoCurrent}`);
+                // reject todo if it's due date is later than higher bound
+                if (acceptIntoCurrent && filter.higherbound !== null) {
+                  let higherBoundDOW = timePeriodStringToDOW.get(
+                    filter.higherbound.toLowerCase().slice(0, 3)
+                  );
+                  // alert(
+                  //   `Todo: ${todo.duedate}\nTodo date:${toDoDow}\nHigh bound: ${higherBoundDOW}\n`
+                  // );
+                  if (higherBoundDOW && toDoDow > higherBoundDOW) {
+                    acceptIntoCurrent = false;
+                  }
                 }
+                // alert(`Accepted into: ${acceptIntoCurrent}`);
               }
               break;
             }

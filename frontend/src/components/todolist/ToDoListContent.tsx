@@ -8,10 +8,13 @@ import Button from "../element/Button";
 import IconText from "../element/IconText";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { veryveryLargeIcon } from "../../types/style/iconStyle";
+import { FilterContext } from "../../context/filterContext";
+import { FilterContextType } from "../../types/filter/FilterContextType";
 
 function ToDoListContent() {
   const isMounted = useRef(false);
   const listContext = useContext(ListContext) as ListContextType;
+  const filterContext = useContext(FilterContext) as FilterContextType;
   const [ungroupedVisible, setUngroupedVisible] = useState(true);
 
   useEffect(() => {

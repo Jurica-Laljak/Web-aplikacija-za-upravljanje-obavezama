@@ -5,9 +5,8 @@ export interface FilterInsert {
   type: Type;
   size?: number;
   prefix?: string;
-  datetype?: DateType;
-  lowerbound?: number | Date;
-  higherbound?: number | Date;
+  lowerbound?: string | number | null;
+  higherbound?: string | number | null;
 }
 
 type Type =

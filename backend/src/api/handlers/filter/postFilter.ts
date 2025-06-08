@@ -24,7 +24,7 @@ export async function postFilter(
     var queryStr = insert<FilterCore>(
       "filter",
       { name: reqBody.name, userid: Number(res.locals.userId) },
-      "*"
+      "filterid"
     );
   } catch (err) {
     console.log(err);
@@ -34,7 +34,6 @@ export async function postFilter(
 
   // insert into table filter
   try {
-    console.log("lol");
     var result = await query<Filter>(queryStr);
   } catch (err) {
     console.log(err);
@@ -76,12 +75,11 @@ export async function postFilter(
       break;
 
     case "timeperiodfilter":
-      if (reqBody.datetype && (reqBody.lowerbound || reqBody.higherbound)) {
+      if (reqBody.lowerbound || reqBody.higherbound) {
         newQuery = insert(type, {
           filterid: filterId,
           lowerbound: reqBody.lowerbound,
           higherbound: reqBody.higherbound,
-          datetype: reqBody.datetype,
         });
       }
       break;

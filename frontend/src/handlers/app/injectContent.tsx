@@ -52,7 +52,6 @@ export function injectContent(
         <div key={key} className="input-row">
           <label htmlFor={key}>
             {capitalize(formAttributeTranslation.get(key.toLowerCase()) || key)}
-            :
           </label>
           {key == "duedate" ? (
             <input name={key} type="date" className="input-text"></input>

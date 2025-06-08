@@ -23,10 +23,12 @@ function Home(props: PropsWithChildren) {
     call<any, AllFilters>("/filter/", "get", {}, userContext).then((data) => {
       // alert(JSON.stringify(data));
 
-      filterContext.saveFilters(data.sizefilters);
-      filterContext.saveFilters(data.timeperiodfilters);
-      filterContext.saveFilters(data.priorityfilters);
-      filterContext.saveFilters(data.prefixfilters);
+      filterContext.saveFilters([
+        ...data.sizefilters,
+        ...data.timeperiodfilters,
+        ...data.priorityfilters,
+        ...data.prefixfilters,
+      ]);
 
       // alert(JSON.stringify(filterContext));
     });

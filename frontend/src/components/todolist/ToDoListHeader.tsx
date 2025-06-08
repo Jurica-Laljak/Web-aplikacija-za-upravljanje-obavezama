@@ -120,7 +120,7 @@ function ToDoListHeader() {
               handleSortChange(e.target.value, 1);
             }}
           >
-            <option value="" id="current-sort-1">
+            <option value="" key={"sort-option-current"} id="current-sort-1">
               {listContext.midlevelsort === ""
                 ? "-"
                 : sortIcons.get(listContext.midlevelsort)}
@@ -131,7 +131,9 @@ function ToDoListHeader() {
               listContext.lowlevelsort === so ? (
                 <></>
               ) : (
-                <option value={so}>{sortIcons.get(so)}</option>
+                <option value={so} key={`sort-option-${so}`}>
+                  {sortIcons.get(so)}
+                </option>
               )
             )}
             {listContext.midlevelsort === "" ? (

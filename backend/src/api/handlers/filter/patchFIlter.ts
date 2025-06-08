@@ -17,7 +17,7 @@ export async function patchFilter(
   res: Response<{}, FilterAuthorizedAttributes>,
   next: NextFunction
 ) {
-  var { type, ...updateObj } = req.body; // remove type from update object
+  var { type, name, ...updateObj } = req.body; // remove type from update object
 
   if (!type) {
     next(ErrorEnvelope.validationError());
@@ -27,23 +27,42 @@ export async function patchFilter(
   try {
     console.log(Object.keys(updateObj));
     console.log(Object.values(updateObj));
-    var queryStr = update<Partial<Filter>>(type, updateObj, [
-      "filterid",
-      res.locals.filterid,
-    ]);
+    var queryStr = update(type, updateObj, ["filterid", res.locals.filterid]);
   } catch (err) {
     console.log(err);
     next(ErrorEnvelope.validationError());
     return;
   }
 
-  // update group data
+  // update filter data
   try {
     await anonymousQuery(queryStr);
   } catch (err) {
     console.log(err);
     next(ErrorEnvelope.databaseError());
     return;
+  }
+
+  if (name) {
+    try {
+      var queryStr2 = update("filter", { name: name }, [
+        "filterid",
+        res.locals.filterid,
+      ]);
+    } catch (err) {
+      console.log(err);
+      next(ErrorEnvelope.validationError());
+      return;
+    }
+
+    // update filter data
+    try {
+      await anonymousQuery(queryStr2);
+    } catch (err) {
+      console.log(err);
+      next(ErrorEnvelope.databaseError());
+      return;
+    }
   }
 
   res.send();

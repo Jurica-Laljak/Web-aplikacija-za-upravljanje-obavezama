@@ -16,7 +16,7 @@ export function authorizeFilter<R = any>(paramName: string) {
     try {
       var sqlRes = await query<ToDoGroup>(
         selectAllConditionally(
-          "prefixfilter",
+          "filter",
           ["userid", res.locals.userId],
           ["filterid", filterId]
         )

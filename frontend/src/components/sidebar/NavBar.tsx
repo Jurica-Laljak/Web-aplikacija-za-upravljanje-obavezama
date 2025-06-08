@@ -123,7 +123,7 @@ function NavBar() {
                 onClick={() => handleAddList()}
               >
                 <IconText icon={<IoAddCircleSharp />} iconStyle={largeIcon}>
-                  Dodajte popis obaveza
+                  Dodajte popis obaveza{" "}
                 </IconText>
               </Button>
             </div>

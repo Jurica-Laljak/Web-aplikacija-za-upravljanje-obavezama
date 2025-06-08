@@ -166,7 +166,9 @@ function ToDoItem(props: { todo: ToDoInternal | undefined }) {
                   )}`}
             </option>
             {listContext.groups.map((g) => (
-              <option value={g.groupid}>{capitalize(g.name)}</option>
+              <option value={g.groupid} key={`group-option-${g.groupid}`}>
+                {capitalize(g.name)}
+              </option>
             ))}
           </select>
         ) : (

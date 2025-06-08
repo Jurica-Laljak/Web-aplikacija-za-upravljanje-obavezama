@@ -32,7 +32,7 @@ async function run() {
   app.use(cors(corsOptions));
 
   //API router
-  app.use("/api", apiRouter);
+  app.use("/api", logger, apiRouter);
 
   //error handler
   app.use(

@@ -13,6 +13,12 @@
   font-style: italic;
 }
 
+#filter-div-center {
+  display: grid;
+  flex-direction: column;
+  justify-content: center;
+}
+
 #filter-content-wrapper {
   display: flex;
   width: 100%;
@@ -37,11 +43,16 @@
   align-items: start;
 }
 
+.filter-subwrapper {
+  gap: 1.5rem;
+}
+
 .filter-operator {
   background-color: var(--secondary-color);
   padding: 0.25rem;
   border: none;
   color: white;
+  font-size: 1rem;
 }
 
 .filter-content-wrapper {

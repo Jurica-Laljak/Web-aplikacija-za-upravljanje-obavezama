@@ -93,21 +93,22 @@ export function sortToDos(
     }
 
     //
+
     case "priority:asc": {
       if (a.priority < b.priority) {
-        return 1;
+        return -1;
       }
       if (a.priority > b.priority) {
-        return -1;
+        return 1;
       }
       return 0;
     }
     case "priority:desc": {
       if (a.priority < b.priority) {
-        return -1;
+        return 1;
       }
       if (a.priority > b.priority) {
-        return 1;
+        return -1;
       }
       return 0;
     }

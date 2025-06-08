@@ -8,7 +8,11 @@ dayOfWeekTranslation.set("saturday", "subota");
 dayOfWeekTranslation.set("sunday", "nedjelja");
 
 export const formAttributeTranslation: Map<string, string> = new Map();
-formAttributeTranslation.set("name", "ime");
+formAttributeTranslation.set("name", "naziv");
 formAttributeTranslation.set("content", "sadržaj");
 formAttributeTranslation.set("duedate", "rok");
 formAttributeTranslation.set("priority", "prioritet");
+formAttributeTranslation.set("size", "maksimalna veličina");
+formAttributeTranslation.set("lowerbound", "donja granica");
+formAttributeTranslation.set("higherbound", "gornja granica");
+formAttributeTranslation.set("prefix", "prefiks");

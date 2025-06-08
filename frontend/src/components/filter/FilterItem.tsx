@@ -28,9 +28,9 @@ function FilterItem(props: { f: FilterInternal }) {
           <h2>
             <u>{props.f.size}</u>
           </h2>
-          <Button className="interactable" style={buttonStyle}>
+          {/* <Button className="interactable" style={buttonStyle}>
             Uredite gornju granicu
-          </Button>
+          </Button> */}
         </div>
       </FilterItemWrapper>
     );
@@ -55,11 +55,11 @@ function FilterItem(props: { f: FilterInternal }) {
           ) : (
             <></>
           )}
-          <Button className="interactable" style={buttonStyle}>
+          {/* <Button className="interactable" style={buttonStyle}>
             {props.f.lowerbound !== null
               ? "Uredite gornju granicu"
               : "Dodajte gornju granicu"}
-          </Button>
+          </Button> */}
         </div>
         <div className="flex-div-row">
           {props.f.higherbound ? (
@@ -73,11 +73,11 @@ function FilterItem(props: { f: FilterInternal }) {
           ) : (
             <></>
           )}
-          <Button className="interactable" style={buttonStyle}>
+          {/* <Button className="interactable" style={buttonStyle}>
             {props.f.higherbound !== null
               ? "Uredite gornju granicu"
               : "Dodajte gornju granicu"}
-          </Button>
+          </Button> */}
         </div>
       </FilterItemWrapper>
     );
@@ -99,11 +99,11 @@ function FilterItem(props: { f: FilterInternal }) {
           ) : (
             <></>
           )}
-          <Button className="interactable" style={buttonStyle}>
+          {/* <Button className="interactable" style={buttonStyle}>
             {props.f.lowerbound !== null
               ? "Uredite gornju granicu"
               : "Dodajte gornju granicu"}
-          </Button>
+          </Button> */}
         </div>
         <div className="flex-div-row">
           {props.f.higherbound ? (
@@ -117,11 +117,11 @@ function FilterItem(props: { f: FilterInternal }) {
           ) : (
             <></>
           )}
-          <Button className="interactable" style={buttonStyle}>
+          {/* <Button className="interactable" style={buttonStyle}>
             {props.f.higherbound !== null
               ? "Uredite gornju granicu"
               : "Dodajte gornju granicu"}
-          </Button>
+          </Button> */}
         </div>
       </FilterItemWrapper>
     );
@@ -140,9 +140,9 @@ function FilterItem(props: { f: FilterInternal }) {
               {`"`}
             </u>
           </h2>
-          <Button className="interactable" style={buttonStyle}>
+          {/* <Button className="interactable" style={buttonStyle}>
             Uredite prefiks
-          </Button>
+          </Button> */}
         </div>
       </FilterItemWrapper>
     );

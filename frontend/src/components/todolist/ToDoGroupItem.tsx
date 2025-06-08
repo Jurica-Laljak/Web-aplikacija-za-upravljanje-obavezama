@@ -26,6 +26,8 @@ import { deleteContent } from "../../handlers/app/deleteContent";
 import { apiPatchGroup } from "../../handlers/group/apiPatchGroup";
 import { apiDeleteGroup } from "../../handlers/group/apiDeleteGroup";
 import { apiPatchMultipleGroups } from "../../handlers/group/apiPatchMultipleGroups";
+import { injectCheckbox } from "../../handlers/app/injectCheckbox";
+import { apiAssociateFilters } from "../../handlers/group/apiAssociateFilters";
 
 function ToDoGroupItem(props: { group: GroupInternal }) {
   const userContext = useContext(UserContext) as UserContextType;
@@ -42,7 +44,7 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
       viewContext,
       userContext,
       listContext,
-      "Uredite grupu obaveza",
+      "Preimenujte grupu obaveza",
       currState,
       apiPatchGroup,
       { ...currState, groupid: props.group.groupid }
@@ -81,6 +83,23 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
         userContext,
         listContext
       );
+  }
+
+  function handleModifyFilters() {
+    injectCheckbox(
+      viewContext,
+      userContext,
+      listContext,
+      filterContext,
+      `Uredite filtre za grupu - "${props.group.name}"`,
+      props.group.groupid,
+      filterContext.filters.map((f) =>
+        props.group.filterids.some((fId) => fId == f.filterid)
+          ? { key: f.filterid, value: f.name, checked: true }
+          : { key: f.filterid, value: f.name, checked: false }
+      ),
+      apiAssociateFilters
+    );
   }
 
   return (
@@ -163,6 +182,7 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
               borderColor: "white",
               color: "white",
             }}
+            onClick={handleModifyFilters}
           >
             <IconText icon={<FaFilter />} iconStyle={mediumIcon}>
               {props.group.filterids.length > 0

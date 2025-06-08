@@ -18,10 +18,9 @@ export async function apiPatchMultipleGroups(
       `/group/${userContext.listid}/${group1Id}`,
       "patch",
       {
-        groupid: group1Id,
-        serialnumber: listContext.groups.find((g) => {
-          g.groupid == group2Id ? true : false;
-        })?.serialnumber,
+        serialnumber: listContext.groups.find((g) =>
+          g.groupid == group2Id ? true : false
+        )?.serialnumber,
       },
       userContext
     );
@@ -29,10 +28,9 @@ export async function apiPatchMultipleGroups(
       `/group/${userContext.listid}/${group2Id}`,
       "patch",
       {
-        groupid: group2Id,
-        serialnumber: listContext.groups.find((g) => {
-          g.groupid == group1Id ? true : false;
-        })?.serialnumber,
+        serialnumber: listContext.groups.find((g) =>
+          g.groupid == group1Id ? true : false
+        )?.serialnumber,
       },
       userContext
     );

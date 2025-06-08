@@ -27,6 +27,7 @@ export type FilterContextType = {
   // updatePrefixFilter: (id: string) => void;
   // deletePrefixFilter: (id: string) => void;
   saveFilters: (filterDtos: Filter[]) => void;
-  updateFilter: (newObject: FilterInternal) => void;
+  updateFilter: (id: number, newObject: Partial<FilterInternal>) => void;
   deleteFilter: (id: number) => void;
+  refreshedFilters: boolean;
 };
