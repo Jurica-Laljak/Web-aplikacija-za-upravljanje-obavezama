@@ -1,7 +1,12 @@
 import { ToDoInternal } from "../../types/todo/ToDoInternal";
 import "../../styles/todolist/list-content.css";
 import IconText from "../element/IconText";
-import { MdDateRange, MdDelete, MdOutlinePriorityHigh } from "react-icons/md";
+import {
+  MdDateRange,
+  MdDelete,
+  MdGroupOff,
+  MdOutlinePriorityHigh,
+} from "react-icons/md";
 import { mediumIcon, smallIcon } from "../../types/style/iconStyle";
 import Button from "../element/Button";
 import { FaUserGroup } from "react-icons/fa6";
@@ -16,6 +21,9 @@ import { ViewContextType } from "../../types/other/ViewContext";
 import { apiPatchTodo } from "../../handlers/todo/apiPatchTodo";
 import { deleteContent } from "../../handlers/app/deleteContent";
 import { apiDeleteTodo } from "../../handlers/todo/apiDeleteTodo";
+import { capitalize } from "../../helper/capitalize";
+import { apiGroupTodo } from "../../handlers/todo/apiGroupTodo";
+import { apiUngroupTodo } from "../../handlers/todo/apiUngroupTodo";
 
 function ToDoItem(props: { todo: ToDoInternal | undefined }) {
   if (!props.todo) {
@@ -33,11 +41,18 @@ function ToDoItem(props: { todo: ToDoInternal | undefined }) {
     padding: "0.25rem",
   };
 
-  function handleGroupTodo() {}
+  function handleGroupTodo(groupId: string) {
+    if (groupId === "") return;
+    apiGroupTodo(
+      { todoid: props.todo?.todoid, groupid: groupId },
+      userContext,
+      listContext
+    );
+  }
 
   function handleUngroupTodo() {
-    apiPatchTodo(
-      { todoid: props.todo?.todoid, groupid: null },
+    apiUngroupTodo(
+      { todoid: props.todo?.todoid, groupid: props.todo?.groupid },
       userContext,
       listContext
     );
@@ -94,11 +109,6 @@ function ToDoItem(props: { todo: ToDoInternal | undefined }) {
               className="hover"
             ></IconText>
           </Button>
-          {props.todo.groupid !== null ? (
-            <IconText icon={<FaUserGroup />} iconStyle={smallIcon}></IconText>
-          ) : (
-            <></>
-          )}
           {props.todo.content}
         </div>
         <div className="flex-div-row" style={{ gap: "0rem" }}>
@@ -134,19 +144,31 @@ function ToDoItem(props: { todo: ToDoInternal | undefined }) {
             style={buttonStyle}
             onClick={handleUngroupTodo}
           >
-            - Odgrupirajte
+            <IconText icon={<MdGroupOff />} iconStyle={mediumIcon}></IconText>
           </Button>
         ) : (
           <></>
         )}
         {listContext.groups.length > 0 && props.todo.groupid === null ? (
-          <Button
-            className="interactable"
-            style={buttonStyle}
-            onClick={handleGroupTodo}
+          <select
+            className="todo-dropdown-content"
+            onChange={(e) => {
+              handleGroupTodo(e.target.value);
+            }}
           >
-            + Grupirajte
-          </Button>
+            <option value="" id="current-todo-group-option">
+              {props.todo.groupid === null
+                ? "- Grupirajte obavezu -"
+                : `Grupa: ${capitalize(
+                    listContext.groups.find((g) =>
+                      g.groupid == props.todo?.groupid ? true : false
+                    )?.name
+                  )}`}
+            </option>
+            {listContext.groups.map((g) => (
+              <option value={g.groupid}>{capitalize(g.name)}</option>
+            ))}
+          </select>
         ) : (
           <></>
         )}

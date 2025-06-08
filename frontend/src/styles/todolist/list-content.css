@@ -79,7 +79,7 @@
 }
 
 .todo-container {
-  width: 60rem;
+  width: 61rem;
   font-size: 1.15rem;
   padding: 0.25rem;
   border: 0.25rem solid;
@@ -103,4 +103,29 @@
   aspect-ratio: 1 / 1;
   height: 1.5rem;
   margin-left: 0.75rem;
+}
+
+.todo-dropdown-content {
+  color: white;
+  background-color: var(--secondary-color);
+  border: 0.25rem solid white;
+  padding: 0.25rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.todo-dropdown-content:hover {
+  cursor: pointer;
+}
+
+.todo-dropdown-content * {
+  background-color: white;
+  color: var(--secondary-color);
+}
+
+#remove-group {
+  background-color: white;
+  color: black;
+  font-weight: bold;
 }

@@ -137,7 +137,7 @@ function ToDoListHeader() {
             {listContext.midlevelsort === "" ? (
               <></>
             ) : (
-              <option value=".hide" id="remove-sort-1">
+              <option value=".hide" id="remove-group">
                 - Uklonite -
               </option>
             )}

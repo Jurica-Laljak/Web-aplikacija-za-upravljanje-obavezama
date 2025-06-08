@@ -28,7 +28,6 @@ function ToDoListContent() {
   ]);
 
   useEffect(() => {
-    // alert("triggered");
     if (listContext.forceRefresh) {
       listContext.callRefreshList();
       listContext.setForceRefresh(false);

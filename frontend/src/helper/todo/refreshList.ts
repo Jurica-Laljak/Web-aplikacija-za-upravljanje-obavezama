@@ -12,7 +12,10 @@ import {
 } from "../filter/assertFilter";
 import { sortToDos } from "./sortTodos";
 
-export function refreshList(args: RefreshListArgs) {
+export function refreshList(args: RefreshListArgs): {
+  todos: ToDoInternal[];
+  groups: GroupInternal[];
+} {
   // alert(`Provided args: ${JSON.stringify(args)}`);
 
   var refreshedTodos = [...args.todos];
@@ -75,6 +78,7 @@ export function refreshList(args: RefreshListArgs) {
     remainingReservedSpots: group.todoids ? group.todoids.length : 0,
   }));
 
+  // sort groups by serial number in ascending order
   refreshedGroups = refreshedGroups.sort((a, b) => {
     if (a.serialnumber < b.serialnumber) {
       return -1;
@@ -84,11 +88,15 @@ export function refreshList(args: RefreshListArgs) {
     return 0;
   });
 
+  // alert("Groups: " + JSON.stringify(refreshedGroups));
+
   // clearing virtual group pointers from todos
   refreshedTodos = refreshedTodos.map((todo) => ({
     ...todo,
     virtualGroupId: null,
   }));
+
+  // alert("Todos: " + JSON.stringify(refreshedTodos));
 
   // alert(`Refreshed groups: ${JSON.stringify(refreshedGroups)}`);
 
@@ -108,156 +116,167 @@ export function refreshList(args: RefreshListArgs) {
 
   // alert(`Refreshed ungrouped: ${JSON.stringify(refreshedUngroupedTodos)}`);
 
-  // virtually group todos
-  for (let todo of refreshedTodos) {
-    // todos that are forced into a group are added
-    // to that groups virtual todo list
-    // alert(JSON.stringify(todo));
-    if (todo.groupid) {
-      const groupIndex = refreshedGroups.findIndex((g) =>
-        g.groupid == todo.groupid ? true : false
-      );
-      refreshedGroups[groupIndex].virtualToDoIds.push(todo.todoid);
-      refreshedGroups[groupIndex].remainingReservedSpots -= 1;
-      todo.virtualGroupId = refreshedGroups[groupIndex].groupid;
-      continue;
-    }
+  // skip virtual grouping of todos if there are no groups
+  if (!refreshedGroups || refreshedGroups.length == 0) {
+    refreshedTodos.forEach((todo) => ungroupedTodoIds.push(todo.todoid));
+  } else {
+    // otherwise, virtually group todos
+    for (let todo of refreshedTodos) {
+      // todos that are forced into a group are added
+      // to that groups virtual todo list
+      // alert(JSON.stringify(todo));
+      let acceptedIntoGroup = false;
 
-    let acceptedIntoGroup = false;
-
-    // iterate over groups
-    for (let group of refreshedGroups) {
-      // alert(JSON.stringify(todo) + "\n\n" + JSON.stringify(group));
-      // skip static groups
-      if (group.filterids.length == 0) {
+      // skip grouping if todo is part of an existing group
+      if (todo.groupid) {
+        // append todoid to group's array of virtual todoids
+        const groupIndex = refreshedGroups.findIndex((g) =>
+          g.groupid == todo.groupid ? true : false
+        );
+        const refreshedVirtualIds = [
+          ...refreshedGroups[groupIndex].virtualToDoIds,
+        ];
+        refreshedVirtualIds.push(todo.todoid);
+        refreshedGroups[groupIndex].virtualToDoIds = [...refreshedVirtualIds];
+        refreshedGroups[groupIndex].remainingReservedSpots -= 1;
+        todo.virtualGroupId = refreshedGroups[groupIndex].groupid;
         continue;
       }
 
-      // data structures for current evaluation
-      let acceptIntoCurrent = true;
+      // iterate over groups
+      for (let group of refreshedGroups) {
+        // alert(JSON.stringify(todo) + "\n\n" + JSON.stringify(group));
+        // skip static groups
+        if (!group.filterids || group.filterids.length == 0) {
+          continue;
+        }
 
-      // iterate over filters associated with group
-      for (let filterId of group.filterids) {
-        if (!acceptIntoCurrent) {
+        // data structures for current evaluation
+        let acceptIntoCurrent = true;
+
+        // iterate over filters associated with group
+        for (let filterId of group.filterids) {
+          if (!acceptIntoCurrent) {
+            break;
+          }
+
+          // find filter for id
+          let filter =
+            args.filters[
+              args.filters.findIndex((el) =>
+                el.filterid == filterId ? true : false
+              )
+            ];
+
+          // alert(JSON.stringify(filter));
+
+          // determine filter type and carry out action
+          switch (filter.type) {
+            //
+            case "sizefilter": {
+              assertIsSizeFilter(filter);
+              // reject todo if group total size exceeds or is equal to filter defined limit
+              // alert(
+              //   `${group.virtualToDoIds.length}, ${group.remainingReservedSpots} <?> ${filter.size}`
+              // );
+              if (
+                group.virtualToDoIds.length + group.remainingReservedSpots >=
+                filter.size
+              ) {
+                acceptIntoCurrent = false;
+              }
+              break;
+            }
+            //
+            case "timeperiodfilter": {
+              assertIsTimeperiodFilter(filter);
+              const todoDate = new Date(todo.duedate);
+              // alert(JSON.stringify(filter));
+
+              // reject todo if it's due date is next week or later
+              if (todoDate.getTime() >= nextMondayMidnight.getTime()) {
+                acceptIntoCurrent = false;
+              }
+              // reject todo if it's due date is earlier than lower bound
+              else if (filter.lowerbound !== null) {
+                let lowerBoundDOW = timePeriodStringToDOW.get(
+                  filter.lowerbound.toLowerCase().slice(0, 3)
+                );
+                if (lowerBoundDOW && todoDate.getDay() < lowerBoundDOW) {
+                  acceptIntoCurrent = false;
+                }
+              }
+              // reject todo if it's due date is later than higher bound
+              else if (filter.higherbound !== null) {
+                let higherBoundDOW = timePeriodStringToDOW.get(
+                  filter.higherbound.toLowerCase().slice(0, 3)
+                );
+                if (higherBoundDOW && todoDate.getDay() > higherBoundDOW) {
+                  acceptIntoCurrent = false;
+                }
+              }
+              break;
+            }
+            //
+            case "priorityfilter": {
+              assertIsPriorityFilter(filter);
+              // reject todo if it's priority is lower than lower bound
+              if (
+                filter.lowerbound !== null &&
+                todo.priority < filter.lowerbound
+              ) {
+                acceptIntoCurrent = false;
+              }
+              // reject todo if it's priority is higher than higher bound
+              else if (
+                filter.higherbound !== null &&
+                todo.priority > filter.higherbound
+              ) {
+                acceptIntoCurrent = false;
+              }
+              break;
+            }
+            //
+            case "prefixfilter": {
+              assertIsPrefixFilter(filter);
+              // alert(
+              //   `${filter.prefix} - ${todo.content.toLowerCase()} - ${todo.content
+              //     .toLowerCase()
+              //     .includes(filter.prefix)}`
+              // );
+              // reject todo if the filter.prefix is not a substring of todo.content
+              if (!todo.content.toLowerCase().includes(filter.prefix)) {
+                acceptIntoCurrent = false;
+              }
+              break;
+            }
+          }
+        }
+
+        // if todo matches group filters, add todoid to group
+        if (acceptIntoCurrent) {
+          acceptedIntoGroup = true;
+          const groupIndex = refreshedGroups.findIndex((g) =>
+            g.groupid == group.groupid ? true : false
+          );
+          // alert(JSON.stringify(refreshedGroups));
+          refreshedGroups[groupIndex].virtualToDoIds = [
+            ...refreshedGroups[groupIndex].virtualToDoIds,
+            todo.todoid,
+          ];
+          todo.virtualGroupId = group.groupid;
+          // alert(
+          //   "Added!\n" + JSON.stringify(todo) + "\n\n" + JSON.stringify(group)
+          // );
+          // alert(JSON.stringify(refreshedGroups));
           break;
         }
-
-        // find filter for id
-        let filter =
-          args.filters[
-            args.filters.findIndex((el) =>
-              el.filterid == filterId ? true : false
-            )
-          ];
-
-        // alert(JSON.stringify(filter));
-
-        // determine filter type and carry out action
-        switch (filter.type) {
-          //
-          case "sizefilter": {
-            assertIsSizeFilter(filter);
-            // reject todo if group total size exceeds or is equal to filter defined limit
-            // alert(
-            //   `${group.virtualToDoIds.length}, ${group.remainingReservedSpots} <?> ${filter.size}`
-            // );
-            if (
-              group.virtualToDoIds.length + group.remainingReservedSpots >=
-              filter.size
-            ) {
-              acceptIntoCurrent = false;
-            }
-            break;
-          }
-          //
-          case "timeperiodfilter": {
-            assertIsTimeperiodFilter(filter);
-            const todoDate = new Date(todo.duedate);
-            // alert(JSON.stringify(filter));
-
-            // reject todo if it's due date is next week or later
-            if (todoDate.getTime() >= nextMondayMidnight.getTime()) {
-              acceptIntoCurrent = false;
-            }
-            // reject todo if it's due date is earlier than lower bound
-            else if (filter.lowerbound !== null) {
-              let lowerBoundDOW = timePeriodStringToDOW.get(
-                filter.lowerbound.toLowerCase().slice(0, 3)
-              );
-              if (lowerBoundDOW && todoDate.getDay() < lowerBoundDOW) {
-                acceptIntoCurrent = false;
-              }
-            }
-            // reject todo if it's due date is later than higher bound
-            else if (filter.higherbound !== null) {
-              let higherBoundDOW = timePeriodStringToDOW.get(
-                filter.higherbound.toLowerCase().slice(0, 3)
-              );
-              if (higherBoundDOW && todoDate.getDay() > higherBoundDOW) {
-                acceptIntoCurrent = false;
-              }
-            }
-            break;
-          }
-          //
-          case "priorityfilter": {
-            assertIsPriorityFilter(filter);
-            // reject todo if it's priority is lower than lower bound
-            if (
-              filter.lowerbound !== null &&
-              todo.priority < filter.lowerbound
-            ) {
-              acceptIntoCurrent = false;
-            }
-            // reject todo if it's priority is higher than higher bound
-            else if (
-              filter.higherbound !== null &&
-              todo.priority > filter.higherbound
-            ) {
-              acceptIntoCurrent = false;
-            }
-            break;
-          }
-          //
-          case "prefixfilter": {
-            assertIsPrefixFilter(filter);
-            // alert(
-            //   `${filter.prefix} - ${todo.content.toLowerCase()} - ${todo.content
-            //     .toLowerCase()
-            //     .includes(filter.prefix)}`
-            // );
-            // reject todo if the filter.prefix is not a substring of todo.content
-            if (!todo.content.toLowerCase().includes(filter.prefix)) {
-              acceptIntoCurrent = false;
-            }
-            break;
-          }
-        }
       }
 
-      // if todo matches group filters, add todoid to group
-      if (acceptIntoCurrent) {
-        acceptedIntoGroup = true;
-        const groupIndex = refreshedGroups.findIndex((g) =>
-          g.groupid == group.groupid ? true : false
-        );
-        // alert(JSON.stringify(refreshedGroups));
-        refreshedGroups[groupIndex].virtualToDoIds = [
-          ...refreshedGroups[groupIndex].virtualToDoIds,
-          todo.todoid,
-        ];
-        todo.virtualGroupId = group.groupid;
-        // alert(
-        //   "Added!\n" + JSON.stringify(todo) + "\n\n" + JSON.stringify(group)
-        // );
-        // alert(JSON.stringify(refreshedGroups));
-        break;
+      // if todo not grouped, add todoid to ungrouped todos
+      if (!acceptedIntoGroup) {
+        ungroupedTodoIds.push(todo.todoid);
       }
-    }
-
-    // if todo not grouped, add todoid to ungrouped todos
-    if (!acceptedIntoGroup) {
-      ungroupedTodoIds.push(todo.todoid);
     }
   }
 
@@ -274,4 +293,6 @@ export function refreshList(args: RefreshListArgs) {
     // alert("set forced refresh");
     args.setForceRefresh(true);
   }
+
+  return { todos: refreshedTodos, groups: refreshedGroups };
 }

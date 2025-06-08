@@ -13,6 +13,8 @@ import { injectContent } from "../../handlers/app/injectContent";
 import { apiPostTodo } from "../../handlers/todo/apiPostTodo";
 import { ListContext } from "../../context/listContext";
 import { ListContextType } from "../../types/list/ListContextType";
+import { ToDoGroupInsert } from "../../../../backend/src/interfaces/group/ToDoGroupInsert";
+import { apiPostGroup } from "../../handlers/group/apiPostGroup";
 
 function ToDoListFooter() {
   const userContext = useContext(UserContext) as UserContextType;
@@ -23,7 +25,25 @@ function ToDoListFooter() {
     border: "none",
   };
 
-  function handleAddGroup() {}
+  function handleAddGroup() {
+    const emptyObj: Partial<ToDoGroupInsert> = {
+      name: "",
+    };
+
+    const additionalProps: Partial<ToDoGroupInsert> = {
+      serialnumber: listContext.groups.length + 1,
+    };
+
+    injectContent(
+      viewContext,
+      userContext,
+      listContext,
+      "Dodajte grupu",
+      emptyObj,
+      apiPostGroup,
+      additionalProps
+    );
+  }
 
   function handleAddTodo() {
     const emptyObj: ToDoInsert = {

@@ -43,5 +43,5 @@ export async function createGroup(
 
   // return group id
   var rows2 = [...result2];
-  res.send({ ...rows2[0], filters: [], todos: [] });
+  res.send({ ...rows2[0], filterids: [], todoids: [] });
 }

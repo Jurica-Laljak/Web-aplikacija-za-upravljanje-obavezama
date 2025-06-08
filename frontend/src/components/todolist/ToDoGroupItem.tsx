@@ -17,14 +17,70 @@ import { FilterContext } from "../../context/filterContext";
 import { FilterContextType } from "../../types/filter/FilterContextType";
 import { FaChevronDown, FaChevronUp, FaFilter } from "react-icons/fa";
 import FilterFragment from "./FilterFragment";
+import { injectContent } from "../../handlers/app/injectContent";
+import { UserContext } from "../../context/userContext";
+import { UserContextType } from "../../types/user/UserContext";
+import { ViewContext } from "../../context/viewContext";
+import { ViewContextType } from "../../types/other/ViewContext";
+import { deleteContent } from "../../handlers/app/deleteContent";
+import { apiPatchGroup } from "../../handlers/group/apiPatchGroup";
+import { apiDeleteGroup } from "../../handlers/group/apiDeleteGroup";
+import { apiPatchMultipleGroups } from "../../handlers/group/apiPatchMultipleGroups";
 
 function ToDoGroupItem(props: { group: GroupInternal }) {
+  const userContext = useContext(UserContext) as UserContextType;
+  const viewContext = useContext(ViewContext) as ViewContextType;
   const listContext = useContext(ListContext) as ListContextType;
   const filterContext = useContext(FilterContext) as FilterContextType;
   const [selected, setSelected] = useState(true);
 
+  function handleEditGroup() {
+    const currState = {
+      name: props.group.name,
+    };
+    injectContent(
+      viewContext,
+      userContext,
+      listContext,
+      "Uredite grupu obaveza",
+      currState,
+      apiPatchGroup,
+      { ...currState, groupid: props.group.groupid }
+    );
+  }
+
+  function handleDeleteGroup() {
+    deleteContent(
+      viewContext,
+      userContext,
+      listContext,
+      "grupu obaveza",
+      { groupid: props.group.groupid },
+      apiDeleteGroup
+    );
+  }
+
   function handleExpandGroup() {
     setSelected(!selected);
+  }
+
+  function handleSwitchOrder(moveUp: boolean) {
+    var otherGroupId: number | undefined;
+    if (moveUp)
+      otherGroupId = listContext.groups.find(
+        (g) => g.serialnumber == props.group.serialnumber - 1
+      )?.groupid;
+    else
+      otherGroupId = listContext.groups.find(
+        (g) => g.serialnumber == props.group.serialnumber + 1
+      )?.groupid;
+
+    if (otherGroupId)
+      apiPatchMultipleGroups(
+        { group1Id: props.group.groupid, group2Id: otherGroupId },
+        userContext,
+        listContext
+      );
   }
 
   return (
@@ -42,6 +98,7 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
                 className={`interactable hover ${
                   props.group.serialnumber == 1 ? "hidden" : "group-arrow"
                 }`}
+                onClick={() => handleSwitchOrder(true)}
               ></IconText>
             </Button>
             <Button style={{ all: "unset" }}>
@@ -53,20 +110,25 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
                     ? "hidden"
                     : "group-arrow"
                 }`}
+                onClick={() => handleSwitchOrder(false)}
               ></IconText>
             </Button>
           </div>
           <Button style={{ all: "unset" }} onClick={handleExpandGroup}>
             <IconText
               icon={<IoMdArrowDropdown />}
-              iconStyle={{ ...veryLargeIcon, color: "var(--secondary-color)" }}
+              iconStyle={
+                props.group.virtualToDoIds.length == 0
+                  ? { ...veryLargeIcon, color: "white" }
+                  : { ...veryLargeIcon, color: "var(--secondary-color)" }
+              }
               className={`hover transition ${
                 selected ? "expand-arrow-selected" : "expand-arrow"
               }`}
             ></IconText>
           </Button>
           <br />
-          <Button style={{ all: "unset" }}>
+          <Button style={{ all: "unset" }} onClick={handleEditGroup}>
             <IconText
               icon={<CgRename />}
               iconStyle={{ ...largeIcon, color: "var(--secondary-color)" }}
@@ -74,7 +136,7 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
             ></IconText>
           </Button>
           {props.group.name}
-          <Button style={{ all: "unset" }}>
+          <Button style={{ all: "unset" }} onClick={handleDeleteGroup}>
             <IconText
               icon={<MdDelete />}
               iconStyle={{ ...largeIcon, color: "var(--secondary-color)" }}

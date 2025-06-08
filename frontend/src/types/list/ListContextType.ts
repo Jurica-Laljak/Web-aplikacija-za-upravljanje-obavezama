@@ -18,6 +18,7 @@ export type ListContextType = {
   deleteTodo: any;
   createGroups: any;
   updateGroup: any;
+  switchGroupSerialNumbers: any;
   deleteGroup: any;
   updateListAttributes: any;
   fetchedListData: number;

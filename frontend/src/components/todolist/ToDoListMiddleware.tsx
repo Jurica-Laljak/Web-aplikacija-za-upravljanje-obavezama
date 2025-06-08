@@ -24,8 +24,8 @@ function ToDoListMiddleware(props: PropsWithChildren) {
         listContext.updateListAttributes("midlevelsort", data.midlevelsort);
         listContext.updateListAttributes("lowlevelsort", data.lowlevelsort);
         listContext.flushContent();
-        listContext.createTodos(data.todos);
-        listContext.createGroups(data.groups);
+        let { todos: refreshedTodos } = listContext.createTodos(data.todos);
+        listContext.createGroups(data.groups, refreshedTodos);
       });
     } else {
       isMounted.current = true;

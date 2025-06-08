@@ -51,7 +51,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
   function callRefreshList() {
     // alert("Externally calling refresh list");
-    refreshList(refreshListArgs);
+    return refreshList(refreshListArgs);
   }
 
   function flushContent() {
@@ -67,8 +67,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         let expandedTodo = { ...todo, virtualGroupId: null };
         newTodos.push(expandedTodo);
       }
-      // alert(`new todos: ${JSON.stringify(newTodos)}`);
-      refreshList({
+      return refreshList({
         ...refreshListArgs,
         todos: [...todos, ...newTodos],
       });
@@ -83,7 +82,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
     };
     const todosCopy = [...todos];
     todosCopy[todoIndex] = updatedTodo;
-    refreshList({
+    return refreshList({
       ...refreshListArgs,
       todos: [...todosCopy],
     });
@@ -99,9 +98,8 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }
 
-  function createGroups(providedGroups: GroupDto[]) {
+  function createGroups(providedGroups: GroupDto[], todos?: ToDoInternal[]) {
     if (providedGroups.length > 0) {
-      alert("in");
       const newGroups: Array<GroupInternal> = [];
       for (let group of providedGroups) {
         let virutalToDoIds: Array<number> = [];
@@ -112,14 +110,26 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         };
         newGroups.push(expandedGroup);
       }
-      refreshList({
-        ...refreshListArgs,
-        groups: [...groups, ...newGroups],
-      });
+      if (todos) {
+        return refreshList({
+          ...refreshListArgs,
+          groups: [...groups, ...newGroups],
+          todos: todos,
+        });
+      } else {
+        return refreshList({
+          ...refreshListArgs,
+          groups: [...groups, ...newGroups],
+        });
+      }
     }
   }
 
-  function updateGroup(id: number, updateObj: Partial<GroupInternal>) {
+  function updateGroup(
+    id: number,
+    updateObj: Partial<GroupInternal>,
+    todos?: ToDoInternal[]
+  ) {
     const groupIndex = groups.findIndex((el) =>
       el.groupid == id ? true : false
     );
@@ -129,6 +139,42 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
     };
     const groupsCopy = [...groups];
     groupsCopy[groupIndex] = updatedGroup;
+    // alert(JSON.stringify(groupsCopy));
+    if (todos)
+      refreshList({
+        ...refreshListArgs,
+        groups: [...groupsCopy],
+        todos: todos,
+      });
+    else
+      refreshList({
+        ...refreshListArgs,
+        groups: [...groupsCopy],
+      });
+  }
+
+  function switchGroupSerialNumbers(groupId1: number, groupId2: number) {
+    const groupsCopy = [...groups];
+    //
+    const group1Index = groups.findIndex((el) =>
+      el.groupid == groupId1 ? true : false
+    );
+    const group1 = groupsCopy[group1Index];
+    //
+    const group2Index = groups.findIndex((el) =>
+      el.groupid == groupId2 ? true : false
+    );
+    const group2 = groupsCopy[group2Index];
+    //
+    groupsCopy[group1Index] = {
+      ...group1,
+      serialnumber: group2.serialnumber,
+    };
+    groupsCopy[group2Index] = {
+      ...group2,
+      serialnumber: group1.serialnumber,
+    };
+    //
     refreshList({
       ...refreshListArgs,
       groups: [...groupsCopy],
@@ -201,6 +247,7 @@ export const ListContextProvider: React.FC<{ children: React.ReactNode }> = ({
         deleteTodo,
         createGroups,
         updateGroup,
+        switchGroupSerialNumbers,
         deleteGroup,
         updateListAttributes,
         fetchedListData,
