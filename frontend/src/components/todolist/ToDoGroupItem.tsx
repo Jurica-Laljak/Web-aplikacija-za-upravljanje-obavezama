@@ -137,9 +137,9 @@ function ToDoGroupItem(props: { group: GroupInternal }) {
             <IconText
               icon={<IoMdArrowDropdown />}
               iconStyle={
-                props.group.virtualToDoIds.length == 0
-                  ? { ...veryLargeIcon, color: "white" }
-                  : { ...veryLargeIcon, color: "var(--secondary-color)" }
+                props.group.virtualToDoIds.length > 0
+                  ? { ...veryLargeIcon, color: "var(--secondary-color)" }
+                  : { ...veryLargeIcon, color: "white" }
               }
               className={`hover transition ${
                 selected ? "expand-arrow-selected" : "expand-arrow"

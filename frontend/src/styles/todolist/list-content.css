@@ -54,6 +54,11 @@
   justify-content: start;
 }
 
+#arrow-container {
+  width: fit-content;
+  padding-left: 0.5rem;
+}
+
 .expand-arrow {
   rotate: -90deg;
 }

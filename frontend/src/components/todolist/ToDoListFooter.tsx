@@ -38,7 +38,7 @@ function ToDoListFooter() {
       viewContext,
       userContext,
       listContext,
-      "Dodajte grupu",
+      "Dodajte grupu obaveza",
       emptyObj,
       apiPostGroup,
       additionalProps

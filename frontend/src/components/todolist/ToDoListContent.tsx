@@ -15,7 +15,6 @@ function ToDoListContent() {
   const isMounted = useRef(false);
   const listContext = useContext(ListContext) as ListContextType;
   const filterContext = useContext(FilterContext) as FilterContextType;
-  const [ungroupedVisible, setUngroupedVisible] = useState(true);
 
   useEffect(() => {
     if (isMounted.current) {
@@ -37,10 +36,6 @@ function ToDoListContent() {
     }
   }, [listContext.todos, listContext.groups, listContext.ungroupedTodos]);
 
-  function handleExpandGroup() {
-    setUngroupedVisible(!ungroupedVisible);
-  }
-
   return (
     <div id="list-content-container" className="flex-div-column">
       <div id="list-content-subcontainer" className="flex-div-column">
@@ -54,28 +49,8 @@ function ToDoListContent() {
             listContext.ungroupedTodos.length == 0 ? "invisible" : ""
           }`}
         >
-          <div id="ungrouped-wrapper" className="flex-div-row">
-            <Button
-              style={{ all: "unset" }}
-              onClick={handleExpandGroup}
-              className="flex-div-row"
-            >
-              <IconText
-                icon={<IoMdArrowDropdown />}
-                iconStyle={{
-                  ...veryveryLargeIcon,
-                  color: "var(--secondary-color)",
-                }}
-                className={`hover transition ${
-                  ungroupedVisible ? "expand-arrow-selected" : "expand-arrow"
-                }`}
-              ></IconText>
-            </Button>
-          </div>
-          <div
-            id="ungrouped-todos-container"
-            className={ungroupedVisible ? "" : "invisible"}
-          >
+          <div id="ungrouped-wrapper" className="flex-div-row"></div>
+          <div id="ungrouped-todos-container">
             {listContext.ungroupedTodos.map((t) => (
               <ToDoItem
                 todo={listContext.todos.find((el) =>

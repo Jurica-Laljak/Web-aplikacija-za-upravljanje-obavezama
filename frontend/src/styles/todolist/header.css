@@ -11,10 +11,11 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
   align-items: center;
   color: white;
+  gap: 0.5rem;
 }
 
 #list-header-central {
@@ -40,12 +41,11 @@
   width: 100%;
   flex-direction: row;
   justify-content: start;
-  padding-left: 1em;
 }
 
 #sort-subwrapper {
   width: fit-content;
-  padding: 1rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -60,7 +60,7 @@
   width: fit-content;
   font-weight: bold;
   text-decoration: underline;
-  font-size: larger;
+  font-size: large;
 }
 
 .sort-dropdown-content {
@@ -72,7 +72,7 @@
   font-style: italic;
   font-size: 1rem;
   border-radius: 0.75rem;
-  margin-left: 0.5rem;
+  margin-left: 0.25rem;
   width: 10.75rem;
   text-align: center;
 }

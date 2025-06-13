@@ -103,8 +103,7 @@ export function refreshList(args: RefreshListArgs): {
   var nextMondayMidnight = new Date();
   nextMondayMidnight.setDate(
     nextMondayMidnight.getDate() +
-      ((1 + 7 - nextMondayMidnight.getDay()) % 7 || 7) +
-      7
+      ((1 + 7 - nextMondayMidnight.getDay()) % 7 || 7)
   );
   nextMondayMidnight.setHours(0, 0, 0, 0);
 
@@ -125,22 +124,28 @@ export function refreshList(args: RefreshListArgs): {
 
       // skip grouping if todo is part of an existing group
       if (todo.groupid) {
-        // append todoid to group's array of virtual todoids
-        const groupIndex = refreshedGroups.findIndex((g) =>
-          g.groupid == todo.groupid ? true : false
-        );
-        const refreshedVirtualIds = [
-          ...refreshedGroups[groupIndex].virtualToDoIds,
-        ];
-        refreshedVirtualIds.push(todo.todoid);
-        refreshedGroups[groupIndex].virtualToDoIds = [...refreshedVirtualIds];
-        refreshedGroups[groupIndex].remainingReservedSpots -= 1;
-        todo.virtualGroupId = refreshedGroups[groupIndex].groupid;
-        continue;
+        if (refreshedGroups.find((g) => g.groupid == todo.groupid)) {
+          // append todoid to group's array of virtual todoids
+          const groupIndex = refreshedGroups.findIndex((g) =>
+            g.groupid == todo.groupid ? true : false
+          );
+          const refreshedVirtualIds = [
+            ...refreshedGroups[groupIndex].virtualToDoIds,
+          ];
+          refreshedVirtualIds.push(todo.todoid);
+          refreshedGroups[groupIndex].virtualToDoIds = [...refreshedVirtualIds];
+          refreshedGroups[groupIndex].remainingReservedSpots -= 1;
+          todo.virtualGroupId = refreshedGroups[groupIndex].groupid;
+          continue;
+        } else {
+          // if groupid doesn't exist in *groups*, set todo groupid to null
+          todo.groupid = null;
+        }
       }
 
       // if no filters are defined, skip virtual grouping
       if (!args.filters || args.filters.length == 0) {
+        ungroupedTodoIds.push(todo.todoid);
         continue;
       } else {
         // alert(JSON.stringify(args.filters));
